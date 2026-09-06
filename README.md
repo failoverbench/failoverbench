@@ -28,6 +28,8 @@ python -m failoverbench report --profile fast && open results/fast/SCORECARD.md
 
 `--profile full` uses the real waits (20 s first token, 30 s stalls, 60 s outage) and is what the published scorecard runs. A full run of the catalogue takes about ten minutes per system.
 
+Testing a gateway that runs in Docker? Start the wall with `--host 0.0.0.0` so the container can reach it at `host.docker.internal:8401`.
+
 ## Systems under test
 
 | System | Config | Status |
