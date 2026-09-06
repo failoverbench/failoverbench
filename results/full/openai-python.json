@@ -1,0 +1,1343 @@
+{
+  "failoverbench": "0.1.0",
+  "methodology": "0.1",
+  "profile": "full",
+  "timing": {
+    "retry_after_s": 2.0,
+    "slow_ttft_s": 20.0,
+    "stall_s": 30.0,
+    "no_response_s": 120.0,
+    "flap_down_s": 60.0,
+    "token_interval_ms": 15,
+    "cut_after_tokens": 40,
+    "stall_after_tokens": 20,
+    "malformed_at_token": 10
+  },
+  "wall": {
+    "ok": true,
+    "wall": "0.1.0",
+    "t": 2.9967
+  },
+  "system": {
+    "name": "openai-python",
+    "label": "openai-python SDK (built-in retries)",
+    "adapter": "openai-python",
+    "capabilities": {
+      "fallback": false,
+      "streaming": true
+    },
+    "params": {
+      "max_retries": 2,
+      "timeout_s": 30
+    },
+    "notes": "The official SDK with its defaults except timeout (600 s \u2192 30 s so a run stays bounded). No fallback concept, so fail-over checks are n/a."
+  },
+  "run_started_at": "2026-09-06T22:20:27+00:00",
+  "run_seconds": 232.5,
+  "summary": {
+    "pass": 6,
+    "partial": 0,
+    "safe": 9,
+    "fail": 1,
+    "na": 0
+  },
+  "scenarios": [
+    {
+      "id": "S01",
+      "title": "429 with Retry-After",
+      "model": "fb-s01-429-retry-after",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:16:34+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "retried",
+          "kind": "attempts_primary_min",
+          "status": "pass",
+          "detail": "2 primary attempt(s)",
+          "severity": "advisory",
+          "informational": false
+        },
+        {
+          "id": "retry_after_honoured",
+          "kind": "first_gap_min_s",
+          "status": "pass",
+          "detail": "gap 2.01s",
+          "severity": "advisory",
+          "informational": false
+        },
+        {
+          "id": "no_hammer",
+          "kind": "max_attempts_within",
+          "status": "pass",
+          "detail": "1 attempt(s) in first 1.5s",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 3.269,
+        "ttft_s": 2.316,
+        "reported_model": "fb-s01-429-retry-after",
+        "usage": {
+          "completion_tokens": 60,
+          "prompt_tokens": 21,
+          "total_tokens": 81,
+          "completion_tokens_details": null,
+          "prompt_tokens_details": null
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 2,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.2997,
+          2.3055
+        ],
+        "fallback_times": [],
+        "first_gap_s": 2.006,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.30s fb-s01-429-retry-after #1 -> 429 retry-after=2",
+          "2.31s fb-s01-429-retry-after #2 -> 200 stream"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S02",
+      "title": "429 without Retry-After, persistent",
+      "model": "fb-s02-429-persistent",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:16:37+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for ",
+      "checks": [
+        {
+          "id": "no_hammer",
+          "kind": "max_attempts_within",
+          "status": "pass",
+          "detail": "3 attempt(s) in first 3s",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "bounded_attempts",
+          "kind": "attempts_primary_max",
+          "status": "pass",
+          "detail": "3 primary attempt(s)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 1.4s (error)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "RateLimitError: Error code: 429 - {'error': {'message': 'Rate limit reached for fb-s02-429-persistent.', 'type': 'rate_limit_error', 'param': None, 'code': 'rate_limit_exceeded'}}",
+        "status": 429,
+        "elapsed_s": 1.421,
+        "ttft_s": null,
+        "reported_model": null,
+        "usage": null,
+        "fallback_model": "fb-ok",
+        "attempts_primary": 3,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.002,
+          0.4871,
+          1.4203
+        ],
+        "fallback_times": [],
+        "first_gap_s": 0.485,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s02-429-persistent #1 -> 429",
+          "0.49s fb-s02-429-persistent #2 -> 429",
+          "1.42s fb-s02-429-persistent #3 -> 429"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S03",
+      "title": "500 once, then healthy",
+      "model": "fb-s03-500-then-200",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:16:39+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 1.5s (success)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "same_provider_retry",
+          "kind": "attempts_primary_min",
+          "status": "pass",
+          "detail": "2 primary attempt(s)",
+          "severity": "advisory",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 1.456,
+        "ttft_s": 0.488,
+        "reported_model": "fb-s03-500-then-200",
+        "usage": {
+          "completion_tokens": 60,
+          "prompt_tokens": 21,
+          "total_tokens": 81,
+          "completion_tokens_details": null,
+          "prompt_tokens_details": null
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 2,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0018,
+          0.4873
+        ],
+        "fallback_times": [],
+        "first_gap_s": 0.485,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s03-500-then-200 #1 -> 500",
+          "0.49s fb-s03-500-then-200 #2 -> 200 stream"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S04",
+      "title": "503 persistent",
+      "model": "fb-s04-503-persistent",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:16:40+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: InternalServerError: Error code: 503 - {'error': {'message': 'The engine is curr",
+      "checks": [
+        {
+          "id": "bounded_attempts",
+          "kind": "attempts_primary_max",
+          "status": "pass",
+          "detail": "3 primary attempt(s)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 1.4s (error)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}",
+        "status": 503,
+        "elapsed_s": 1.445,
+        "ttft_s": null,
+        "reported_model": null,
+        "usage": null,
+        "fallback_model": "fb-ok",
+        "attempts_primary": 3,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0018,
+          0.4878,
+          1.445
+        ],
+        "fallback_times": [],
+        "first_gap_s": 0.486,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s04-503-persistent #1 -> 503",
+          "0.49s fb-s04-503-persistent #2 -> 503",
+          "1.45s fb-s04-503-persistent #3 -> 503"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S05",
+      "title": "TCP reset before headers",
+      "model": "fb-s05-reset",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:16:42+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 1.4s (success)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 1.363,
+        "ttft_s": 0.399,
+        "reported_model": "fb-s05-reset",
+        "usage": {
+          "completion_tokens": 60,
+          "prompt_tokens": 21,
+          "total_tokens": 81,
+          "completion_tokens_details": null,
+          "prompt_tokens_details": null
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 2,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0012,
+          0.3979
+        ],
+        "fallback_times": [],
+        "first_gap_s": 0.397,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s05-reset #1 -> tcp-reset",
+          "0.40s fb-s05-reset #2 -> 200 stream"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S06",
+      "title": "No response at all",
+      "model": "fb-s06-no-response",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:16:43+00:00",
+      "verdict": "fail",
+      "reason": "failed: bounded",
+      "checks": [
+        {
+          "id": "bounded",
+          "kind": "wall_max_s",
+          "status": "fail",
+          "detail": "91.4s",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 91.4s (error)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "APITimeoutError: Request timed out.",
+        "status": null,
+        "elapsed_s": 91.414,
+        "ttft_s": null,
+        "reported_model": null,
+        "usage": null,
+        "fallback_model": "fb-ok",
+        "attempts_primary": 3,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0016,
+          30.4521,
+          61.4121
+        ],
+        "fallback_times": [],
+        "first_gap_s": 30.451,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s06-no-response #1 -> no-response 120s",
+          "30.45s fb-s06-no-response #2 -> no-response 120s",
+          "61.41s fb-s06-no-response #3 -> no-response 120s"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S07",
+      "title": "Slow first token",
+      "model": "fb-s07-slow-ttft",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:18:15+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 21.0s (success)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "ttft_limit",
+          "kind": "wall_max_s",
+          "status": "na",
+          "detail": "n/a \u2014 system declares no fallback",
+          "severity": "advisory",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 20.968,
+        "ttft_s": 20.005,
+        "reported_model": "fb-s07-slow-ttft",
+        "usage": {
+          "completion_tokens": 60,
+          "prompt_tokens": 21,
+          "total_tokens": 81,
+          "completion_tokens_details": null,
+          "prompt_tokens_details": null
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0016
+        ],
+        "fallback_times": [],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s07-slow-ttft #1 -> 200 stream, first token after 20s"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S08",
+      "title": "Stream cut mid-answer",
+      "model": "fb-s08-stream-cut",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:18:36+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: RemoteProtocolError: peer closed connection without sending complete message bod",
+      "checks": [
+        {
+          "id": "no_truncated_success",
+          "kind": "no_truncated_success",
+          "status": "pass",
+          "detail": "no success claimed (error)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 0.6s (error)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "RemoteProtocolError: peer closed connection without sending complete message body (incomplete chunked read)",
+        "status": null,
+        "elapsed_s": 0.642,
+        "ttft_s": 0.002,
+        "reported_model": "fb-s08-stream-cut",
+        "usage": null,
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0016
+        ],
+        "fallback_times": [],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s08-stream-cut #1 -> 200 stream cut after 40 tokens (no terminating chunk)"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S09",
+      "title": "Stream stalls",
+      "model": "fb-s09-stream-stall",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:18:36+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: ReadTimeout: ",
+      "checks": [
+        {
+          "id": "bounded",
+          "kind": "wall_max_s",
+          "status": "pass",
+          "detail": "30.3s",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_truncated_success",
+          "kind": "no_truncated_success",
+          "status": "pass",
+          "detail": "no success claimed (error)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "alive_after",
+          "kind": "alive_after",
+          "status": "pass",
+          "detail": "healthy call succeeded afterwards",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 30.3s (error)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "ReadTimeout: ",
+        "status": null,
+        "elapsed_s": 30.308,
+        "ttft_s": 0.002,
+        "reported_model": "fb-s09-stream-stall",
+        "usage": null,
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0016
+        ],
+        "fallback_times": [],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s09-stream-stall #1 -> 200 stream stalled after 20 tokens for 30s then close"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S10",
+      "title": "Malformed chunk in the stream",
+      "model": "fb-s10-malformed-chunk",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:19:06+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: JSONDecodeError: Expecting value: line 1 column 94 (char 93)",
+      "checks": [
+        {
+          "id": "alive_after",
+          "kind": "alive_after",
+          "status": "pass",
+          "detail": "healthy call succeeded afterwards",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_garbage",
+          "kind": "no_truncated_success",
+          "status": "pass",
+          "detail": "no success claimed (error)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 0.2s (error)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "recovered_in_place",
+          "kind": "complete",
+          "status": "fail",
+          "detail": "error",
+          "severity": "advisory",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "JSONDecodeError: Expecting value: line 1 column 94 (char 93)",
+        "status": null,
+        "elapsed_s": 0.163,
+        "ttft_s": 0.002,
+        "reported_model": "fb-s10-malformed-chunk",
+        "usage": null,
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0016
+        ],
+        "fallback_times": [],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s10-malformed-chunk #1 -> 200 stream with malformed chunk at token 10"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S11",
+      "title": "Stream ends without [DONE]",
+      "model": "fb-s11-no-done",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:19:07+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "prompt_finalise",
+          "kind": "wall_max_s",
+          "status": "pass",
+          "detail": "1.0s",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "usage_reported",
+          "kind": "usage_present",
+          "status": "pass",
+          "detail": "usage = {'completion_tokens': 60, 'prompt_tokens': 21, 'total_tokens': 81, 'completion_tokens_details': None, 'prompt_tokens_details': None}",
+          "severity": "advisory",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 0.967,
+        "ttft_s": 0.002,
+        "reported_model": "fb-s11-no-done",
+        "usage": {
+          "completion_tokens": 60,
+          "prompt_tokens": 21,
+          "total_tokens": 81,
+          "completion_tokens_details": null,
+          "prompt_tokens_details": null
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0016
+        ],
+        "fallback_times": [],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s11-no-done #1 -> 200 stream complete, [DONE] omitted"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S12",
+      "title": "Context length exceeded",
+      "model": "fb-s12-context-length",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:19:08+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: BadRequestError: Error code: 400 - {'error': {'message': \"This model's maximum c",
+      "checks": [
+        {
+          "id": "no_same_model_retry",
+          "kind": "attempts_primary_eq",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 0.0s (error)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "BadRequestError: Error code: 400 - {'error': {'message': \"This model's maximum context length is 8192 tokens. However, your messages resulted in 9631 tokens. Please reduce the length of the messages.\", 'type': 'invalid_request_error', 'param': 'messages', 'code': 'context_length_exceeded'}}",
+        "status": 400,
+        "elapsed_s": 0.002,
+        "ttft_s": null,
+        "reported_model": null,
+        "usage": null,
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0017
+        ],
+        "fallback_times": [],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s12-context-length #1 -> 400 context_length_exceeded"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S13",
+      "title": "Content-filter rejection",
+      "model": "fb-s13-content-filter",
+      "fallback_model": "fb-ok",
+      "ideal": "error",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:19:08+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "no_same_model_retry",
+          "kind": "attempts_primary_eq",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 0.0s (error)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "fallback_attempted",
+          "kind": "fallback_used",
+          "status": "info",
+          "detail": "0 fallback attempt(s)",
+          "severity": "advisory",
+          "informational": true
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "BadRequestError: Error code: 400 - {'error': {'message': 'Your request was rejected as a result of our safety system.', 'type': 'invalid_request_error', 'param': None, 'code': 'content_policy_violation'}}",
+        "status": 400,
+        "elapsed_s": 0.002,
+        "ttft_s": null,
+        "reported_model": null,
+        "usage": null,
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0022
+        ],
+        "fallback_times": [],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s13-content-filter #1 -> 400 content_policy_violation"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S14",
+      "title": "Fallback target rejects prefill",
+      "model": "fb-s14-stream-cut",
+      "fallback_model": "fb-ok-noprefill",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:19:08+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: RemoteProtocolError: peer closed connection without sending complete message bod",
+      "checks": [
+        {
+          "id": "no_prefill_masking",
+          "kind": "no_prefill_masking",
+          "status": "pass",
+          "detail": "0 prefill rejection(s) at the fallback; final outcome error",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_truncated_success",
+          "kind": "no_truncated_success",
+          "status": "pass",
+          "detail": "no success claimed (error)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "RemoteProtocolError: peer closed connection without sending complete message body (incomplete chunked read)",
+        "status": null,
+        "elapsed_s": 0.645,
+        "ttft_s": 0.003,
+        "reported_model": "fb-s14-stream-cut",
+        "usage": null,
+        "fallback_model": "fb-ok-noprefill",
+        "attempts_primary": 1,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0019
+        ],
+        "fallback_times": [],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s14-stream-cut #1 -> 200 stream cut after 40 tokens (no terminating chunk)"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S15",
+      "title": "Primary flaps: down, then healthy",
+      "model": "fb-s15-flap",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "sequence",
+      "started_at": "2026-09-06T22:19:08+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: InternalServerError: Error code: 503 - {'error': {'message': 'The engine is curr",
+      "checks": [
+        {
+          "id": "no_hang",
+          "kind": "seq_no_hang",
+          "status": "pass",
+          "detail": "0 hung request(s) of 20",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "served_during_outage",
+          "kind": "seq_served_during_outage",
+          "status": "na",
+          "detail": "n/a \u2014 system declares no fallback",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "recovered",
+          "kind": "seq_recovered_within_s",
+          "status": "na",
+          "detail": "n/a \u2014 system declares no fallback",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "probe_discipline",
+          "kind": "seq_probe_discipline",
+          "status": "info",
+          "detail": "45 primary attempt(s) for 15 request(s) during the outage",
+          "severity": "advisory",
+          "informational": true
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}",
+        "status": null,
+        "elapsed_s": 76.975,
+        "ttft_s": 0.005,
+        "reported_model": "fb-s15-flap",
+        "usage": {
+          "completion_tokens": 60,
+          "prompt_tokens": 21,
+          "total_tokens": 81,
+          "completion_tokens_details": null,
+          "prompt_tokens_details": null
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 50,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0017,
+          0.4139,
+          1.2907,
+          4.0049,
+          4.4619,
+          5.4142,
+          8.0049,
+          8.4487,
+          9.3489,
+          12.0038,
+          12.4878,
+          13.4764,
+          16.0051,
+          16.4085,
+          17.2685,
+          20.005,
+          20.4923,
+          21.4623,
+          24.0048,
+          24.4683,
+          25.3534,
+          28.0124,
+          28.4711,
+          29.3003,
+          32.0049,
+          32.4176,
+          33.3454,
+          36.0035,
+          36.3869,
+          37.1658,
+          40.0052,
+          40.4324,
+          41.195,
+          44.0034,
+          44.4178,
+          45.2917,
+          48.0047,
+          48.4235,
+          49.2029,
+          52.0052,
+          52.4262,
+          53.3315,
+          56.0046,
+          56.3892,
+          57.3792,
+          60.0042,
+          64.0061,
+          68.0051,
+          72.0057,
+          76.0055
+        ],
+        "fallback_times": [],
+        "first_gap_s": 0.412,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s15-flap #1 -> 503 (down window)",
+          "0.41s fb-s15-flap #2 -> 503 (down window)",
+          "1.29s fb-s15-flap #3 -> 503 (down window)",
+          "4.00s fb-s15-flap #4 -> 503 (down window)",
+          "4.46s fb-s15-flap #5 -> 503 (down window)",
+          "5.41s fb-s15-flap #6 -> 503 (down window)",
+          "8.00s fb-s15-flap #7 -> 503 (down window)",
+          "8.45s fb-s15-flap #8 -> 503 (down window)",
+          "9.35s fb-s15-flap #9 -> 503 (down window)",
+          "12.00s fb-s15-flap #10 -> 503 (down window)",
+          "12.49s fb-s15-flap #11 -> 503 (down window)",
+          "13.48s fb-s15-flap #12 -> 503 (down window)",
+          "16.01s fb-s15-flap #13 -> 503 (down window)",
+          "16.41s fb-s15-flap #14 -> 503 (down window)",
+          "17.27s fb-s15-flap #15 -> 503 (down window)",
+          "20.00s fb-s15-flap #16 -> 503 (down window)",
+          "20.49s fb-s15-flap #17 -> 503 (down window)",
+          "21.46s fb-s15-flap #18 -> 503 (down window)",
+          "24.00s fb-s15-flap #19 -> 503 (down window)",
+          "24.47s fb-s15-flap #20 -> 503 (down window)",
+          "25.35s fb-s15-flap #21 -> 503 (down window)",
+          "28.01s fb-s15-flap #22 -> 503 (down window)",
+          "28.47s fb-s15-flap #23 -> 503 (down window)",
+          "29.30s fb-s15-flap #24 -> 503 (down window)",
+          "32.00s fb-s15-flap #25 -> 503 (down window)",
+          "32.42s fb-s15-flap #26 -> 503 (down window)",
+          "33.35s fb-s15-flap #27 -> 503 (down window)",
+          "36.00s fb-s15-flap #28 -> 503 (down window)",
+          "36.39s fb-s15-flap #29 -> 503 (down window)",
+          "37.17s fb-s15-flap #30 -> 503 (down window)",
+          "40.01s fb-s15-flap #31 -> 503 (down window)",
+          "40.43s fb-s15-flap #32 -> 503 (down window)",
+          "41.20s fb-s15-flap #33 -> 503 (down window)",
+          "44.00s fb-s15-flap #34 -> 503 (down window)",
+          "44.42s fb-s15-flap #35 -> 503 (down window)",
+          "45.29s fb-s15-flap #36 -> 503 (down window)",
+          "48.00s fb-s15-flap #37 -> 503 (down window)",
+          "48.42s fb-s15-flap #38 -> 503 (down window)",
+          "49.20s fb-s15-flap #39 -> 503 (down window)",
+          "52.01s fb-s15-flap #40 -> 503 (down window)",
+          "52.43s fb-s15-flap #41 -> 503 (down window)",
+          "53.33s fb-s15-flap #42 -> 503 (down window)",
+          "56.00s fb-s15-flap #43 -> 503 (down window)",
+          "56.39s fb-s15-flap #44 -> 503 (down window)",
+          "57.38s fb-s15-flap #45 -> 503 (down window)",
+          "60.00s fb-s15-flap #46 -> 200 (recovered)",
+          "64.01s fb-s15-flap #47 -> 200 (recovered)",
+          "68.01s fb-s15-flap #48 -> 200 (recovered)",
+          "72.01s fb-s15-flap #49 -> 200 (recovered)",
+          "76.01s fb-s15-flap #50 -> 200 (recovered)"
+        ],
+        "seq_items": [
+          {
+            "i": 0,
+            "t_sent": 0.0,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.291,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 1,
+            "t_sent": 4.001,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.413,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 2,
+            "t_sent": 8.001,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.348,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 3,
+            "t_sent": 12.001,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.476,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 4,
+            "t_sent": 16.001,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.268,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 5,
+            "t_sent": 20.001,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.462,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 6,
+            "t_sent": 24.001,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.353,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 7,
+            "t_sent": 28.007,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.293,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 8,
+            "t_sent": 32.0,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.346,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 9,
+            "t_sent": 36.001,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.165,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 10,
+            "t_sent": 40.001,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.195,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 11,
+            "t_sent": 44.001,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.292,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 12,
+            "t_sent": 48.001,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.203,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 13,
+            "t_sent": 52.001,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.332,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 14,
+            "t_sent": 56.001,
+            "outcome": "error",
+            "complete": false,
+            "elapsed_s": 1.379,
+            "reported_model": null,
+            "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}"
+          },
+          {
+            "i": 15,
+            "t_sent": 60.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.978,
+            "reported_model": "fb-s15-flap",
+            "error": null
+          },
+          {
+            "i": 16,
+            "t_sent": 64.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.982,
+            "reported_model": "fb-s15-flap",
+            "error": null
+          },
+          {
+            "i": 17,
+            "t_sent": 68.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.97,
+            "reported_model": "fb-s15-flap",
+            "error": null
+          },
+          {
+            "i": 18,
+            "t_sent": 72.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.971,
+            "reported_model": "fb-s15-flap",
+            "error": null
+          },
+          {
+            "i": 19,
+            "t_sent": 76.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.969,
+            "reported_model": "fb-s15-flap",
+            "error": null
+          }
+        ],
+        "seq_hangs": 0,
+        "seq_requests_during_down": 15,
+        "seq_served_during_down": 0,
+        "seq_primary_attempts_during_down": 45,
+        "seq_recovered_after_s": 0.004,
+        "seq_success_after_down": 5,
+        "flap_down_s": 60.0,
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S16",
+      "title": "Fail-over accounting",
+      "model": "fb-s16-503-persistent",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-06T22:20:25+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: InternalServerError: Error code: 503 - {'error': {'message': 'The engine is curr",
+      "checks": [
+        {
+          "id": "reports_fallback_model",
+          "kind": "reported_model_is_fallback",
+          "status": "na",
+          "detail": "n/a \u2014 system declares no fallback",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "usage_present",
+          "kind": "usage_present",
+          "status": "na",
+          "detail": "n/a \u2014 system declares no fallback",
+          "severity": "advisory",
+          "informational": false
+        },
+        {
+          "id": "bounded_attempts",
+          "kind": "attempts_primary_max",
+          "status": "pass",
+          "detail": "3 primary attempt(s)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "InternalServerError: Error code: 503 - {'error': {'message': 'The engine is currently overloaded. Please try again later.', 'type': 'server_error', 'param': None, 'code': 'overloaded'}}",
+        "status": 503,
+        "elapsed_s": 1.338,
+        "ttft_s": null,
+        "reported_model": null,
+        "usage": null,
+        "fallback_model": "fb-ok",
+        "attempts_primary": 3,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.0021,
+          0.395,
+          1.3375
+        ],
+        "fallback_times": [],
+        "first_gap_s": 0.393,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.00s fb-s16-503-persistent #1 -> 503",
+          "0.40s fb-s16-503-persistent #2 -> 503",
+          "1.34s fb-s16-503-persistent #3 -> 503"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    }
+  ]
+}
