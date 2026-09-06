@@ -39,6 +39,9 @@ async def call_chat(client: httpx.AsyncClient, base_url: str, model: str, messag
             obj = resp.json()
         except ValueError:
             return CallResult(ok=False, status=200, error="HTTP 200 with malformed JSON body", elapsed_s=elapsed())
+        if isinstance(obj, dict) and obj.get("error"):
+            msg, code = parse_error_body(json.dumps(obj))
+            return CallResult(ok=False, status=200, error=f"HTTP 200 with an error body: {msg}", error_code=code, elapsed_s=elapsed())
         try:
             content = obj["choices"][0]["message"].get("content") or ""
         except (KeyError, IndexError, TypeError):
@@ -96,6 +99,14 @@ async def call_chat(client: httpx.AsyncClient, base_url: str, model: str, messag
                         continue
                     return CallResult(ok=False, status=200, error="malformed SSE chunk", elapsed_s=elapsed(),
                                       chunks=chunks, bad_chunks=bad, content="".join(parts))
+                if isinstance(obj, dict) and obj.get("error"):
+                    # A gateway that has already sent 200 and some content can only
+                    # report a failure in-band. A careful client treats that event as
+                    # the error it is; it never presents the partial text as an answer.
+                    msg, code = parse_error_body(json.dumps(obj))
+                    return CallResult(ok=False, status=200, error=f"in-band error event after {chunks} chunk(s): {msg}",
+                                      error_code=code, elapsed_s=elapsed(), chunks=chunks, bad_chunks=bad,
+                                      content="".join(parts), reported_model=reported, ttft_s=ttft)
                 chunks += 1
                 reported = obj.get("model") or reported
                 if obj.get("usage"):

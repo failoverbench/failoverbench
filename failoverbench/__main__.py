@@ -9,6 +9,7 @@ USAGE = """failoverbench — a crash-test lab for LLM gateways and SDKs
   python -m failoverbench wall  [--port 8401] [--profile fast|full] [-v]
   python -m failoverbench run   --system systems/reference.yaml [--profile fast|full] [--only S01,S08]
   python -m failoverbench report [--profile fast|full]
+  python -m failoverbench site   [--profile fast|full] [--out docs/index.html]
   python -m failoverbench litellm-config [--wall-url http://host.docker.internal:8401/v1] > gateways/litellm/litellm.yaml
 """
 
@@ -69,6 +70,9 @@ def main(argv=None):
         m(rest)
     elif cmd == "report":
         from .report import main as m
+        m(rest)
+    elif cmd == "site":
+        from .site import main as m
         m(rest)
     elif cmd == "litellm-config":
         litellm_config(rest)

@@ -16,7 +16,7 @@
   "wall": {
     "ok": true,
     "wall": "0.1.0",
-    "t": 6.5536
+    "t": 672.3288
   },
   "system": {
     "name": "litellm-proxy",
@@ -32,13 +32,13 @@
     },
     "notes": "LiteLLM proxy container configured by `python -m failoverbench litellm-config` (see gateways/litellm). The proxy owns retries and fallbacks."
   },
-  "run_started_at": "2026-09-06T22:28:56+00:00",
-  "run_seconds": 253.0,
+  "run_started_at": "2026-09-06T22:44:15+00:00",
+  "run_seconds": 252.3,
   "summary": {
     "pass": 9,
     "partial": 2,
-    "safe": 0,
-    "fail": 5,
+    "safe": 4,
+    "fail": 1,
     "na": 0
   },
   "scenarios": [
@@ -50,7 +50,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:24:43+00:00",
+      "started_at": "2026-09-06T22:40:03+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
@@ -66,7 +66,7 @@
           "id": "retry_after_honoured",
           "kind": "first_gap_min_s",
           "status": "pass",
-          "detail": "gap 2.54s",
+          "detail": "gap 2.37s",
           "severity": "advisory",
           "informational": false
         },
@@ -84,8 +84,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 3.613,
-        "ttft_s": 2.69,
+        "elapsed_s": 3.412,
+        "ttft_s": 2.444,
         "reported_model": "fb-s01-429-retry-after",
         "usage": {
           "completion_tokens": 60,
@@ -99,15 +99,15 @@
         "attempts_primary": 2,
         "attempts_fallback": 0,
         "primary_times": [
-          0.0829,
-          2.6217
+          0.0556,
+          2.4301
         ],
         "fallback_times": [],
-        "first_gap_s": 2.539,
+        "first_gap_s": 2.374,
         "prefill_rejections": 0,
         "wall_actions": [
-          "0.08s fb-s01-429-retry-after #1 -> 429 retry-after=2",
-          "2.62s fb-s01-429-retry-after #2 -> 200 stream"
+          "0.06s fb-s01-429-retry-after #1 -> 429 retry-after=2",
+          "2.43s fb-s01-429-retry-after #2 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null
@@ -122,7 +122,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:24:47+00:00",
+      "started_at": "2026-09-06T22:40:06+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
@@ -146,7 +146,7 @@
           "id": "no_hang",
           "kind": "no_hang",
           "status": "pass",
-          "detail": "ended in 5.6s (success)",
+          "detail": "ended in 5.8s (success)",
           "severity": "required",
           "informational": false
         }
@@ -156,8 +156,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 5.556,
-        "ttft_s": 4.586,
+        "elapsed_s": 5.783,
+        "ttft_s": 4.808,
         "reported_model": "fb-ok",
         "usage": {
           "completion_tokens": 60,
@@ -171,20 +171,20 @@
         "attempts_primary": 3,
         "attempts_fallback": 1,
         "primary_times": [
-          0.0071,
-          0.6719,
-          2.0
+          0.0062,
+          1.1386,
+          2.3212
         ],
         "fallback_times": [
-          4.5775
+          4.8015
         ],
-        "first_gap_s": 0.665,
+        "first_gap_s": 1.132,
         "prefill_rejections": 0,
         "wall_actions": [
           "0.01s fb-s02-429-persistent #1 -> 429",
-          "0.67s fb-s02-429-persistent #2 -> 429",
-          "2.00s fb-s02-429-persistent #3 -> 429",
-          "4.58s fb-ok #1 -> 200 stream"
+          "1.14s fb-s02-429-persistent #2 -> 429",
+          "2.32s fb-s02-429-persistent #3 -> 429",
+          "4.80s fb-ok #1 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null
@@ -199,7 +199,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:24:52+00:00",
+      "started_at": "2026-09-06T22:40:12+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
@@ -207,7 +207,7 @@
           "id": "no_hang",
           "kind": "no_hang",
           "status": "pass",
-          "detail": "ended in 2.1s (success)",
+          "detail": "ended in 1.8s (success)",
           "severity": "required",
           "informational": false
         },
@@ -225,8 +225,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 2.064,
-        "ttft_s": 1.095,
+        "elapsed_s": 1.787,
+        "ttft_s": 0.818,
         "reported_model": "fb-s03-500-then-200",
         "usage": {
           "completion_tokens": 60,
@@ -240,15 +240,15 @@
         "attempts_primary": 2,
         "attempts_fallback": 0,
         "primary_times": [
-          0.0071,
-          1.088
+          0.006,
+          0.8112
         ],
         "fallback_times": [],
-        "first_gap_s": 1.081,
+        "first_gap_s": 0.805,
         "prefill_rejections": 0,
         "wall_actions": [
           "0.01s fb-s03-500-then-200 #1 -> 500",
-          "1.09s fb-s03-500-then-200 #2 -> 200 stream"
+          "0.81s fb-s03-500-then-200 #2 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null
@@ -263,7 +263,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:24:55+00:00",
+      "started_at": "2026-09-06T22:40:14+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
@@ -279,7 +279,7 @@
           "id": "no_hang",
           "kind": "no_hang",
           "status": "pass",
-          "detail": "ended in 5.1s (success)",
+          "detail": "ended in 5.5s (success)",
           "severity": "required",
           "informational": false
         }
@@ -289,8 +289,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 5.074,
-        "ttft_s": 4.1,
+        "elapsed_s": 5.482,
+        "ttft_s": 4.51,
         "reported_model": "fb-ok",
         "usage": {
           "completion_tokens": 60,
@@ -304,20 +304,20 @@
         "attempts_primary": 3,
         "attempts_fallback": 1,
         "primary_times": [
-          0.0076,
-          0.8497,
-          1.9153
+          0.0062,
+          0.8514,
+          1.9058
         ],
         "fallback_times": [
-          4.0915
+          4.5032
         ],
-        "first_gap_s": 0.842,
+        "first_gap_s": 0.845,
         "prefill_rejections": 0,
         "wall_actions": [
           "0.01s fb-s04-503-persistent #1 -> 503",
           "0.85s fb-s04-503-persistent #2 -> 503",
-          "1.92s fb-s04-503-persistent #3 -> 503",
-          "4.09s fb-ok #1 -> 200 stream"
+          "1.91s fb-s04-503-persistent #3 -> 503",
+          "4.50s fb-ok #1 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null
@@ -332,7 +332,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:25:00+00:00",
+      "started_at": "2026-09-06T22:40:19+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
@@ -340,7 +340,7 @@
           "id": "no_hang",
           "kind": "no_hang",
           "status": "pass",
-          "detail": "ended in 2.1s (success)",
+          "detail": "ended in 1.6s (success)",
           "severity": "required",
           "informational": false
         }
@@ -350,8 +350,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 2.148,
-        "ttft_s": 1.173,
+        "elapsed_s": 1.558,
+        "ttft_s": 0.589,
         "reported_model": "fb-s05-reset",
         "usage": {
           "completion_tokens": 60,
@@ -365,15 +365,15 @@
         "attempts_primary": 2,
         "attempts_fallback": 0,
         "primary_times": [
-          0.0082,
-          1.1647
+          0.0102,
+          0.582
         ],
         "fallback_times": [],
-        "first_gap_s": 1.157,
+        "first_gap_s": 0.572,
         "prefill_rejections": 0,
         "wall_actions": [
           "0.01s fb-s05-reset #1 -> tcp-reset",
-          "1.16s fb-s05-reset #2 -> 200 stream"
+          "0.58s fb-s05-reset #2 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null
@@ -388,7 +388,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:25:02+00:00",
+      "started_at": "2026-09-06T22:40:21+00:00",
       "verdict": "fail",
       "reason": "failed: bounded",
       "checks": [
@@ -396,7 +396,7 @@
           "id": "bounded",
           "kind": "wall_max_s",
           "status": "fail",
-          "detail": "95.5s",
+          "detail": "95.9s",
           "severity": "required",
           "informational": false
         },
@@ -404,7 +404,7 @@
           "id": "no_hang",
           "kind": "no_hang",
           "status": "pass",
-          "detail": "ended in 95.5s (success)",
+          "detail": "ended in 95.9s (success)",
           "severity": "required",
           "informational": false
         }
@@ -414,8 +414,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 95.519,
-        "ttft_s": 94.585,
+        "elapsed_s": 95.918,
+        "ttft_s": 94.949,
         "reported_model": "fb-ok",
         "usage": {
           "completion_tokens": 60,
@@ -429,20 +429,20 @@
         "attempts_primary": 3,
         "attempts_fallback": 1,
         "primary_times": [
-          0.0074,
-          31.1557,
-          62.294
+          0.007,
+          31.0427,
+          62.6641
         ],
         "fallback_times": [
-          94.5345
+          94.9392
         ],
-        "first_gap_s": 31.148,
+        "first_gap_s": 31.036,
         "prefill_rejections": 0,
         "wall_actions": [
           "0.01s fb-s06-no-response #1 -> no-response 120s",
-          "31.16s fb-s06-no-response #2 -> no-response 120s",
-          "62.29s fb-s06-no-response #3 -> no-response 120s",
-          "94.53s fb-ok #1 -> 200 stream"
+          "31.04s fb-s06-no-response #2 -> no-response 120s",
+          "62.66s fb-s06-no-response #3 -> no-response 120s",
+          "94.94s fb-ok #1 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null
@@ -457,7 +457,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:26:37+00:00",
+      "started_at": "2026-09-06T22:41:57+00:00",
       "verdict": "partial",
       "reason": "rescued; advisory: ttft_limit",
       "checks": [
@@ -483,8 +483,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 20.989,
-        "ttft_s": 20.024,
+        "elapsed_s": 20.988,
+        "ttft_s": 20.015,
         "reported_model": "fb-s07-slow-ttft",
         "usage": {
           "completion_tokens": 60,
@@ -498,7 +498,7 @@
         "attempts_primary": 1,
         "attempts_fallback": 0,
         "primary_times": [
-          0.0084
+          0.0055
         ],
         "fallback_times": [],
         "first_gap_s": null,
@@ -519,15 +519,15 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:26:58+00:00",
-      "verdict": "fail",
-      "reason": "truncated answer presented as success",
+      "started_at": "2026-09-06T22:42:18+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: in-band error event after 41 chunk(s): litellm.APIConnectionError: APIConnection",
       "checks": [
         {
           "id": "no_truncated_success",
           "kind": "no_truncated_success",
-          "status": "fail",
-          "detail": "success with 40/60 words",
+          "status": "pass",
+          "detail": "no success claimed (error)",
           "severity": "required",
           "informational": false
         },
@@ -535,31 +535,31 @@
           "id": "no_hang",
           "kind": "no_hang",
           "status": "pass",
-          "detail": "ended in 0.7s (success)",
+          "detail": "ended in 0.7s (error)",
           "severity": "required",
           "informational": false
         }
       ],
       "metrics": {
-        "outcome": "success",
+        "outcome": "error",
         "complete": false,
-        "error": null,
-        "status": null,
-        "elapsed_s": 0.696,
-        "ttft_s": 0.01,
+        "error": "in-band error event after 41 chunk(s): litellm.APIConnectionError: APIConnectionError: OpenAIException - Response payload is not completed: <TransferEncodingError: 400, message='Not enough data to satisfy transfer length header.'>",
+        "status": 200,
+        "elapsed_s": 0.677,
+        "ttft_s": 0.007,
         "reported_model": "fb-s08-stream-cut",
         "usage": null,
         "fallback_model": "fb-ok",
         "attempts_primary": 1,
         "attempts_fallback": 0,
         "primary_times": [
-          0.0071
+          0.0043
         ],
         "fallback_times": [],
         "first_gap_s": null,
         "prefill_rejections": 0,
         "wall_actions": [
-          "0.01s fb-s08-stream-cut #1 -> 200 stream cut after 40 tokens (no terminating chunk)"
+          "0.00s fb-s08-stream-cut #1 -> 200 stream cut after 40 tokens (no terminating chunk)"
         ],
         "alive_after": true,
         "alive_error": null
@@ -574,9 +574,9 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:26:59+00:00",
-      "verdict": "fail",
-      "reason": "truncated answer presented as success",
+      "started_at": "2026-09-06T22:42:19+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: in-band error event after 21 chunk(s): litellm.APIConnectionError: APIConnection",
       "checks": [
         {
           "id": "bounded",
@@ -589,8 +589,8 @@
         {
           "id": "no_truncated_success",
           "kind": "no_truncated_success",
-          "status": "fail",
-          "detail": "success with 20/60 words",
+          "status": "pass",
+          "detail": "no success claimed (error)",
           "severity": "required",
           "informational": false
         },
@@ -606,25 +606,25 @@
           "id": "no_hang",
           "kind": "no_hang",
           "status": "pass",
-          "detail": "ended in 30.3s (success)",
+          "detail": "ended in 30.3s (error)",
           "severity": "required",
           "informational": false
         }
       ],
       "metrics": {
-        "outcome": "success",
+        "outcome": "error",
         "complete": false,
-        "error": null,
-        "status": null,
-        "elapsed_s": 30.343,
-        "ttft_s": 0.01,
+        "error": "in-band error event after 21 chunk(s): litellm.APIConnectionError: APIConnectionError: OpenAIException - Timeout on reading data from socket",
+        "status": 200,
+        "elapsed_s": 30.334,
+        "ttft_s": 0.007,
         "reported_model": "fb-s09-stream-stall",
         "usage": null,
         "fallback_model": "fb-ok",
         "attempts_primary": 1,
         "attempts_fallback": 0,
         "primary_times": [
-          0.0068
+          0.0051
         ],
         "fallback_times": [],
         "first_gap_s": null,
@@ -645,9 +645,9 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:27:29+00:00",
-      "verdict": "fail",
-      "reason": "truncated answer presented as success",
+      "started_at": "2026-09-06T22:42:49+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: in-band error event after 11 chunk(s): litellm.APIConnectionError: APIConnection",
       "checks": [
         {
           "id": "alive_after",
@@ -660,8 +660,8 @@
         {
           "id": "no_garbage",
           "kind": "no_truncated_success",
-          "status": "fail",
-          "detail": "success with 10/60 words",
+          "status": "pass",
+          "detail": "no success claimed (error)",
           "severity": "required",
           "informational": false
         },
@@ -669,7 +669,7 @@
           "id": "no_hang",
           "kind": "no_hang",
           "status": "pass",
-          "detail": "ended in 0.2s (success)",
+          "detail": "ended in 0.2s (error)",
           "severity": "required",
           "informational": false
         },
@@ -677,31 +677,31 @@
           "id": "recovered_in_place",
           "kind": "complete",
           "status": "fail",
-          "detail": "truncated/altered answer",
+          "detail": "error",
           "severity": "advisory",
           "informational": false
         }
       ],
       "metrics": {
-        "outcome": "success",
+        "outcome": "error",
         "complete": false,
-        "error": null,
-        "status": null,
-        "elapsed_s": 0.19,
-        "ttft_s": 0.01,
+        "error": "in-band error event after 11 chunk(s): litellm.APIConnectionError: APIConnectionError: OpenAIException - Expecting value: line 1 column 94 (char 93)",
+        "status": 200,
+        "elapsed_s": 0.185,
+        "ttft_s": 0.005,
         "reported_model": "fb-s10-malformed-chunk",
         "usage": null,
         "fallback_model": "fb-ok",
         "attempts_primary": 1,
         "attempts_fallback": 0,
         "primary_times": [
-          0.0066
+          0.0032
         ],
         "fallback_times": [],
         "first_gap_s": null,
         "prefill_rejections": 0,
         "wall_actions": [
-          "0.01s fb-s10-malformed-chunk #1 -> 200 stream with malformed chunk at token 10"
+          "0.00s fb-s10-malformed-chunk #1 -> 200 stream with malformed chunk at token 10"
         ],
         "alive_after": true,
         "alive_error": null
@@ -716,7 +716,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:27:30+00:00",
+      "started_at": "2026-09-06T22:42:49+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
@@ -757,7 +757,7 @@
         "attempts_primary": 1,
         "attempts_fallback": 0,
         "primary_times": [
-          0.0062
+          0.0056
         ],
         "fallback_times": [],
         "first_gap_s": null,
@@ -778,7 +778,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:27:31+00:00",
+      "started_at": "2026-09-06T22:42:50+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
@@ -804,8 +804,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 1.0,
-        "ttft_s": 0.024,
+        "elapsed_s": 0.992,
+        "ttft_s": 0.02,
         "reported_model": "fb-ok",
         "usage": {
           "completion_tokens": 60,
@@ -819,10 +819,10 @@
         "attempts_primary": 1,
         "attempts_fallback": 1,
         "primary_times": [
-          0.0076
+          0.0059
         ],
         "fallback_times": [
-          0.0202
+          0.0171
         ],
         "first_gap_s": null,
         "prefill_rejections": 0,
@@ -843,7 +843,7 @@
       "ideal": "error",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:27:32+00:00",
+      "started_at": "2026-09-06T22:42:51+00:00",
       "verdict": "partial",
       "reason": "answered by routing around the rejection",
       "checks": [
@@ -877,8 +877,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 0.995,
-        "ttft_s": 0.022,
+        "elapsed_s": 0.996,
+        "ttft_s": 0.021,
         "reported_model": "fb-ok",
         "usage": {
           "completion_tokens": 60,
@@ -892,10 +892,10 @@
         "attempts_primary": 1,
         "attempts_fallback": 1,
         "primary_times": [
-          0.0068
+          0.0067
         ],
         "fallback_times": [
-          0.0188
+          0.0178
         ],
         "first_gap_s": null,
         "prefill_rejections": 0,
@@ -916,33 +916,33 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:27:33+00:00",
-      "verdict": "fail",
-      "reason": "truncated answer presented as success",
+      "started_at": "2026-09-06T22:42:52+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: in-band error event after 41 chunk(s): litellm.APIConnectionError: APIConnection",
       "checks": [
         {
           "id": "no_prefill_masking",
           "kind": "no_prefill_masking",
           "status": "pass",
-          "detail": "0 prefill rejection(s) at the fallback; final outcome success",
+          "detail": "0 prefill rejection(s) at the fallback; final outcome error",
           "severity": "required",
           "informational": false
         },
         {
           "id": "no_truncated_success",
           "kind": "no_truncated_success",
-          "status": "fail",
-          "detail": "success with 40/60 words",
+          "status": "pass",
+          "detail": "no success claimed (error)",
           "severity": "required",
           "informational": false
         }
       ],
       "metrics": {
-        "outcome": "success",
+        "outcome": "error",
         "complete": false,
-        "error": null,
-        "status": null,
-        "elapsed_s": 0.674,
+        "error": "in-band error event after 41 chunk(s): litellm.APIConnectionError: APIConnectionError: OpenAIException - Response payload is not completed: <TransferEncodingError: 400, message='Not enough data to satisfy transfer length header.'>",
+        "status": 200,
+        "elapsed_s": 0.672,
         "ttft_s": 0.01,
         "reported_model": "fb-s14-stream-cut",
         "usage": null,
@@ -950,7 +950,7 @@
         "attempts_primary": 1,
         "attempts_fallback": 0,
         "primary_times": [
-          0.0064
+          0.0065
         ],
         "fallback_times": [],
         "first_gap_s": null,
@@ -971,7 +971,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "sequence",
-      "started_at": "2026-09-06T22:27:33+00:00",
+      "started_at": "2026-09-06T22:42:53+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
@@ -995,7 +995,7 @@
           "id": "recovered",
           "kind": "seq_recovered_within_s",
           "status": "pass",
-          "detail": "primary answered again +0.5s after recovery",
+          "detail": "primary answered again +0.2s after recovery",
           "severity": "required",
           "informational": false
         },
@@ -1003,7 +1003,7 @@
           "id": "probe_discipline",
           "kind": "seq_probe_discipline",
           "status": "info",
-          "detail": "31 primary attempt(s) for 11 request(s) during the outage",
+          "detail": "33 primary attempt(s) for 11 request(s) during the outage",
           "severity": "advisory",
           "informational": true
         }
@@ -1013,8 +1013,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 77.003,
-        "ttft_s": 0.021,
+        "elapsed_s": 76.995,
+        "ttft_s": 0.02,
         "reported_model": "fb-s15-flap",
         "usage": {
           "completion_tokens": 60,
@@ -1025,117 +1025,121 @@
           }
         },
         "fallback_model": "fb-ok",
-        "attempts_primary": 41,
-        "attempts_fallback": 10,
+        "attempts_primary": 42,
+        "attempts_fallback": 11,
         "primary_times": [
-          0.0064,
-          1.0099,
-          2.6434,
-          6.2445,
-          7.2824,
-          9.0479,
-          12.3447,
-          13.4115,
-          14.7766,
-          18.0137,
-          19.1198,
-          20.7305,
-          23.8697,
-          25.0548,
-          26.7515,
-          30.1958,
-          31.188,
-          32.7388,
-          36.2895,
-          37.1709,
-          38.4556,
-          41.6987,
-          42.9168,
-          44.4507,
-          48.1041,
-          48.7373,
-          50.4546,
-          54.1032,
-          55.1346,
-          56.3599,
-          59.8095,
-          60.4742,
-          61.4731,
-          62.4655,
-          63.4533,
-          64.4412,
-          65.4275,
-          66.4127,
-          68.0172,
-          72.0283,
-          76.0174
+          0.0053,
+          0.763,
+          1.7998,
+          5.1548,
+          5.8875,
+          7.5296,
+          10.9179,
+          11.5318,
+          12.9175,
+          16.1052,
+          16.8746,
+          18.1887,
+          21.6665,
+          22.2007,
+          23.8277,
+          27.1713,
+          28.0618,
+          29.2719,
+          32.3752,
+          32.9991,
+          34.2134,
+          37.4663,
+          38.5311,
+          40.2524,
+          43.7132,
+          44.7783,
+          45.8465,
+          48.9303,
+          49.8905,
+          51.1236,
+          54.8543,
+          55.5627,
+          56.8191,
+          60.1928,
+          61.1803,
+          62.1656,
+          63.1518,
+          64.1424,
+          65.1292,
+          68.0143,
+          72.0163,
+          76.0144
         ],
         "fallback_times": [
-          5.253,
-          11.3568,
-          17.0285,
-          22.8775,
-          29.2082,
-          35.3048,
-          40.7101,
-          47.106,
-          53.1036,
-          58.8191
+          4.1651,
+          9.9336,
+          15.1131,
+          20.6783,
+          26.1792,
+          31.3832,
+          36.4785,
+          42.7173,
+          47.9395,
+          53.8667,
+          59.2075
         ],
-        "first_gap_s": 1.004,
+        "first_gap_s": 0.758,
         "prefill_rejections": 0,
         "wall_actions": [
           "0.01s fb-s15-flap #1 -> 503 (down window)",
-          "1.01s fb-s15-flap #2 -> 503 (down window)",
-          "2.64s fb-s15-flap #3 -> 503 (down window)",
-          "5.25s fb-ok #1 -> 200 stream",
-          "6.24s fb-s15-flap #4 -> 503 (down window)",
-          "7.28s fb-s15-flap #5 -> 503 (down window)",
-          "9.05s fb-s15-flap #6 -> 503 (down window)",
-          "11.36s fb-ok #2 -> 200 stream",
-          "12.34s fb-s15-flap #7 -> 503 (down window)",
-          "13.41s fb-s15-flap #8 -> 503 (down window)",
-          "14.78s fb-s15-flap #9 -> 503 (down window)",
-          "17.03s fb-ok #3 -> 200 stream",
-          "18.01s fb-s15-flap #10 -> 503 (down window)",
-          "19.12s fb-s15-flap #11 -> 503 (down window)",
-          "20.73s fb-s15-flap #12 -> 503 (down window)",
-          "22.88s fb-ok #4 -> 200 stream",
-          "23.87s fb-s15-flap #13 -> 503 (down window)",
-          "25.05s fb-s15-flap #14 -> 503 (down window)",
-          "26.75s fb-s15-flap #15 -> 503 (down window)",
-          "29.21s fb-ok #5 -> 200 stream",
-          "30.20s fb-s15-flap #16 -> 503 (down window)",
-          "31.19s fb-s15-flap #17 -> 503 (down window)",
-          "32.74s fb-s15-flap #18 -> 503 (down window)",
-          "35.30s fb-ok #6 -> 200 stream",
-          "36.29s fb-s15-flap #19 -> 503 (down window)",
-          "37.17s fb-s15-flap #20 -> 503 (down window)",
-          "38.46s fb-s15-flap #21 -> 503 (down window)",
-          "40.71s fb-ok #7 -> 200 stream",
-          "41.70s fb-s15-flap #22 -> 503 (down window)",
-          "42.92s fb-s15-flap #23 -> 503 (down window)",
-          "44.45s fb-s15-flap #24 -> 503 (down window)",
-          "47.11s fb-ok #8 -> 200 stream",
-          "48.10s fb-s15-flap #25 -> 503 (down window)",
-          "48.74s fb-s15-flap #26 -> 503 (down window)",
-          "50.45s fb-s15-flap #27 -> 503 (down window)",
-          "53.10s fb-ok #9 -> 200 stream",
-          "54.10s fb-s15-flap #28 -> 503 (down window)",
-          "55.13s fb-s15-flap #29 -> 503 (down window)",
-          "56.36s fb-s15-flap #30 -> 503 (down window)",
-          "58.82s fb-ok #10 -> 200 stream",
-          "59.81s fb-s15-flap #31 -> 503 (down window)",
-          "60.47s fb-s15-flap #32 -> 200 (recovered)",
-          "61.47s fb-s15-flap #33 -> 200 (recovered)",
-          "62.47s fb-s15-flap #34 -> 200 (recovered)",
-          "63.45s fb-s15-flap #35 -> 200 (recovered)",
-          "64.44s fb-s15-flap #36 -> 200 (recovered)",
-          "65.43s fb-s15-flap #37 -> 200 (recovered)",
-          "66.41s fb-s15-flap #38 -> 200 (recovered)",
-          "68.02s fb-s15-flap #39 -> 200 (recovered)",
-          "72.03s fb-s15-flap #40 -> 200 (recovered)",
-          "76.02s fb-s15-flap #41 -> 200 (recovered)"
+          "0.76s fb-s15-flap #2 -> 503 (down window)",
+          "1.80s fb-s15-flap #3 -> 503 (down window)",
+          "4.17s fb-ok #1 -> 200 stream",
+          "5.15s fb-s15-flap #4 -> 503 (down window)",
+          "5.89s fb-s15-flap #5 -> 503 (down window)",
+          "7.53s fb-s15-flap #6 -> 503 (down window)",
+          "9.93s fb-ok #2 -> 200 stream",
+          "10.92s fb-s15-flap #7 -> 503 (down window)",
+          "11.53s fb-s15-flap #8 -> 503 (down window)",
+          "12.92s fb-s15-flap #9 -> 503 (down window)",
+          "15.11s fb-ok #3 -> 200 stream",
+          "16.11s fb-s15-flap #10 -> 503 (down window)",
+          "16.87s fb-s15-flap #11 -> 503 (down window)",
+          "18.19s fb-s15-flap #12 -> 503 (down window)",
+          "20.68s fb-ok #4 -> 200 stream",
+          "21.67s fb-s15-flap #13 -> 503 (down window)",
+          "22.20s fb-s15-flap #14 -> 503 (down window)",
+          "23.83s fb-s15-flap #15 -> 503 (down window)",
+          "26.18s fb-ok #5 -> 200 stream",
+          "27.17s fb-s15-flap #16 -> 503 (down window)",
+          "28.06s fb-s15-flap #17 -> 503 (down window)",
+          "29.27s fb-s15-flap #18 -> 503 (down window)",
+          "31.38s fb-ok #6 -> 200 stream",
+          "32.38s fb-s15-flap #19 -> 503 (down window)",
+          "33.00s fb-s15-flap #20 -> 503 (down window)",
+          "34.21s fb-s15-flap #21 -> 503 (down window)",
+          "36.48s fb-ok #7 -> 200 stream",
+          "37.47s fb-s15-flap #22 -> 503 (down window)",
+          "38.53s fb-s15-flap #23 -> 503 (down window)",
+          "40.25s fb-s15-flap #24 -> 503 (down window)",
+          "42.72s fb-ok #8 -> 200 stream",
+          "43.71s fb-s15-flap #25 -> 503 (down window)",
+          "44.78s fb-s15-flap #26 -> 503 (down window)",
+          "45.85s fb-s15-flap #27 -> 503 (down window)",
+          "47.94s fb-ok #9 -> 200 stream",
+          "48.93s fb-s15-flap #28 -> 503 (down window)",
+          "49.89s fb-s15-flap #29 -> 503 (down window)",
+          "51.12s fb-s15-flap #30 -> 503 (down window)",
+          "53.87s fb-ok #10 -> 200 stream",
+          "54.85s fb-s15-flap #31 -> 503 (down window)",
+          "55.56s fb-s15-flap #32 -> 503 (down window)",
+          "56.82s fb-s15-flap #33 -> 503 (down window)",
+          "59.21s fb-ok #11 -> 200 stream",
+          "60.19s fb-s15-flap #34 -> 200 (recovered)",
+          "61.18s fb-s15-flap #35 -> 200 (recovered)",
+          "62.17s fb-s15-flap #36 -> 200 (recovered)",
+          "63.15s fb-s15-flap #37 -> 200 (recovered)",
+          "64.14s fb-s15-flap #38 -> 200 (recovered)",
+          "65.13s fb-s15-flap #39 -> 200 (recovered)",
+          "68.01s fb-s15-flap #40 -> 200 (recovered)",
+          "72.02s fb-s15-flap #41 -> 200 (recovered)",
+          "76.01s fb-s15-flap #42 -> 200 (recovered)"
         ],
         "seq_items": [
           {
@@ -1143,139 +1147,139 @@
             "t_sent": 0.0,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 6.232,
+            "elapsed_s": 5.142,
             "reported_model": "fb-ok",
             "error": null
           },
           {
             "i": 1,
-            "t_sent": 6.232,
+            "t_sent": 5.143,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 6.1,
+            "elapsed_s": 5.764,
             "reported_model": "fb-ok",
             "error": null
           },
           {
             "i": 2,
-            "t_sent": 12.333,
+            "t_sent": 10.907,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 5.67,
+            "elapsed_s": 5.186,
             "reported_model": "fb-ok",
             "error": null
           },
           {
             "i": 3,
-            "t_sent": 18.003,
+            "t_sent": 16.093,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 5.854,
+            "elapsed_s": 5.562,
             "reported_model": "fb-ok",
             "error": null
           },
           {
             "i": 4,
-            "t_sent": 23.857,
+            "t_sent": 21.655,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 6.328,
+            "elapsed_s": 5.504,
             "reported_model": "fb-ok",
             "error": null
           },
           {
             "i": 5,
-            "t_sent": 30.185,
+            "t_sent": 27.16,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 6.096,
+            "elapsed_s": 5.204,
             "reported_model": "fb-ok",
             "error": null
           },
           {
             "i": 6,
-            "t_sent": 36.281,
+            "t_sent": 32.363,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 5.408,
+            "elapsed_s": 5.092,
             "reported_model": "fb-ok",
             "error": null
           },
           {
             "i": 7,
-            "t_sent": 41.689,
+            "t_sent": 37.455,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 6.404,
+            "elapsed_s": 6.25,
             "reported_model": "fb-ok",
             "error": null
           },
           {
             "i": 8,
-            "t_sent": 48.093,
+            "t_sent": 43.705,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 5.996,
+            "elapsed_s": 5.214,
             "reported_model": "fb-ok",
             "error": null
           },
           {
             "i": 9,
-            "t_sent": 54.089,
+            "t_sent": 48.919,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 5.708,
+            "elapsed_s": 5.923,
             "reported_model": "fb-ok",
             "error": null
           },
           {
             "i": 10,
-            "t_sent": 59.798,
+            "t_sent": 54.843,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.664,
-            "reported_model": "fb-s15-flap",
+            "elapsed_s": 5.339,
+            "reported_model": "fb-ok",
             "error": null
           },
           {
             "i": 11,
-            "t_sent": 61.462,
+            "t_sent": 60.182,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 0.993,
+            "elapsed_s": 0.987,
             "reported_model": "fb-s15-flap",
             "error": null
           },
           {
             "i": 12,
-            "t_sent": 62.455,
+            "t_sent": 61.169,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 0.988,
+            "elapsed_s": 0.987,
             "reported_model": "fb-s15-flap",
             "error": null
           },
           {
             "i": 13,
-            "t_sent": 63.444,
+            "t_sent": 62.156,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 0.986,
+            "elapsed_s": 0.984,
             "reported_model": "fb-s15-flap",
             "error": null
           },
           {
             "i": 14,
-            "t_sent": 64.429,
+            "t_sent": 63.141,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 0.986,
+            "elapsed_s": 0.99,
             "reported_model": "fb-s15-flap",
             "error": null
           },
           {
             "i": 15,
-            "t_sent": 65.415,
+            "t_sent": 64.131,
             "outcome": "success",
             "complete": true,
             "elapsed_s": 0.986,
@@ -1284,10 +1288,10 @@
           },
           {
             "i": 16,
-            "t_sent": 66.402,
+            "t_sent": 65.118,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 0.99,
+            "elapsed_s": 0.986,
             "reported_model": "fb-s15-flap",
             "error": null
           },
@@ -1296,7 +1300,7 @@
             "t_sent": 68.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 0.991,
+            "elapsed_s": 0.992,
             "reported_model": "fb-s15-flap",
             "error": null
           },
@@ -1305,7 +1309,7 @@
             "t_sent": 72.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.009,
+            "elapsed_s": 0.995,
             "reported_model": "fb-s15-flap",
             "error": null
           },
@@ -1314,7 +1318,7 @@
             "t_sent": 76.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 0.998,
+            "elapsed_s": 0.99,
             "reported_model": "fb-s15-flap",
             "error": null
           }
@@ -1322,8 +1326,8 @@
         "seq_hangs": 0,
         "seq_requests_during_down": 11,
         "seq_served_during_down": 11,
-        "seq_primary_attempts_during_down": 31,
-        "seq_recovered_after_s": 0.474,
+        "seq_primary_attempts_during_down": 33,
+        "seq_recovered_after_s": 0.193,
         "seq_success_after_down": 9,
         "flap_down_s": 60.0,
         "alive_after": true,
@@ -1339,7 +1343,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:28:50+00:00",
+      "started_at": "2026-09-06T22:44:10+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
@@ -1373,8 +1377,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 5.804,
-        "ttft_s": 4.83,
+        "elapsed_s": 5.282,
+        "ttft_s": 4.306,
         "reported_model": "fb-ok",
         "usage": {
           "completion_tokens": 60,
@@ -1388,20 +1392,20 @@
         "attempts_primary": 3,
         "attempts_fallback": 1,
         "primary_times": [
-          0.0073,
-          1.0651,
-          2.5329
+          0.007,
+          0.9219,
+          2.196
         ],
         "fallback_times": [
-          4.8237
+          4.2986
         ],
-        "first_gap_s": 1.058,
+        "first_gap_s": 0.915,
         "prefill_rejections": 0,
         "wall_actions": [
           "0.01s fb-s16-503-persistent #1 -> 503",
-          "1.07s fb-s16-503-persistent #2 -> 503",
-          "2.53s fb-s16-503-persistent #3 -> 503",
-          "4.82s fb-ok #1 -> 200 stream"
+          "0.92s fb-s16-503-persistent #2 -> 503",
+          "2.20s fb-s16-503-persistent #3 -> 503",
+          "4.30s fb-ok #1 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null

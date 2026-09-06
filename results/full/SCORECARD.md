@@ -6,27 +6,27 @@ Every cell is one scenario run through one system against the same misbehaving p
 
 | Scenario | No gateway (direct, no retries) | LiteLLM proxy (Docker) | LiteLLM Router (in-process) | openai-python SDK (built-in retries) | Reference client (httpx) |
 |---|---|---|---|---|---|
-| **S01** 429 with Retry-After | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>2p/0f · gap 2.5s · 3.6s</sub> | ✅ pass<br><sub>2p/0f · gap 2.7s · 4.0s</sub> | ✅ pass<br><sub>2p/0f · gap 2.0s · 3.3s</sub> | ✅ pass<br><sub>2p/0f · gap 2.0s · 3.0s</sub> |
-| **S02** 429 without Retry-After, persistent | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>3p/1f · gap 0.7s · 5.6s</sub> | ✅ pass<br><sub>3p/1f · gap 0.6s · 5.3s</sub> | ○ safe<br><sub>3p/0f · gap 0.5s · 1.4s</sub> | ✅ pass<br><sub>3p/1f · gap 0.5s · 2.4s</sub> |
-| **S03** 500 once, then healthy | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>2p/0f · gap 1.1s · 2.1s</sub> | ✅ pass<br><sub>2p/0f · gap 0.7s · 1.7s</sub> | ✅ pass<br><sub>2p/0f · gap 0.5s · 1.5s</sub> | ✅ pass<br><sub>2p/0f · gap 0.5s · 1.5s</sub> |
-| **S04** 503 persistent | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>3p/1f · gap 0.8s · 5.1s</sub> | ✅ pass<br><sub>3p/1f · gap 0.9s · 5.8s</sub> | ○ safe<br><sub>3p/0f · gap 0.5s · 1.4s</sub> | ✅ pass<br><sub>3p/1f · gap 0.4s · 2.2s</sub> |
-| **S05** TCP reset before headers | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>2p/0f · gap 1.2s · 2.1s</sub> | ✅ pass<br><sub>2p/0f · gap 0.8s · 1.8s</sub> | ✅ pass<br><sub>2p/0f · gap 0.4s · 1.4s</sub> | ✅ pass<br><sub>2p/0f · gap 0.5s · 1.5s</sub> |
-| **S06** No response at all | ○ safe<br><sub>1p/0f · 30.0s</sub> | ❌ fail<br><sub>3p/1f · gap 31.1s · 95.5s</sub> | ❌ fail<br><sub>3p/1f · gap 30.9s · 96.3s</sub> | ❌ fail<br><sub>3p/0f · gap 30.5s · 91.4s</sub> | ✅ pass<br><sub>1p/1f · 11.0s</sub> |
+| **S01** 429 with Retry-After | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>2p/0f · gap 2.4s · 3.4s</sub> | ✅ pass<br><sub>2p/0f · gap 2.7s · 4.0s</sub> | ✅ pass<br><sub>2p/0f · gap 2.0s · 3.3s</sub> | ✅ pass<br><sub>2p/0f · gap 2.0s · 3.0s</sub> |
+| **S02** 429 without Retry-After, persistent | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>3p/1f · gap 1.1s · 5.8s</sub> | ✅ pass<br><sub>3p/1f · gap 0.6s · 5.3s</sub> | ○ safe<br><sub>3p/0f · gap 0.5s · 1.4s</sub> | ✅ pass<br><sub>3p/1f · gap 0.5s · 2.4s</sub> |
+| **S03** 500 once, then healthy | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>2p/0f · gap 0.8s · 1.8s</sub> | ✅ pass<br><sub>2p/0f · gap 0.7s · 1.7s</sub> | ✅ pass<br><sub>2p/0f · gap 0.5s · 1.5s</sub> | ✅ pass<br><sub>2p/0f · gap 0.5s · 1.5s</sub> |
+| **S04** 503 persistent | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>3p/1f · gap 0.8s · 5.5s</sub> | ✅ pass<br><sub>3p/1f · gap 0.9s · 5.8s</sub> | ○ safe<br><sub>3p/0f · gap 0.5s · 1.4s</sub> | ✅ pass<br><sub>3p/1f · gap 0.4s · 2.2s</sub> |
+| **S05** TCP reset before headers | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>2p/0f · gap 0.6s · 1.6s</sub> | ✅ pass<br><sub>2p/0f · gap 0.8s · 1.8s</sub> | ✅ pass<br><sub>2p/0f · gap 0.4s · 1.4s</sub> | ✅ pass<br><sub>2p/0f · gap 0.5s · 1.5s</sub> |
+| **S06** No response at all | ○ safe<br><sub>1p/0f · 30.0s</sub> | ❌ fail<br><sub>3p/1f · gap 31.0s · 95.9s</sub> | ❌ fail<br><sub>3p/1f · gap 30.9s · 96.3s</sub> | ❌ fail<br><sub>3p/0f · gap 30.5s · 91.4s</sub> | ✅ pass<br><sub>1p/1f · 11.0s</sub> |
 | **S07** Slow first token | ✅ pass<br><sub>1p/0f · 21.0s</sub> | ◐ partial<br><sub>1p/0f · 21.0s</sub> | ◐ partial<br><sub>1p/0f · 21.0s</sub> | ✅ pass<br><sub>1p/0f · 21.0s</sub> | ✅ pass<br><sub>1p/1f · 11.0s</sub> |
-| **S08** Stream cut mid-answer | ○ safe<br><sub>1p/0f · 0.6s</sub> | ❌ fail<br><sub>1p/0f · 0.7s · TRUNCATED</sub> | ○ safe<br><sub>1p/0f · 0.7s</sub> | ○ safe<br><sub>1p/0f · 0.6s</sub> | ✅ pass<br><sub>3p/1f · gap 1.2s · 4.3s</sub> |
-| **S09** Stream stalls | ○ safe<br><sub>1p/0f · 30.3s</sub> | ❌ fail<br><sub>1p/0f · 30.3s · TRUNCATED</sub> | ○ safe<br><sub>1p/0f · 30.3s</sub> | ○ safe<br><sub>1p/0f · 30.3s</sub> | ✅ pass<br><sub>1p/1f · 11.3s</sub> |
-| **S10** Malformed chunk in the stream | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ❌ fail<br><sub>1p/0f · 0.2s · TRUNCATED</sub> | ○ safe<br><sub>1p/0f · 0.2s</sub> | ○ safe<br><sub>1p/0f · 0.2s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> |
+| **S08** Stream cut mid-answer | ○ safe<br><sub>1p/0f · 0.6s</sub> | ○ safe<br><sub>1p/0f · 0.7s</sub> | ○ safe<br><sub>1p/0f · 0.7s</sub> | ○ safe<br><sub>1p/0f · 0.6s</sub> | ✅ pass<br><sub>3p/1f · gap 1.2s · 4.3s</sub> |
+| **S09** Stream stalls | ○ safe<br><sub>1p/0f · 30.3s</sub> | ○ safe<br><sub>1p/0f · 30.3s</sub> | ○ safe<br><sub>1p/0f · 30.3s</sub> | ○ safe<br><sub>1p/0f · 30.3s</sub> | ✅ pass<br><sub>1p/1f · 11.3s</sub> |
+| **S10** Malformed chunk in the stream | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ○ safe<br><sub>1p/0f · 0.2s</sub> | ○ safe<br><sub>1p/0f · 0.2s</sub> | ○ safe<br><sub>1p/0f · 0.2s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> |
 | **S11** Stream ends without [DONE] | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> |
 | **S12** Context length exceeded | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> |
 | **S13** Content-filter rejection | ✅ pass<br><sub>1p/0f · 0.0s</sub> | ◐ partial<br><sub>1p/1f · 1.0s</sub> | ◐ partial<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>1p/0f · 0.0s</sub> |
-| **S14** Fallback target rejects prefill | ○ safe<br><sub>1p/0f · 0.6s</sub> | ❌ fail<br><sub>1p/0f · 0.7s · TRUNCATED</sub> | ○ safe<br><sub>1p/0f · 0.7s</sub> | ○ safe<br><sub>1p/0f · 0.6s</sub> | ✅ pass<br><sub>3p/1f · gap 1.2s · 4.6s</sub> |
+| **S14** Fallback target rejects prefill | ○ safe<br><sub>1p/0f · 0.6s</sub> | ○ safe<br><sub>1p/0f · 0.7s</sub> | ○ safe<br><sub>1p/0f · 0.7s</sub> | ○ safe<br><sub>1p/0f · 0.6s</sub> | ✅ pass<br><sub>3p/1f · gap 1.2s · 4.6s</sub> |
 | **S15** Primary flaps: down, then healthy | ○ safe<br><sub>0/15 served in outage · back on primary +0s</sub> | ✅ pass<br><sub>11/11 served in outage · back on primary +0s</sub> | ✅ pass<br><sub>11/11 served in outage · back on primary +2s</sub> | ○ safe<br><sub>0/15 served in outage · back on primary +0s</sub> | ✅ pass<br><sub>15/15 served in outage · back on primary +0s</sub> |
-| **S16** Fail-over accounting | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>3p/1f · gap 1.1s · 5.8s</sub> | ✅ pass<br><sub>3p/1f · gap 0.9s · 5.7s</sub> | ○ safe<br><sub>3p/0f · gap 0.4s · 1.3s</sub> | ✅ pass<br><sub>3p/1f · gap 0.6s · 2.7s</sub> |
+| **S16** Fail-over accounting | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>3p/1f · gap 0.9s · 5.3s</sub> | ✅ pass<br><sub>3p/1f · gap 0.9s · 5.7s</sub> | ○ safe<br><sub>3p/0f · gap 0.4s · 1.3s</sub> | ✅ pass<br><sub>3p/1f · gap 0.6s · 2.7s</sub> |
 
 | System | pass | partial | safe | fail | run time |
 |---|---:|---:|---:|---:|---:|
 | No gateway (direct, no retries) | 4 | 0 | 12 | 0 | 162s |
-| LiteLLM proxy (Docker) | 9 | 2 | 0 | 5 | 253s |
+| LiteLLM proxy (Docker) | 9 | 2 | 4 | 1 | 252s |
 | LiteLLM Router (in-process) | 9 | 2 | 4 | 1 | 254s |
 | openai-python SDK (built-in retries) | 6 | 0 | 9 | 1 | 232s |
 | Reference client (httpx) | 16 | 0 | 0 | 0 | 136s |
@@ -134,58 +134,58 @@ LiteLLM proxy container configured by `python -m failoverbench litellm-config` (
 
 **S01 429 with Retry-After** — ✅ pass — rescued
 - `retried` pass: 2 primary attempt(s)
-- `retry_after_honoured` pass: gap 2.54s
+- `retry_after_honoured` pass: gap 2.37s
 - `no_hammer` pass: 1 attempt(s) in first 1.5s
-- wall log: 0.08s fb-s01-429-retry-after #1 -> 429 retry-after=2; 2.62s fb-s01-429-retry-after #2 -> 200 stream
+- wall log: 0.06s fb-s01-429-retry-after #1 -> 429 retry-after=2; 2.43s fb-s01-429-retry-after #2 -> 200 stream
 
 **S02 429 without Retry-After, persistent** — ✅ pass — rescued
 - `no_hammer` pass: 3 attempt(s) in first 3s
 - `bounded_attempts` pass: 3 primary attempt(s)
-- `no_hang` pass: ended in 5.6s (success)
-- wall log: 0.01s fb-s02-429-persistent #1 -> 429; 0.67s fb-s02-429-persistent #2 -> 429; 2.00s fb-s02-429-persistent #3 -> 429; 4.58s fb-ok #1 -> 200 stream
+- `no_hang` pass: ended in 5.8s (success)
+- wall log: 0.01s fb-s02-429-persistent #1 -> 429; 1.14s fb-s02-429-persistent #2 -> 429; 2.32s fb-s02-429-persistent #3 -> 429; 4.80s fb-ok #1 -> 200 stream
 
 **S03 500 once, then healthy** — ✅ pass — rescued
-- `no_hang` pass: ended in 2.1s (success)
+- `no_hang` pass: ended in 1.8s (success)
 - `same_provider_retry` pass: 2 primary attempt(s)
-- wall log: 0.01s fb-s03-500-then-200 #1 -> 500; 1.09s fb-s03-500-then-200 #2 -> 200 stream
+- wall log: 0.01s fb-s03-500-then-200 #1 -> 500; 0.81s fb-s03-500-then-200 #2 -> 200 stream
 
 **S04 503 persistent** — ✅ pass — rescued
 - `bounded_attempts` pass: 3 primary attempt(s)
-- `no_hang` pass: ended in 5.1s (success)
-- wall log: 0.01s fb-s04-503-persistent #1 -> 503; 0.85s fb-s04-503-persistent #2 -> 503; 1.92s fb-s04-503-persistent #3 -> 503; 4.09s fb-ok #1 -> 200 stream
+- `no_hang` pass: ended in 5.5s (success)
+- wall log: 0.01s fb-s04-503-persistent #1 -> 503; 0.85s fb-s04-503-persistent #2 -> 503; 1.91s fb-s04-503-persistent #3 -> 503; 4.50s fb-ok #1 -> 200 stream
 
 **S05 TCP reset before headers** — ✅ pass — rescued
-- `no_hang` pass: ended in 2.1s (success)
-- wall log: 0.01s fb-s05-reset #1 -> tcp-reset; 1.16s fb-s05-reset #2 -> 200 stream
+- `no_hang` pass: ended in 1.6s (success)
+- wall log: 0.01s fb-s05-reset #1 -> tcp-reset; 0.58s fb-s05-reset #2 -> 200 stream
 
 **S06 No response at all** — ❌ fail — failed: bounded
-- `bounded` FAIL: 95.5s
-- `no_hang` pass: ended in 95.5s (success)
-- wall log: 0.01s fb-s06-no-response #1 -> no-response 120s; 31.16s fb-s06-no-response #2 -> no-response 120s; 62.29s fb-s06-no-response #3 -> no-response 120s; 94.53s fb-ok #1 -> 200 stream
+- `bounded` FAIL: 95.9s
+- `no_hang` pass: ended in 95.9s (success)
+- wall log: 0.01s fb-s06-no-response #1 -> no-response 120s; 31.04s fb-s06-no-response #2 -> no-response 120s; 62.66s fb-s06-no-response #3 -> no-response 120s; 94.94s fb-ok #1 -> 200 stream
 
 **S07 Slow first token** — ◐ partial — rescued; advisory: ttft_limit
 - `no_hang` pass: ended in 21.0s (success)
 - `ttft_limit` FAIL (advisory): 21.0s
 - wall log: 0.01s fb-s07-slow-ttft #1 -> 200 stream, first token after 20s
 
-**S08 Stream cut mid-answer** — ❌ fail — truncated answer presented as success
-- `no_truncated_success` FAIL: success with 40/60 words
-- `no_hang` pass: ended in 0.7s (success)
-- wall log: 0.01s fb-s08-stream-cut #1 -> 200 stream cut after 40 tokens (no terminating chunk)
+**S08 Stream cut mid-answer** — ○ safe — not rescued — clean error: in-band error event after 41 chunk(s): litellm.APIConnectionError: APIConnection
+- `no_truncated_success` pass: no success claimed (error)
+- `no_hang` pass: ended in 0.7s (error)
+- wall log: 0.00s fb-s08-stream-cut #1 -> 200 stream cut after 40 tokens (no terminating chunk)
 
-**S09 Stream stalls** — ❌ fail — truncated answer presented as success
+**S09 Stream stalls** — ○ safe — not rescued — clean error: in-band error event after 21 chunk(s): litellm.APIConnectionError: APIConnection
 - `bounded` pass: 30.3s
-- `no_truncated_success` FAIL: success with 20/60 words
+- `no_truncated_success` pass: no success claimed (error)
 - `alive_after` pass: healthy call succeeded afterwards
-- `no_hang` pass: ended in 30.3s (success)
+- `no_hang` pass: ended in 30.3s (error)
 - wall log: 0.01s fb-s09-stream-stall #1 -> 200 stream stalled after 20 tokens for 30s then close
 
-**S10 Malformed chunk in the stream** — ❌ fail — truncated answer presented as success
+**S10 Malformed chunk in the stream** — ○ safe — not rescued — clean error: in-band error event after 11 chunk(s): litellm.APIConnectionError: APIConnection
 - `alive_after` pass: healthy call succeeded afterwards
-- `no_garbage` FAIL: success with 10/60 words
-- `no_hang` pass: ended in 0.2s (success)
-- `recovered_in_place` FAIL (advisory): truncated/altered answer
-- wall log: 0.01s fb-s10-malformed-chunk #1 -> 200 stream with malformed chunk at token 10
+- `no_garbage` pass: no success claimed (error)
+- `no_hang` pass: ended in 0.2s (error)
+- `recovered_in_place` FAIL (advisory): error
+- wall log: 0.00s fb-s10-malformed-chunk #1 -> 200 stream with malformed chunk at token 10
 
 **S11 Stream ends without [DONE]** — ✅ pass — rescued
 - `prompt_finalise` pass: 1.0s
@@ -203,23 +203,23 @@ LiteLLM proxy container configured by `python -m failoverbench litellm-config` (
 - `fallback_attempted` pass: 1 fallback attempt(s)
 - wall log: 0.01s fb-s13-content-filter #1 -> 400 content_policy_violation; 0.02s fb-ok #1 -> 200 stream
 
-**S14 Fallback target rejects prefill** — ❌ fail — truncated answer presented as success
-- `no_prefill_masking` pass: 0 prefill rejection(s) at the fallback; final outcome success
-- `no_truncated_success` FAIL: success with 40/60 words
+**S14 Fallback target rejects prefill** — ○ safe — not rescued — clean error: in-band error event after 41 chunk(s): litellm.APIConnectionError: APIConnection
+- `no_prefill_masking` pass: 0 prefill rejection(s) at the fallback; final outcome error
+- `no_truncated_success` pass: no success claimed (error)
 - wall log: 0.01s fb-s14-stream-cut #1 -> 200 stream cut after 40 tokens (no terminating chunk)
 
 **S15 Primary flaps: down, then healthy** — ✅ pass — rescued
 - `no_hang` pass: 0 hung request(s) of 20
 - `served_during_outage` pass: 11/11 requests answered while primary was down
-- `recovered` pass: primary answered again +0.5s after recovery
-- `probe_discipline` info: 31 primary attempt(s) for 11 request(s) during the outage
-- wall log: 0.01s fb-s15-flap #1 -> 503 (down window); 1.01s fb-s15-flap #2 -> 503 (down window); 2.64s fb-s15-flap #3 -> 503 (down window); 5.25s fb-ok #1 -> 200 stream; 6.24s fb-s15-flap #4 -> 503 (down window); 7.28s fb-s15-flap #5 -> 503 (down window); 9.05s fb-s15-flap #6 -> 503 (down window); 11.36s fb-ok #2 -> 200 stream; 12.34s fb-s15-flap #7 -> 503 (down window); 13.41s fb-s15-flap #8 -> 503 (down window); 14.78s fb-s15-flap #9 -> 503 (down window); 17.03s fb-ok #3 -> 200 stream … (+39 more)
+- `recovered` pass: primary answered again +0.2s after recovery
+- `probe_discipline` info: 33 primary attempt(s) for 11 request(s) during the outage
+- wall log: 0.01s fb-s15-flap #1 -> 503 (down window); 0.76s fb-s15-flap #2 -> 503 (down window); 1.80s fb-s15-flap #3 -> 503 (down window); 4.17s fb-ok #1 -> 200 stream; 5.15s fb-s15-flap #4 -> 503 (down window); 5.89s fb-s15-flap #5 -> 503 (down window); 7.53s fb-s15-flap #6 -> 503 (down window); 9.93s fb-ok #2 -> 200 stream; 10.92s fb-s15-flap #7 -> 503 (down window); 11.53s fb-s15-flap #8 -> 503 (down window); 12.92s fb-s15-flap #9 -> 503 (down window); 15.11s fb-ok #3 -> 200 stream … (+41 more)
 
 **S16 Fail-over accounting** — ✅ pass — rescued
 - `reports_fallback_model` pass: response.model = 'fb-ok'
 - `usage_present` pass: usage = {'completion_tokens': 60, 'prompt_tokens': 21, 'total_tokens': 81, 'completion_tokens_details': {'reasoning_tokens': 0}}
 - `bounded_attempts` pass: 3 primary attempt(s)
-- wall log: 0.01s fb-s16-503-persistent #1 -> 503; 1.07s fb-s16-503-persistent #2 -> 503; 2.53s fb-s16-503-persistent #3 -> 503; 4.82s fb-ok #1 -> 200 stream
+- wall log: 0.01s fb-s16-503-persistent #1 -> 503; 0.92s fb-s16-503-persistent #2 -> 503; 2.20s fb-s16-503-persistent #3 -> 503; 4.30s fb-ok #1 -> 200 stream
 
 ### LiteLLM Router (in-process)
 adapter `litellm-router` · capabilities: fallback=yes, streaming=yes · params: `{"num_retries": 2, "timeout_s": 30, "context_window_fallbacks": true}`
