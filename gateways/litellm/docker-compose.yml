@@ -1,0 +1,11 @@
+# LiteLLM proxy pointed at the wall running on the host.
+#   python -m failoverbench litellm-config > gateways/litellm/litellm.yaml   (already generated)
+#   docker compose -f gateways/litellm/docker-compose.yml up
+#   python -m failoverbench run --system systems/litellm-proxy.yaml --profile full
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:main-latest
+    ports: ["4000:4000"]
+    volumes: ["./litellm.yaml:/app/config.yaml:ro"]
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    extra_hosts: ["host.docker.internal:host-gateway"]

@@ -1,0 +1,7 @@
+name: openai-python
+label: "openai-python SDK (built-in retries)"
+adapter: openai-python
+notes: "The official SDK with its defaults except timeout (600 s → 30 s so a run stays bounded). No fallback concept, so fail-over checks are n/a."
+params:
+  max_retries: 2
+  timeout_s: 30

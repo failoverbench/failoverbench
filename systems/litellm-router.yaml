@@ -1,0 +1,8 @@
+name: litellm-router
+label: "LiteLLM Router (in-process)"
+adapter: litellm-router
+notes: "litellm.Router with one primary and one fallback deployment per scenario, num_retries=2, timeout=30 s, context_window_fallbacks on. Defaults otherwise."
+params:
+  num_retries: 2
+  timeout_s: 30
+  context_window_fallbacks: true

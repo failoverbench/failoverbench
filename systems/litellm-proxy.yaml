@@ -1,0 +1,7 @@
+name: litellm-proxy
+label: "LiteLLM proxy (Docker)"
+adapter: endpoint
+notes: "LiteLLM proxy container configured by `python -m failoverbench litellm-config` (see gateways/litellm). The proxy owns retries and fallbacks."
+params:
+  base_url: http://127.0.0.1:4000/v1
+  api_key: sk-failoverbench

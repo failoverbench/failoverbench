@@ -1,0 +1,6 @@
+name: direct
+label: "No gateway (direct, no retries)"
+adapter: direct
+notes: "Control row: one request straight at the provider with no retries, no fallback, a 30 s read timeout. What an app gets with zero protection."
+params:
+  read_timeout_s: 30

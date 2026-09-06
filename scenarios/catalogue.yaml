@@ -1,0 +1,244 @@
+# Failover Bench — scenario catalogue, methodology v0.1
+#
+# Every scenario names the fault the wall injects, the behaviour a correct
+# gateway shows, and the machine checks the runner scores. Wording in
+# `fault` and `correct` is what the scorecard prints; keep it plain.
+#
+# Rescue is not a check: every scenario has an `ideal` outcome (default `success`
+# = the caller gets the complete canonical answer; S13 = a clean error). The
+# verdict combines rescue with the conduct checks below:
+#   pass    rescued, all checks clean
+#   partial rescued, an advisory check failed
+#   safe    not rescued, but a bounded clean error and all required checks clean
+#   fail    a required check failed, a hang, or a truncated answer presented as success
+#
+# Check kinds (implemented in failoverbench/runner.py):
+#   no_hang                  the call ended (success or error) inside the scenario's max_wall_s
+#   complete                 success AND content equals the canonical answer
+#   no_truncated_success     fails only if the system returned "success" with a truncated answer
+#   attempts_primary_min/max/eq   attempts the wall saw on the primary model
+#   attempts_fallback_min/max     attempts the wall saw on the fallback model
+#   first_gap_min_s          seconds between primary attempt 1 and 2 (missing attempt 2 = fail)
+#   max_attempts_within      primary attempts inside the first `window_s` seconds <= value
+#   wall_max_s               total wall-clock for the call <= value
+#   alive_after              a healthy fb-ok call through the same system succeeds after the scenario
+#   fallback_used            at least one attempt reached the fallback model
+#   reported_model_is_fallback   the response's `model` field names the fallback
+#   usage_present            the response carried a usage block
+#   no_prefill_masking       fails if the final result is an error AND the wall saw a prefill rejection
+#   seq_*                    sequence-mode checks, see S15
+#
+# `requires: fallback` marks a check as n/a for systems that declare no fallback capability.
+# `severity: advisory` makes a failing check produce "partial" instead of "fail".
+
+version: "0.1"
+prompt: "Explain in exactly sixty words why a gateway earns trust only when the provider behind it misbehaves."
+default_fallback: fb-ok
+default_max_wall_s: 45
+
+scenarios:
+  - id: S01
+    title: "429 with Retry-After"
+    model: fb-s01-429-retry-after
+    fault: "First attempt gets HTTP 429 with `Retry-After: 2`; every later attempt succeeds."
+    correct: "Honour the header: retry after ~2 s or fail over. No tight loop."
+    seen: "Every provider's rate limiter."
+    stream: true
+    max_wall_s: 20
+    checks:
+      - {id: retried, kind: attempts_primary_min, value: 2, severity: advisory}
+      - {id: retry_after_honoured, kind: first_gap_min_s, value: 1.8, severity: advisory}
+      - {id: no_hammer, kind: max_attempts_within, window_s: 1.5, value: 2}
+
+  - id: S02
+    title: "429 without Retry-After, persistent"
+    model: fb-s02-429-persistent
+    fault: "Every attempt gets HTTP 429 and no Retry-After header."
+    correct: "Back off with jitter, then fail over (or fail cleanly). Never hammer the provider."
+    seen: "Portkey Gateway #855 — fallback fired on every error rather than on configured codes."
+    stream: true
+    max_wall_s: 40
+    checks:
+      - {id: no_hammer, kind: max_attempts_within, window_s: 3, value: 4}
+      - {id: bounded_attempts, kind: attempts_primary_max, value: 6}
+      - {id: no_hang, kind: no_hang}
+
+  - id: S03
+    title: "500 once, then healthy"
+    model: fb-s03-500-then-200
+    fault: "First attempt gets HTTP 500; the second succeeds."
+    correct: "Retry once on the same provider and succeed. Failing over instead is acceptable but noted."
+    seen: "Transient upstream errors."
+    stream: true
+    max_wall_s: 20
+    checks:
+      - {id: no_hang, kind: no_hang}
+      - {id: same_provider_retry, kind: attempts_primary_min, value: 2, severity: advisory}
+
+  - id: S04
+    title: "503 persistent"
+    model: fb-s04-503-persistent
+    fault: "Every attempt gets HTTP 503 (overloaded)."
+    correct: "Fail over within the retry budget; surface the original error if there is nowhere to go."
+    seen: "OpenRouter's Feb 2026 outages surfaced as 401s to clients."
+    stream: true
+    max_wall_s: 40
+    checks:
+      - {id: bounded_attempts, kind: attempts_primary_max, value: 6}
+      - {id: no_hang, kind: no_hang}
+
+  - id: S05
+    title: "TCP reset before headers"
+    model: fb-s05-reset
+    fault: "First attempt: the connection is reset before any response bytes. Later attempts succeed."
+    correct: "Retry the idempotent request, or fail over. Either way, answer."
+    seen: "Load balancers and upstream restarts."
+    stream: true
+    max_wall_s: 20
+    checks:
+      - {id: no_hang, kind: no_hang}
+
+  - id: S06
+    title: "No response at all"
+    model: fb-s06-no-response
+    fault: "The provider accepts the request and never answers (up to 120 s)."
+    correct: "Honour a timeout well under the provider's silence; fail over or fail cleanly; never hang."
+    seen: "Stuck upstream connections."
+    stream: true
+    max_wall_s: 60
+    checks:
+      - {id: bounded, kind: wall_max_s, value: 45}
+      - {id: no_hang, kind: no_hang}
+
+  - id: S07
+    title: "Slow first token"
+    model: fb-s07-slow-ttft
+    fault: "Headers arrive at once; the first token arrives after 20 s; the rest is normal."
+    correct: "Answer. A time-to-first-token limit that triggers fail-over is the mature behaviour and is recorded."
+    seen: "Overloaded serving stacks."
+    stream: true
+    max_wall_s: 60
+    checks:
+      - {id: no_hang, kind: no_hang}
+      - {id: ttft_limit, kind: wall_max_s, value: 15, severity: advisory, requires: fallback}
+
+  - id: S08
+    title: "Stream cut mid-answer"
+    model: fb-s08-stream-cut
+    fault: "The stream dies after 40 of 60 tokens with no terminating chunk."
+    correct: "Fail over and deliver the whole answer, or return a clear error. Never a 'successful' truncated answer."
+    seen: "LiteLLM #27967 (open since May 2026)."
+    stream: true
+    max_wall_s: 40
+    checks:
+      - {id: no_truncated_success, kind: no_truncated_success}
+      - {id: no_hang, kind: no_hang}
+
+  - id: S09
+    title: "Stream stalls"
+    model: fb-s09-stream-stall
+    fault: "After 20 tokens the connection stays open and goes silent for 30 s, then closes."
+    correct: "Detect the stall inside a bounded window; fail over or fail cleanly; stay healthy afterwards."
+    seen: "LiteLLM #26015 — a mid-stream 429 spun the proxy to 100% CPU (fixed Apr 2026)."
+    stream: true
+    max_wall_s: 70
+    checks:
+      - {id: bounded, kind: wall_max_s, value: 45}
+      - {id: no_truncated_success, kind: no_truncated_success}
+      - {id: alive_after, kind: alive_after}
+      - {id: no_hang, kind: no_hang}
+
+  - id: S10
+    title: "Malformed chunk in the stream"
+    model: fb-s10-malformed-chunk
+    fault: "The tenth SSE event is invalid JSON; the stream otherwise completes normally."
+    correct: "Skip it or fail cleanly. Nothing partial leaks to the caller; the process stays up."
+    seen: "Proxies and CDNs that rewrite bodies."
+    stream: true
+    max_wall_s: 30
+    checks:
+      - {id: alive_after, kind: alive_after}
+      - {id: no_garbage, kind: no_truncated_success}
+      - {id: no_hang, kind: no_hang}
+      - {id: recovered_in_place, kind: complete, severity: advisory}
+
+  - id: S11
+    title: "Stream ends without [DONE]"
+    model: fb-s11-no-done
+    fault: "A complete stream, correctly terminated at the HTTP level, but the `data: [DONE]` sentinel is missing."
+    correct: "Finalise the completion promptly; report usage; do not wait for a sentinel that never comes."
+    seen: "Providers that never emit [DONE]."
+    stream: true
+    max_wall_s: 30
+    checks:
+      - {id: prompt_finalise, kind: wall_max_s, value: 8}
+      - {id: usage_reported, kind: usage_present, severity: advisory}
+
+  - id: S12
+    title: "Context length exceeded"
+    model: fb-s12-context-length
+    fault: "HTTP 400 with code `context_length_exceeded` on every attempt."
+    correct: "Do not retry the same model. Route to a larger-context model if one is configured; otherwise fail cleanly."
+    seen: "Every long-prompt pipeline."
+    stream: true
+    max_wall_s: 20
+    checks:
+      - {id: no_same_model_retry, kind: attempts_primary_eq, value: 1}
+      - {id: no_hang, kind: no_hang}
+
+  - id: S13
+    title: "Content-filter rejection"
+    model: fb-s13-content-filter
+    fault: "HTTP 400 with code `content_policy_violation` on every attempt."
+    correct: "Do not retry the same model; propagate the provider's reason. Failing over is recorded, not scored."
+    seen: "Azure OpenAI and OpenAI safety systems."
+    ideal: error
+    stream: true
+    max_wall_s: 20
+    checks:
+      - {id: no_same_model_retry, kind: attempts_primary_eq, value: 1}
+      - {id: no_hang, kind: no_hang}
+      - {id: fallback_attempted, kind: fallback_used, severity: advisory, informational: true}
+
+  - id: S14
+    title: "Fallback target rejects prefill"
+    model: fb-s14-stream-cut
+    fallback_model: fb-ok-noprefill
+    fault: "The primary stream dies after 40 tokens. The fallback model rejects any request whose last message is an assistant prefill."
+    correct: "Mid-stream continuation must be capability-aware; otherwise restart cleanly. The caller must not receive the prefill 400 as the final error."
+    seen: "LiteLLM #27967 — Claude Sonnet 4.6 / Opus 4.7 reject prefill; fallback dies with a 400 that hides the real failure."
+    stream: true
+    max_wall_s: 40
+    checks:
+      - {id: no_prefill_masking, kind: no_prefill_masking}
+      - {id: no_truncated_success, kind: no_truncated_success}
+
+  - id: S15
+    title: "Primary flaps: down, then healthy"
+    model: fb-s15-flap
+    fault: "The primary answers 503 for the first 60 s after reset, then is healthy. Twenty requests, one every 4 s."
+    correct: "Open the circuit and serve from the fallback while the primary is down; probe; close the circuit and return to the primary once it recovers."
+    seen: "Your dsh-llm-fallbacks finding (a completion after a lapsed cooldown never closed the circuit); Bifrost #4005."
+    stream: true
+    mode: sequence
+    sequence: {count: 20, interval_s: 4, per_request_max_wall_s: 30}
+    fast_sequence: {count: 10, interval_s: 1.2, per_request_max_wall_s: 10}
+    max_wall_s: 200
+    checks:
+      - {id: no_hang, kind: seq_no_hang}
+      - {id: served_during_outage, kind: seq_served_during_outage, requires: fallback}
+      - {id: recovered, kind: seq_recovered_within_s, value: 30, requires: fallback}
+      - {id: probe_discipline, kind: seq_probe_discipline, severity: advisory, informational: true}
+
+  - id: S16
+    title: "Fail-over accounting"
+    model: fb-s16-503-persistent
+    fault: "Every primary attempt gets HTTP 503; the fallback answers."
+    correct: "The caller sees the fallback's model name and usage. The failed attempts are not billed as completions."
+    seen: "Cost dashboards that attribute fallback traffic to the model that failed."
+    stream: true
+    max_wall_s: 40
+    checks:
+      - {id: reports_fallback_model, kind: reported_model_is_fallback, requires: fallback}
+      - {id: usage_present, kind: usage_present, requires: fallback, severity: advisory}
+      - {id: bounded_attempts, kind: attempts_primary_max, value: 6}

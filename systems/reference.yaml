@@ -1,0 +1,10 @@
+name: reference
+label: "Reference client (httpx)"
+adapter: reference
+notes: "A small client written to pass: honours Retry-After, backs off with jitter, retries 5xx/resets/cut streams up to 3 times, fails over on timeouts and context-length errors, never retries content-filter 400s, restarts without prefill. It has no circuit breaker, so S15 shows what stateless retrying looks like."
+params:
+  max_attempts: 3
+  base_backoff_s: 0.5
+  stall_limit_s: 10
+  ttft_limit_s: 10
+  connect_timeout_s: 5
