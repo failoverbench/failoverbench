@@ -24,8 +24,10 @@ class LiteLLMRouterAdapter(Adapter):
 
     async def start(self) -> None:
         import litellm  # imported lazily: not installed in every environment
+        import openai  # a litellm dependency; needed to tell real HTTP statuses apart
         from litellm import Router
 
+        self._openai = openai
         litellm.suppress_debug_info = True
         litellm.drop_params = True
         self._Router = Router
@@ -60,11 +62,13 @@ class LiteLLMRouterAdapter(Adapter):
         router = self._router(primary, fallback)
         t0 = time.monotonic()
         elapsed = lambda: round(time.monotonic() - t0, 3)  # noqa: E731
+        # Kept outside the try so that a stream which dies mid-answer still
+        # reports what the caller had received (first token, chunks, model).
+        parts, usage, model, ttft, n = [], None, None, None, 0
         try:
             if stream:
                 resp = await router.acompletion(model="primary", messages=messages, stream=True,
                                                 stream_options={"include_usage": True})
-                parts, usage, model, ttft, n = [], None, None, None, 0
                 async for chunk in resp:
                     n += 1
                     model = getattr(chunk, "model", None) or model
@@ -86,8 +90,12 @@ class LiteLLMRouterAdapter(Adapter):
                               usage=(u.model_dump() if hasattr(u, "model_dump") else dict(u)) if u else None,
                               elapsed_s=elapsed(), ttft_s=elapsed())
         except Exception as exc:
-            status = getattr(exc, "status_code", None)
-            return CallResult(ok=False, status=status, error=f"{type(exc).__name__}: {str(exc)[:300]}", elapsed_s=elapsed())
+            # litellm stamps synthetic status codes on transport-level failures
+            # (APIConnectionError -> 500, Timeout -> 408). Only record a status
+            # the provider actually returned, as the openai-python adapter does.
+            status = None if isinstance(exc, self._openai.APIConnectionError) else getattr(exc, "status_code", None)
+            return CallResult(ok=False, status=status, error=f"{type(exc).__name__}: {str(exc)[:300]}", elapsed_s=elapsed(),
+                              content="".join(parts), reported_model=model, usage=usage, ttft_s=ttft, chunks=n)
 
     async def close(self) -> None:
         self._routers.clear()

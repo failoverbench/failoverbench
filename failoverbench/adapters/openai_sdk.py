@@ -8,11 +8,14 @@ never presents a truncated stream as success.
 params:
   max_retries: 2      # SDK default
   timeout_s: 30       # SDK default is 600s; a scorecard run needs a bound
+                      # (read/write/pool only; the SDK's 5 s connect timeout is kept)
 """
 
 from __future__ import annotations
 
 import time
+
+import httpx
 
 from .base import Adapter, CallResult
 
@@ -24,21 +27,26 @@ class OpenAIPythonAdapter(Adapter):
     async def start(self) -> None:
         from openai import AsyncOpenAI  # imported lazily: not installed in every environment
 
+        # A bare float would also raise the SDK's default 5 s connect timeout to
+        # timeout_s; keep connect at the SDK default so the only departure from
+        # the vendor's defaults is the one the system config states.
         self.client = AsyncOpenAI(
             base_url=self.wall_base + "/v1",
             api_key="failoverbench",
             max_retries=int(self.params.get("max_retries", 2)),
-            timeout=float(self.params.get("timeout_s", 30)),
+            timeout=httpx.Timeout(float(self.params.get("timeout_s", 30)), connect=5.0),
         )
 
     async def complete(self, primary, fallback, stream, messages, deadline_s) -> CallResult:
         t0 = time.monotonic()
         elapsed = lambda: round(time.monotonic() - t0, 3)  # noqa: E731
+        # Kept outside the try so that a stream which dies mid-answer still
+        # reports what the caller had received (first token, chunks, model).
+        parts, usage, model, ttft, n = [], None, None, None, 0
         try:
             if stream:
                 s = await self.client.chat.completions.create(
                     model=primary, messages=messages, stream=True, stream_options={"include_usage": True})
-                parts, usage, model, ttft, n = [], None, None, None, 0
                 async for chunk in s:
                     n += 1
                     model = getattr(chunk, "model", None) or model
@@ -63,7 +71,8 @@ class OpenAIPythonAdapter(Adapter):
                 err = body.get("error") if isinstance(body.get("error"), dict) else body
                 code = err.get("code") if isinstance(err, dict) else None
             return CallResult(ok=False, status=status, error_code=code,
-                              error=f"{type(exc).__name__}: {str(exc)[:300]}", elapsed_s=elapsed())
+                              error=f"{type(exc).__name__}: {str(exc)[:300]}", elapsed_s=elapsed(),
+                              content="".join(parts), reported_model=model, usage=usage, ttft_s=ttft, chunks=n)
 
     async def close(self) -> None:
         await self.client.close()
