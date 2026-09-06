@@ -102,10 +102,10 @@ scenarios:
     title: "No response at all"
     model: fb-s06-no-response
     fault: "The provider accepts the request and never answers (up to 120 s)."
-    correct: "Honour a timeout well under the provider's silence; fail over or fail cleanly; never hang."
-    seen: "Stuck upstream connections."
+    correct: "Give up well inside the provider's silence and fail over or fail cleanly. Retrying a silent provider on the same route only multiplies the wait: the bound is 45 s, 1.5x the 30 s timeout every system is configured with."
+    seen: "Stuck upstream connections. SDKs that retry a timeout three times spend 90 s saying nothing."
     stream: true
-    max_wall_s: 60
+    max_wall_s: 130
     checks:
       - {id: bounded, kind: wall_max_s, value: 45}
       - {id: no_hang, kind: no_hang}
