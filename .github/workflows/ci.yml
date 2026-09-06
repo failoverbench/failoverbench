@@ -1,0 +1,42 @@
+name: ci
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  smoke:
+    name: smoke tests (py${{ matrix.python }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python: ["3.10", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: pip install -e .
+      - run: python tests/test_smoke.py
+
+  fast-scorecard:
+    name: fast-profile scorecard (control + reference)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -e .
+      - name: run the wall and both rows
+        run: |
+          python -m failoverbench wall --profile fast > wall.log 2>&1 &
+          sleep 1
+          python -m failoverbench run --system systems/direct.yaml    --profile fast --quiet
+          python -m failoverbench run --system systems/reference.yaml --profile fast --quiet
+          python -m failoverbench report --profile fast
+          cat results/fast/SCORECARD.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fast-scorecard
+          path: results/fast/
