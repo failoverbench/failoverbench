@@ -1,0 +1,10 @@
+name: litellm-router-tuned
+label: "LiteLLM Router, tuned (allowed_fails + cooldown)"
+adapter: litellm-router
+notes: "Same as the LiteLLM Router row plus allowed_fails=1 and cooldown_time=30, the settings LiteLLM needs before it will cool down a single-deployment model group (PR #8668). Shown so readers can see what one config line changes on S15."
+params:
+  num_retries: 2
+  timeout_s: 30
+  context_window_fallbacks: true
+  allowed_fails: 1
+  cooldown_time: 30

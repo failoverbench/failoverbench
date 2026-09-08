@@ -16,12 +16,14 @@ from .base import CallResult, parse_error_body
 async def call_chat(client: httpx.AsyncClient, base_url: str, model: str, messages: list[dict], *,
                     stream: bool, api_key: str = "failoverbench", headers: dict | None = None,
                     timeout: httpx.Timeout | float | None = None, ttft_limit_s: float | None = None,
-                    lenient_chunks: bool = True) -> CallResult:
+                    lenient_chunks: bool = True, extra_body: dict | None = None) -> CallResult:
     url = base_url.rstrip("/") + "/chat/completions"
     hdrs = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
     if headers:
         hdrs.update(headers)
     payload: dict = {"model": model, "messages": messages}
+    if extra_body:
+        payload.update(extra_body)
     t0 = time.monotonic()
     elapsed = lambda: round(time.monotonic() - t0, 3)  # noqa: E731
 

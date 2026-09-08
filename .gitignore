@@ -6,3 +6,7 @@ build/
 dist/
 .pytest_cache/
 results/fast/
+# generated at run time
+gateways/dsh/home-*/
+gateways/dsh/workspace/
+gateways/bifrost/data/logs.db*

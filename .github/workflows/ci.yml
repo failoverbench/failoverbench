@@ -19,6 +19,7 @@ jobs:
       - run: pip install -e .
       - run: python tests/test_smoke.py
       - run: python tests/test_inband_error.py
+      - run: python tests/test_templating.py
 
   fast-scorecard:
     name: fast-profile scorecard (control + reference)

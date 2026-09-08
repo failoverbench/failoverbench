@@ -1,0 +1,10 @@
+name: bifrost
+label: "Bifrost v2.1.0 (Docker)"
+adapter: endpoint
+notes: "Bifrost with a custom provider `fake` (base_provider_type openai, base_url = the wall, allow_private_network on). Baseline settings: max_retries 2 (vendor default is 0), request timeout 30 s, stream idle timeout 30 s, one fallback passed per request (`fallbacks: [\"fake/fb-ok\"]`). Bifrost does not honour Retry-After (backoff 500 ms → 5 s with jitter). Per docs, fallback covers HTTP-level errors and an error in the first SSE event; later stream errors are not retried."
+params:
+  base_url: http://127.0.0.1:18080/v1
+  api_key: failoverbench
+  model_format: "fake/{model}"
+  extra_body:
+    fallbacks: ["{fallback}"]

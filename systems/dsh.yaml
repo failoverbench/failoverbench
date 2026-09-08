@@ -1,0 +1,10 @@
+name: dsh
+label: "DeepSeek Harness + dsh-llm-fallbacks (SDK)"
+adapter: dsh
+notes: "EXPERIMENTAL. DeepSeek Harness 0.1.2-rc.1 driven through the official Python SDK, with dsh-llm-fallbacks 0.4.2 (chain primary → fb-ok, cooldown 30 s, half-open recovery). Baseline: llm-retry maxRetries 2, stream idle timeout 30 s. The harness sends its own system prompt and tool roster on every call; the wall ignores both. Run gateways/dsh/setup.sh first."
+params:
+  dsh_home: gateways/dsh/home-default
+  dsh_home_noprefill: gateways/dsh/home-noprefill
+  workspace: gateways/dsh/workspace
+  provider: fake
+  request_timeout_s: 60

@@ -4,6 +4,8 @@ from .endpoint import EndpointAdapter
 from .reference import ReferenceAdapter
 from .openai_sdk import OpenAIPythonAdapter
 from .litellm_router import LiteLLMRouterAdapter
+from .langchain_py import LangChainAdapter
+from .dsh import DSHAdapter
 
 REGISTRY: dict[str, type[Adapter]] = {
     DirectAdapter.name: DirectAdapter,
@@ -11,6 +13,8 @@ REGISTRY: dict[str, type[Adapter]] = {
     ReferenceAdapter.name: ReferenceAdapter,
     OpenAIPythonAdapter.name: OpenAIPythonAdapter,
     LiteLLMRouterAdapter.name: LiteLLMRouterAdapter,
+    LangChainAdapter.name: LangChainAdapter,
+    DSHAdapter.name: DSHAdapter,
 }
 
 

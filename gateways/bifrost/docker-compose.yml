@@ -1,0 +1,14 @@
+# Bifrost (Maxim) pointed at the wall on the host.
+#   python -m failoverbench wall --host 0.0.0.0 --profile full -v
+#   docker compose -f gateways/bifrost/docker-compose.yml up -d        (config: ./data/config.json)
+#   python -m failoverbench run --system systems/bifrost.yaml --profile full
+# The image runs as uid 1000: on Linux, `chown -R 1000:1000 gateways/bifrost/data` first.
+services:
+  bifrost:
+    image: maximhq/bifrost:v2.1.0
+    ports: ["18080:8080"]   # host 8080 is commonly taken (phpmyadmin etc.); the container still listens on 8080
+    volumes: ["./data:/app/data"]
+    environment:
+      LOG_LEVEL: info
+      LOG_STYLE: pretty
+    extra_hosts: ["host.docker.internal:host-gateway"]

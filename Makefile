@@ -18,5 +18,6 @@ site:            ## render docs/index.html from results/$(PROFILE)
 test:            ## smoke tests (no external packages needed)
 	python tests/test_smoke.py
 	python tests/test_inband_error.py
+	python tests/test_templating.py
 
 all: run report

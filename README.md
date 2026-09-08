@@ -39,8 +39,12 @@ Testing a gateway that runs in Docker? Start the wall with `--host 0.0.0.0` so t
 | openai-python SDK, built-in retries | `systems/openai-python.yaml` | `pip install openai` |
 | LiteLLM Router, in-process | `systems/litellm-router.yaml` | `pip install litellm` |
 | LiteLLM proxy, Docker | `systems/litellm-proxy.yaml` + `gateways/litellm/` | `docker compose up` |
-| Bifrost · Portkey Gateway · Kong AI Gateway · Envoy AI Gateway · Helicone AI Gateway · TensorZero | `systems/*.yaml` + `gateways/*` | next |
-| DeepSeek Harness + dsh-llm-fallbacks · Vercel AI SDK · LangChain `with_fallbacks` · Spring AI · LangChain4j | adapters | next |
+| LiteLLM Router, tuned (`allowed_fails`, `cooldown_time`) | `systems/litellm-router-tuned.yaml` | `pip install litellm` |
+| Bifrost v2.1.0, Docker | `systems/bifrost.yaml` + `gateways/bifrost/` | `docker compose up` |
+| Portkey Gateway (OSS), Docker | `systems/portkey-gateway.yaml` + `gateways/portkey/` | `docker compose up` |
+| LangChain `ChatOpenAI` + `with_fallbacks` | `systems/langchain.yaml` | `pip install -e ".[langchain]"` |
+| DeepSeek Harness + dsh-llm-fallbacks (SDK) — experimental | `systems/dsh.yaml` + `gateways/dsh/setup.sh` | `pip install -e ".[dsh]"` |
+| Kong AI Gateway · Envoy AI Gateway · Helicone AI Gateway · TensorZero · Vercel AI SDK · Spring AI · LangChain4j | — | next |
 
 Hosted-only gateways (OpenRouter, Vercel AI Gateway cloud, Portkey cloud) cannot be pointed at a fake provider and are out of scope.
 
@@ -84,7 +88,7 @@ Vendors receive each failing scenario as an issue with a one-command reproductio
 
 ## Add a system
 
-Copy a file in `systems/`, point it at an adapter (`direct`, `endpoint`, `reference`, `openai-python`, `litellm-router`) and set its `capabilities`. For any OpenAI-compatible gateway, `endpoint` works as is: configure the gateway so that each scenario's model name routes to the wall with `fb-ok` as fallback (`python -m failoverbench litellm-config` writes that config for LiteLLM). For an SDK or framework, add an adapter under `failoverbench/adapters/` — the interface is one `complete()` method.
+Copy a file in `systems/`, point it at an adapter (`direct`, `endpoint`, `reference`, `openai-python`, `litellm-router`, `langchain`, `dsh`) and set its `capabilities`. For any OpenAI-compatible gateway, `endpoint` works as is: either configure the gateway so that each scenario's model routes to the wall with `fb-ok` as fallback (`python -m failoverbench litellm-config` writes that config for LiteLLM), or pass the primary/fallback per request with `extra_body` (Bifrost) or `headers_json` (Portkey) — see `systems/bifrost.yaml` and `systems/portkey-gateway.yaml`. For an SDK or framework, add an adapter under `failoverbench/adapters/` — the interface is one `complete()` method.
 
 ## Licence
 

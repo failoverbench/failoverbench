@@ -28,7 +28,9 @@ Rescue is decided by the scenario's ideal outcome: for fifteen scenarios the cal
 
 Checks marked `requires: fallback` are reported as n/a for systems that declare no fallback capability, so an SDK is judged on its own promises. Checks marked `informational` never affect the verdict.
 
-Each system's capabilities and parameters are declared in `systems/<name>.yaml` and printed with its results. Defaults are the vendor's defaults except where a run must be bounded (e.g. a 600 s SDK timeout lowered to 30 s), and every such change is stated.
+Each system's capabilities and parameters are declared in `systems/<name>.yaml` and printed with its results.
+
+**Baseline configuration.** Every system is given the same budget so rows are comparable: up to two retries, a 30 s request (or stream-idle) timeout, and one fallback model. Everything else is the vendor's default, and every departure from a default is stated in the system's notes. Where a vendor's default differs from the baseline (Bifrost ships with zero retries; LiteLLM never cools down a single deployment), a second "tuned" or "defaults" row may be added so the difference is visible rather than hidden.
 
 ## Sequence scenarios
 

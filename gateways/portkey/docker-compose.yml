@@ -1,0 +1,11 @@
+# Portkey AI Gateway (open source) — no config file; routing is per request via the
+# x-portkey-config header that systems/portkey-gateway.yaml builds for each scenario.
+#   python -m failoverbench wall --host 0.0.0.0 --profile full -v
+#   docker compose -f gateways/portkey/docker-compose.yml up -d
+#   python -m failoverbench run --system systems/portkey-gateway.yaml --profile full
+services:
+  portkey:
+    image: portkeyai/gateway:latest
+    ports: ["8787:8787"]
+    restart: unless-stopped
+    extra_hosts: ["host.docker.internal:host-gateway"]

@@ -1,0 +1,21 @@
+name: portkey-gateway
+label: "Portkey Gateway (Docker, OSS)"
+adapter: endpoint
+notes: "Open-source Portkey AI Gateway. Everything is per request in x-portkey-config: a fallback strategy with two openai targets on custom_host = the wall (host must include /v1). Baseline: primary target retry attempts 2 on 429/5xx with use_retry_after_header, request_timeout 30 s; fallback on any non-2xx (strategy.on_status_codes omitted). Per source, a cut upstream stream is closed to the client with no error event and no retry."
+params:
+  base_url: http://127.0.0.1:8787/v1
+  api_key: failoverbench
+  headers_json:
+    x-portkey-config:
+      strategy: {mode: fallback}
+      request_timeout: 30000
+      targets:
+        - provider: openai
+          api_key: failoverbench-primary
+          custom_host: http://host.docker.internal:8401/v1
+          override_params: {model: "{primary}"}
+          retry: {attempts: 2, on_status_codes: [429, 500, 502, 503, 504], use_retry_after_header: true}
+        - provider: openai
+          api_key: failoverbench-fallback
+          custom_host: http://host.docker.internal:8401/v1
+          override_params: {model: "{fallback}"}

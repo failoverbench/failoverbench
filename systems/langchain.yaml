@@ -1,0 +1,7 @@
+name: langchain
+label: "LangChain ChatOpenAI + with_fallbacks"
+adapter: langchain
+notes: "langchain-openai ChatOpenAI(max_retries=2, timeout=30) with .with_fallbacks([ChatOpenAI(fallback)]). LangChain documents that streaming fallbacks only cover errors before the first chunk."
+params:
+  max_retries: 2
+  timeout_s: 30
