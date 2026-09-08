@@ -15,7 +15,7 @@ import sys
 
 import yaml
 
-from .report import key_detail
+from .report import key_detail, run_date_local
 
 WORD = {"pass": "pass", "partial": "partial", "safe": "safe", "fail": "fail", "na": "n/a"}
 
@@ -65,7 +65,7 @@ def render_site(results_dir: str, profile: str, catalogue_path: str, repo_url: s
             if r["id"] not in ids:
                 ids.append(r["id"])
     by = {d["system"]["name"]: {r["id"]: r for r in d["scenarios"]} for d in docs}
-    run_date = max(d.get("run_started_at", "") for d in docs)[:10] or dt.date.today().isoformat()
+    run_date = run_date_local(docs)
     esc = html.escape
 
     out = [f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>",

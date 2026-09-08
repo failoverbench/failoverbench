@@ -14,6 +14,20 @@ MARK = {"pass": "✅", "partial": "◐", "safe": "○", "fail": "❌", "na": "�
 WORD = {"pass": "pass", "partial": "partial", "safe": "safe", "fail": "fail", "na": "n/a"}
 
 
+def run_date_local(docs: list[dict]) -> str:
+    """The date of the latest run start, in the machine's local timezone (runs are
+    stamped in UTC; a 22:00 UTC run on the 6th is the 7th in IST, and the
+    scorecard is dated where it was run)."""
+    stamps = [d.get("run_started_at") for d in docs if d.get("run_started_at")]
+    if not stamps:
+        return dt.date.today().isoformat()
+    latest = max(stamps)
+    try:
+        return dt.datetime.fromisoformat(latest).astimezone().date().isoformat()
+    except ValueError:
+        return latest[:10]
+
+
 def key_detail(res: dict) -> str:
     m = res["metrics"]
     bits = []
@@ -52,8 +66,8 @@ def render(results_dir: str, profile: str, catalogue_path: str | None = None) ->
                 ids.append(r["id"])
     by = {d["system"]["name"]: {r["id"]: r for r in d["scenarios"]} for d in docs}
 
-    today = dt.date.today().isoformat()
-    lines = [f"# Failover Bench scorecard — {today}", ""]
+    run_date = run_date_local(docs)
+    lines = [f"# Failover Bench scorecard — {run_date}", ""]
     lines.append(f"Profile **{profile}** · methodology v{docs[0].get('methodology')} · failoverbench {docs[0]['failoverbench']} · "
                  f"{len(docs)} system(s) · {len(ids)} scenario(s)")
     lines.append("")
