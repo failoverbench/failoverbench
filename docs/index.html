@@ -36,7 +36,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <div class='wrap'><table><thead><tr><th>Scenario</th>
 <th>Bifrost v2.1.0 (Docker)</th>
 <th>No gateway (direct, no retries)</th>
-<th>DSH, shared session</th>
 <th>DeepSeek Harness + dsh-llm-fallbacks (SDK)</th>
 <th>LangChain ChatOpenAI + with_fallbacks</th>
 <th>LiteLLM proxy (Docker)</th>
@@ -49,7 +48,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S01 429 with Retry-After<small>First attempt gets HTTP 429 with `Retry-After: 2`; every later attempt succeeds.</small></td>
 <td class='cell'><span class='v partial'>partial</span><sub>2p/0f · gap 0.6s · 1.5s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 2.6s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 2.0s · 3.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 2.4s · 3.4s</sub></td>
@@ -62,7 +60,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S02 429 without Retry-After, persistent<small>Every attempt gets HTTP 429 and no Retry-After header.</small></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.4s · 2.3s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.9s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.4s · 2.3s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 1.1s · 5.8s</sub></td>
@@ -75,7 +72,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S03 500 once, then healthy<small>First attempt gets HTTP 500; the second succeeds.</small></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.4s · 1.4s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 1.9s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.5s · 1.5s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.8s · 1.8s</sub></td>
@@ -88,7 +84,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S04 503 persistent<small>Every attempt gets HTTP 503 (overloaded).</small></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.6s · 2.4s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 2.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.5s · 2.4s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.8s · 5.5s</sub></td>
@@ -101,7 +96,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S05 TCP reset before headers<small>First attempt: the connection is reset before any response bytes. Later attempts succeed.</small></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.0s · 1.0s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.9s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.4s · 1.3s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.6s · 1.6s</sub></td>
@@ -114,7 +108,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S06 No response at all<small>The provider accepts the request and never answers (up to 120 s).</small></td>
 <td class='cell'><span class='v fail'>fail</span><sub>2p/0f · gap 120.0s · 130.0s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 30.0s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 31.9s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>3p/1f · gap 30.4s · 92.3s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>3p/1f · gap 30.8s · 95.5s</sub></td>
@@ -127,7 +120,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S07 Slow first token<small>Headers arrive at once; the first token arrives after 20 s; the rest is normal.</small></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/0f · 21.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 21.0s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/0f · 22.0s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/0f · 21.0s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/0f · 21.0s</sub></td>
@@ -140,7 +132,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S08 Stream cut mid-answer<small>The stream dies after 40 of 60 tokens with no terminating chunk.</small></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.7s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 2.6s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.7s</sub></td>
@@ -153,7 +144,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S09 Stream stalls<small>After 20 tokens the connection stays open and goes silent for 30 s, then closes.</small></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 30.3s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 30.3s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 32.3s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 30.3s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 30.3s</sub></td>
@@ -166,7 +156,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S10 Malformed chunk in the stream<small>The tenth SSE event is invalid JSON; the stream otherwise completes normally.</small></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 1.2s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.2s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.2s</sub></td>
@@ -179,7 +168,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S11 Stream ends without [DONE]<small>A complete stream, correctly terminated at the HTTP level, but the `data: [DONE]` sentinel is missing.</small></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.9s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
@@ -192,7 +180,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S12 Context length exceeded<small>HTTP 400 with code `context_length_exceeded` on every attempt.</small></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v fail'>fail</span><sub>2p/0f · gap 0.0s · 0.9s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.0s</sub></td>
@@ -205,7 +192,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S13 Content-filter rejection<small>HTTP 400 with code `content_policy_violation` on every attempt.</small></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 0.0s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 1.0s</sub></td>
@@ -218,7 +204,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S14 Fallback target rejects prefill<small>The primary stream dies after 40 tokens. The fallback model rejects any request whose last message is an assistant prefill.</small></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 2.7s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.7s</sub></td>
@@ -231,7 +216,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S15 Primary flaps: down, then healthy<small>The primary answers 503 for the first 60 s after reset, then is healthy. Twenty requests, one every 4 s.</small></td>
 <td class='cell'><span class='v pass'>pass</span><sub>15/15 served in outage · back on primary +0s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>0/15 served in outage · back on primary +0s</sub></td>
-<td class='cell'><span class='v fail'>fail</span><sub>15/15 served in outage · back on primary never</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>15/15 served in outage · back on primary +0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>15/15 served in outage · back on primary +0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>11/11 served in outage · back on primary +0s</sub></td>
@@ -244,7 +228,6 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S16 Fail-over accounting<small>Every primary attempt gets HTTP 503; the fallback answers.</small></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.5s · 2.5s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
-<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 2.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.5s · 2.3s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.9s · 5.3s</sub></td>
@@ -255,6 +238,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.6s · 2.7s</sub></td>
 </tr>
 </tbody></table></div>
+<h2>Contrast rows</h2><p class='muted'>A subset of scenarios re-run under a different setting, shown next to the row they contrast with.</p>
+<p><strong>DSH, shared session</strong> — S15 <span class='v fail'>fail</span> 15/15 served in outage · back on primary never</p>
 <div class='wrap'><table class='sum'><thead><tr><th>System</th><th>pass</th><th>partial</th><th>safe</th><th>fail</th><th>run</th></tr></thead><tbody>
 <tr><td>Bifrost v2.1.0 (Docker)</td><td>9</td><td>3</td><td>3</td><td>1</td><td>275s</td></tr>
 <tr><td>No gateway (direct, no retries)</td><td>4</td><td>0</td><td>12</td><td>0</td><td>162s</td></tr>
@@ -1220,5 +1205,5 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.00s fb-s16-503-persistent #1 -&gt; 503; 0.60s fb-s16-503-persistent #2 -&gt; 503; 1.75s fb-s16-503-persistent #3 -&gt; 503; 1.75s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 </details>
-<footer>Results CC BY 4.0 · harness MIT · generated 2026-09-08 21:25 UTC from results/full · <a href='https://github.com/failoverbench/failoverbench/blob/main/METHODOLOGY.md'>methodology</a> · <a href='https://github.com/failoverbench/failoverbench/tree/main/results/full'>raw results</a></footer>
+<footer>Results CC BY 4.0 · harness MIT · generated 2026-09-08 21:33 UTC from results/full · <a href='https://github.com/failoverbench/failoverbench/blob/main/METHODOLOGY.md'>methodology</a> · <a href='https://github.com/failoverbench/failoverbench/tree/main/results/full'>raw results</a></footer>
 </div></body></html>

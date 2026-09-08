@@ -65,6 +65,11 @@ def render(results_dir: str, profile: str, catalogue_path: str | None = None) ->
             if r["id"] not in ids:
                 ids.append(r["id"])
     by = {d["system"]["name"]: {r["id"]: r for r in d["scenarios"]} for d in docs}
+    # Rows that cover only part of the catalogue are contrast rows (e.g. one
+    # scenario re-run under a different setting); they get their own table.
+    full_docs = [d for d in docs if len(d["scenarios"]) == len(ids)]
+    contrast_docs = [d for d in docs if len(d["scenarios"]) != len(ids)]
+    docs = full_docs or docs
 
     run_date = run_date_local(docs)
     lines = [f"# Failover Bench scorecard — {run_date}", ""]
@@ -90,6 +95,14 @@ def render(results_dir: str, profile: str, catalogue_path: str | None = None) ->
                 continue
             row.append(f"{MARK[r['verdict']]} {WORD[r['verdict']]}<br><sub>{key_detail(r)}</sub>")
         lines.append("| " + " | ".join(row) + " |")
+    if contrast_docs and full_docs:
+        lines.append("")
+        lines.append("Contrast rows (a subset of scenarios re-run under a different setting):")
+        lines.append("")
+        for d in contrast_docs:
+            cells = "; ".join(f"{r['id']} {MARK[r['verdict']]} {WORD[r['verdict']]} ({key_detail(r)})" for r in d["scenarios"])
+            lines.append(f"- **{d['system']['label']}** — {cells}")
+    docs = full_docs + contrast_docs if full_docs else docs
     lines.append("")
     lines.append("| System | pass | partial | safe | fail | run time |")
     lines.append("|---|---:|---:|---:|---:|---:|")

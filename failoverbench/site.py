@@ -65,7 +65,11 @@ def render_site(results_dir: str, profile: str, catalogue_path: str, repo_url: s
             if r["id"] not in ids:
                 ids.append(r["id"])
     by = {d["system"]["name"]: {r["id"]: r for r in d["scenarios"]} for d in docs}
-    run_date = run_date_local(docs)
+    full_docs = [d for d in docs if len(d["scenarios"]) == len(ids)]
+    contrast_docs = [d for d in docs if len(d["scenarios"]) != len(ids)]
+    all_docs = docs
+    docs = full_docs or docs
+    run_date = run_date_local(all_docs)
     esc = html.escape
 
     out = [f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>",
@@ -99,14 +103,19 @@ def render_site(results_dir: str, profile: str, catalogue_path: str, repo_url: s
         out.append("</tr>")
     out.append("</tbody></table></div>")
 
+    if contrast_docs and full_docs:
+        out.append("<h2>Contrast rows</h2><p class='muted'>A subset of scenarios re-run under a different setting, shown next to the row they contrast with.</p>")
+        for d in contrast_docs:
+            cells = "; ".join(f"{esc(r['id'])} <span class='v {r['verdict']}'>{WORD[r['verdict']]}</span> {esc(key_detail(r))}" for r in d["scenarios"])
+            out.append(f"<p><strong>{esc(d['system']['label'])}</strong> — {cells}</p>")
     out.append("<div class='wrap'><table class='sum'><thead><tr><th>System</th><th>pass</th><th>partial</th><th>safe</th><th>fail</th><th>run</th></tr></thead><tbody>")
-    for d in docs:
+    for d in all_docs:
         s = d["summary"]
         out.append(f"<tr><td>{esc(d['system']['label'])}</td><td>{s['pass']}</td><td>{s['partial']}</td><td>{s.get('safe', 0)}</td><td>{s['fail']}</td><td>{d['run_seconds']:.0f}s</td></tr>")
     out.append("</tbody></table></div>")
 
     out.append("<h2>Check-level detail</h2><p class='muted'>Every check the runner scored, and what the fake provider saw. Advisory checks change a pass to partial; required checks change it to fail.</p>")
-    for d in docs:
+    for d in all_docs:
         sysd = d["system"]
         caps = ", ".join(f"{k}={'yes' if v else 'no'}" for k, v in sysd["capabilities"].items())
         out.append(f"<details><summary>{esc(sysd['label'])} — adapter <code>{esc(sysd['adapter'])}</code>, {esc(caps)}</summary>")
