@@ -36,6 +36,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <div class='wrap'><table><thead><tr><th>Scenario</th>
 <th>Bifrost v2.1.0 (Docker)</th>
 <th>No gateway (direct, no retries)</th>
+<th>DSH, shared session</th>
 <th>DeepSeek Harness + dsh-llm-fallbacks (SDK)</th>
 <th>LangChain ChatOpenAI + with_fallbacks</th>
 <th>LiteLLM proxy (Docker)</th>
@@ -48,7 +49,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S01 429 with Retry-After<small>First attempt gets HTTP 429 with `Retry-After: 2`; every later attempt succeeds.</small></td>
 <td class='cell'><span class='v partial'>partial</span><sub>2p/0f · gap 0.6s · 1.5s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
-<td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 8.8s</sub></td>
+<td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 2.6s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 2.0s · 3.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 2.4s · 3.4s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 2.8s · 4.1s</sub></td>
@@ -61,6 +63,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.4s · 2.3s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
 <td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.9s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.4s · 2.3s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 1.1s · 5.8s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/1f · gap 1.1s · 2.1s</sub></td>
@@ -73,6 +76,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.4s · 1.4s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
 <td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 1.9s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.5s · 1.5s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.8s · 1.8s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 1.3s · 2.2s</sub></td>
@@ -84,7 +88,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S04 503 persistent<small>Every attempt gets HTTP 503 (overloaded).</small></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.6s · 2.4s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
-<td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.9s</sub></td>
+<td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 2.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.5s · 2.4s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.8s · 5.5s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/1f · gap 1.0s · 2.0s</sub></td>
@@ -97,6 +102,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.0s · 1.0s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
 <td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.9s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.4s · 1.3s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.6s · 1.6s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 1.2s · 2.2s</sub></td>
@@ -109,11 +115,12 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v fail'>fail</span><sub>2p/0f · gap 120.0s · 130.0s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 30.0s</sub></td>
 <td class='cell'><span class='v na'>—</span></td>
-<td class='cell'><span class='v fail'>fail</span><sub>3p/1f · gap 30.5s · 92.3s</sub></td>
-<td class='cell'><span class='v fail'>fail</span><sub>3p/1f · gap 31.0s · 95.9s</sub></td>
-<td class='cell'><span class='v fail'>fail</span><sub>3p/1f · gap 30.9s · 95.2s</sub></td>
-<td class='cell'><span class='v fail'>fail</span><sub>3p/1f · gap 30.9s · 96.3s</sub></td>
-<td class='cell'><span class='v fail'>fail</span><sub>3p/0f · gap 30.5s · 91.4s</sub></td>
+<td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 31.9s</sub></td>
+<td class='cell'><span class='v partial'>partial</span><sub>3p/1f · gap 30.4s · 92.3s</sub></td>
+<td class='cell'><span class='v partial'>partial</span><sub>3p/1f · gap 30.8s · 95.5s</sub></td>
+<td class='cell'><span class='v partial'>partial</span><sub>3p/1f · gap 31.2s · 96.8s</sub></td>
+<td class='cell'><span class='v partial'>partial</span><sub>3p/1f · gap 30.8s · 96.2s</sub></td>
+<td class='cell'><span class='v safe'>safe</span><sub>3p/0f · gap 30.5s · 91.6s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 31.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 11.0s</sub></td>
 </tr>
@@ -121,6 +128,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v partial'>partial</span><sub>1p/0f · 21.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 21.0s</sub></td>
 <td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v partial'>partial</span><sub>1p/0f · 22.0s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/0f · 21.0s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/0f · 21.0s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/0f · 21.0s</sub></td>
@@ -132,6 +140,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S08 Stream cut mid-answer<small>The stream dies after 40 of 60 tokens with no terminating chunk.</small></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.7s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
+<td class='cell'><span class='v na'>—</span></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 2.6s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.7s</sub></td>
@@ -145,6 +154,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 30.3s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 30.3s</sub></td>
 <td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 32.3s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 30.3s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 30.3s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 30.3s</sub></td>
@@ -157,6 +167,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
 <td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 1.2s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.2s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.2s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.2s</sub></td>
@@ -169,6 +180,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
 <td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.9s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
@@ -181,6 +193,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
 <td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v fail'>fail</span><sub>2p/0f · gap 0.0s · 0.9s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.0s</sub></td>
@@ -193,6 +206,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 0.0s</sub></td>
 <td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 1.0s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 1.0s</sub></td>
@@ -205,6 +219,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
 <td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 2.7s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.7s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.7s</sub></td>
@@ -218,6 +233,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v safe'>safe</span><sub>0/15 served in outage · back on primary +0s</sub></td>
 <td class='cell'><span class='v fail'>fail</span><sub>15/15 served in outage · back on primary never</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>15/15 served in outage · back on primary +0s</sub></td>
+<td class='cell'><span class='v pass'>pass</span><sub>15/15 served in outage · back on primary +0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>11/11 served in outage · back on primary +0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>15/15 served in outage · back on primary +4s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>11/11 served in outage · back on primary +2s</sub></td>
@@ -229,6 +245,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.5s · 2.5s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
 <td class='cell'><span class='v na'>—</span></td>
+<td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 2.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.5s · 2.3s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.9s · 5.3s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/1f · gap 0.9s · 1.9s</sub></td>
@@ -241,12 +258,13 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <div class='wrap'><table class='sum'><thead><tr><th>System</th><th>pass</th><th>partial</th><th>safe</th><th>fail</th><th>run</th></tr></thead><tbody>
 <tr><td>Bifrost v2.1.0 (Docker)</td><td>9</td><td>3</td><td>3</td><td>1</td><td>275s</td></tr>
 <tr><td>No gateway (direct, no retries)</td><td>4</td><td>0</td><td>12</td><td>0</td><td>162s</td></tr>
-<tr><td>DeepSeek Harness + dsh-llm-fallbacks (SDK)</td><td>2</td><td>1</td><td>0</td><td>1</td><td>96s</td></tr>
-<tr><td>LangChain ChatOpenAI + with_fallbacks</td><td>9</td><td>2</td><td>4</td><td>1</td><td>238s</td></tr>
-<tr><td>LiteLLM proxy (Docker)</td><td>9</td><td>2</td><td>4</td><td>1</td><td>252s</td></tr>
-<tr><td>LiteLLM Router, tuned (allowed_fails + cooldown)</td><td>9</td><td>2</td><td>4</td><td>1</td><td>243s</td></tr>
-<tr><td>LiteLLM Router (in-process)</td><td>9</td><td>2</td><td>4</td><td>1</td><td>254s</td></tr>
-<tr><td>openai-python SDK (built-in retries)</td><td>6</td><td>0</td><td>9</td><td>1</td><td>232s</td></tr>
+<tr><td>DSH, shared session</td><td>0</td><td>0</td><td>0</td><td>1</td><td>79s</td></tr>
+<tr><td>DeepSeek Harness + dsh-llm-fallbacks (SDK)</td><td>11</td><td>3</td><td>1</td><td>1</td><td>204s</td></tr>
+<tr><td>LangChain ChatOpenAI + with_fallbacks</td><td>9</td><td>3</td><td>4</td><td>0</td><td>238s</td></tr>
+<tr><td>LiteLLM proxy (Docker)</td><td>9</td><td>3</td><td>4</td><td>0</td><td>252s</td></tr>
+<tr><td>LiteLLM Router, tuned (allowed_fails + cooldown)</td><td>9</td><td>3</td><td>4</td><td>0</td><td>243s</td></tr>
+<tr><td>LiteLLM Router (in-process)</td><td>9</td><td>3</td><td>4</td><td>0</td><td>254s</td></tr>
+<tr><td>openai-python SDK (built-in retries)</td><td>6</td><td>0</td><td>10</td><td>0</td><td>232s</td></tr>
 <tr><td>Portkey Gateway (Docker, OSS)</td><td>11</td><td>2</td><td>0</td><td>3</td><td>184s</td></tr>
 <tr><td>Reference client (httpx)</td><td>16</td><td>0</td><td>0</td><td>0</td><td>136s</td></tr>
 </tbody></table></div>
@@ -280,10 +298,11 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li><code>no_hang</code> pass: ended in 1.0s (success)</li>
 <li>wall log: 0.00s fb-s05-reset #1 -&gt; tcp-reset; 0.01s fb-s05-reset #2 -&gt; 200 stream</li>
 </ul>
-<p><strong>S06 No response at all</strong> — <span class='v fail'>fail</span> failed: bounded</p><ul>
-<li><code>bounded</code> FAIL: 130.0s</li>
+<p><strong>S06 No response at all</strong> — <span class='v fail'>fail</span> failed: within_budget</p><ul>
+<li><code>within_budget</code> FAIL: 130.0s</li>
 <li><code>no_hang</code> pass: ended in 130.0s (error)</li>
-<li>wall log: 0.00s fb-s06-no-response #1 -&gt; no-response 120s; 120.01s fb-s06-no-response #2 -&gt; no-response 120s</li>
+<li><code>silent_route_not_retried</code> FAIL (advisory): 2 primary attempt(s)</li>
+<li>wall log: 0.01s fb-s06-no-response #1 -&gt; no-response 120s; 120.02s fb-s06-no-response #2 -&gt; no-response 120s</li>
 </ul>
 <p><strong>S07 Slow first token</strong> — <span class='v partial'>partial</span> rescued; advisory: ttft_limit</p><ul>
 <li><code>no_hang</code> pass: ended in 21.0s (success)</li>
@@ -374,8 +393,9 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.00s fb-s05-reset #1 -&gt; tcp-reset</li>
 </ul>
 <p><strong>S06 No response at all</strong> — <span class='v safe'>safe</span> not rescued — clean error: ReadTimeout: </p><ul>
-<li><code>bounded</code> pass: 30.0s</li>
+<li><code>within_budget</code> pass: 30.0s</li>
 <li><code>no_hang</code> pass: ended in 30.0s (error)</li>
+<li><code>silent_route_not_retried</code> pass: 1 primary attempt(s)</li>
 <li>wall log: 0.00s fb-s06-no-response #1 -&gt; no-response 120s</li>
 </ul>
 <p><strong>S07 Slow first token</strong> — <span class='v pass'>pass</span> rescued</p><ul>
@@ -437,31 +457,109 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.00s fb-s16-503-persistent #1 -&gt; 503</li>
 </ul>
 </details>
-<details><summary>DeepSeek Harness + dsh-llm-fallbacks (SDK) — adapter <code>dsh</code>, fallback=yes, streaming=yes</summary>
-<p class='muted'>EXPERIMENTAL. DeepSeek Harness 0.1.2-rc.1 driven through the official Python SDK, with dsh-llm-fallbacks 0.4.2 (chain primary → fb-ok, cooldown 30 s, half-open recovery). Baseline: llm-retry maxRetries 2, stream idle timeout 30 s. The harness sends its own system prompt and tool roster on every call; the wall ignores both. Run gateways/dsh/setup.sh first.</p>
-<p class='muted'>params: <code>{&quot;dsh_home&quot;: &quot;gateways/dsh/home-default&quot;, &quot;dsh_home_noprefill&quot;: &quot;gateways/dsh/home-noprefill&quot;, &quot;workspace&quot;: &quot;gateways/dsh/workspace&quot;, &quot;provider&quot;: &quot;fake&quot;, &quot;request_timeout_s&quot;: 60}</code></p>
-<p><strong>S01 429 with Retry-After</strong> — <span class='v partial'>partial</span> rescued; advisory: retried, retry_after_honoured</p><ul>
-<li><code>retried</code> FAIL (advisory): 1 primary attempt(s)</li>
-<li><code>retry_after_honoured</code> FAIL (advisory): no second attempt</li>
-<li><code>no_hammer</code> pass: 1 attempt(s) in first 1.5s</li>
-<li>wall log: 7.75s fb-s01-429-retry-after #1 -&gt; 429 retry-after=2; 7.77s fb-ok #1 -&gt; 200 stream</li>
-</ul>
-<p><strong>S04 503 persistent</strong> — <span class='v pass'>pass</span> rescued</p><ul>
-<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
-<li><code>no_hang</code> pass: ended in 1.9s (success)</li>
-<li>wall log: 0.93s fb-s04-503-persistent #1 -&gt; 503; 0.95s fb-ok #1 -&gt; 200 stream</li>
-</ul>
-<p><strong>S08 Stream cut mid-answer</strong> — <span class='v pass'>pass</span> rescued</p><ul>
-<li><code>no_truncated_success</code> pass: complete answer</li>
-<li><code>no_hang</code> pass: ended in 2.6s (success)</li>
-<li>wall log: 0.93s fb-s08-stream-cut #1 -&gt; 200 stream cut after 40 tokens (no terminating chunk); 1.62s fb-ok #1 -&gt; 200 stream</li>
-</ul>
+<details><summary>DSH, shared session — adapter <code>dsh</code>, fallback=yes, streaming=yes</summary>
+<p class='muted'>Contrast row for S15 only: identical to the DSH row except session_per_request: false, so all twenty requests share one harness session. Shows whether the primary is never probed again (plugin) or the replaced model sticks to the session (harness).</p>
+<p class='muted'>params: <code>{&quot;dsh_home&quot;: &quot;gateways/dsh/home-default&quot;, &quot;dsh_home_noprefill&quot;: &quot;gateways/dsh/home-noprefill&quot;, &quot;workspace&quot;: &quot;gateways/dsh/workspace&quot;, &quot;provider&quot;: &quot;fake&quot;, &quot;request_timeout_s&quot;: 60, &quot;session_per_request&quot;: false}</code></p>
 <p><strong>S15 Primary flaps: down, then healthy</strong> — <span class='v fail'>fail</span> failed: recovered</p><ul>
 <li><code>no_hang</code> pass: 0 hung request(s) of 20</li>
 <li><code>served_during_outage</code> pass: 15/15 requests answered while primary was down</li>
 <li><code>recovered</code> FAIL: primary never used again after recovery</li>
 <li><code>probe_discipline</code> pass: 1 primary attempt(s) for 15 request(s) during the outage</li>
-<li>wall log: 0.91s fb-s15-flap #1 -&gt; 503 (down window); 0.93s fb-ok #1 -&gt; 200 stream; 4.04s fb-ok #2 -&gt; 200 stream; 8.04s fb-ok #3 -&gt; 200 stream; 12.04s fb-ok #4 -&gt; 200 stream; 16.04s fb-ok #5 -&gt; 200 stream; 20.04s fb-ok #6 -&gt; 200 stream; 24.04s fb-ok #7 -&gt; 200 stream; 28.04s fb-ok #8 -&gt; 200 stream; 30.52s fb-s06-no-response #1 -&gt; no-response 120s; 32.04s fb-ok #9 -&gt; 200 stream; 36.04s fb-ok #10 -&gt; 200 stream … (+10 more)</li>
+<li>wall log: 0.90s fb-s15-flap #1 -&gt; 503 (down window); 0.92s fb-ok #1 -&gt; 200 stream; 4.03s fb-ok #2 -&gt; 200 stream; 8.03s fb-ok #3 -&gt; 200 stream; 12.04s fb-ok #4 -&gt; 200 stream; 16.03s fb-ok #5 -&gt; 200 stream; 20.03s fb-ok #6 -&gt; 200 stream; 24.02s fb-ok #7 -&gt; 200 stream; 28.02s fb-ok #8 -&gt; 200 stream; 32.04s fb-ok #9 -&gt; 200 stream; 36.03s fb-ok #10 -&gt; 200 stream; 40.03s fb-ok #11 -&gt; 200 stream … (+9 more)</li>
+</ul>
+</details>
+<details><summary>DeepSeek Harness + dsh-llm-fallbacks (SDK) — adapter <code>dsh</code>, fallback=yes, streaming=yes</summary>
+<p class='muted'>EXPERIMENTAL. DeepSeek Harness 0.1.2-rc.1 driven through the official Python SDK, with dsh-llm-fallbacks 0.4.2 (chain primary → fb-ok, cooldown 30 s, half-open recovery). Baseline: llm-retry maxRetries 2, stream idle timeout 30 s. The harness sends its own system prompt and tool roster on every call; the wall ignores both. Run gateways/dsh/setup.sh first.</p>
+<p class='muted'>params: <code>{&quot;dsh_home&quot;: &quot;gateways/dsh/home-default&quot;, &quot;dsh_home_noprefill&quot;: &quot;gateways/dsh/home-noprefill&quot;, &quot;workspace&quot;: &quot;gateways/dsh/workspace&quot;, &quot;provider&quot;: &quot;fake&quot;, &quot;request_timeout_s&quot;: 60, &quot;session_per_request&quot;: true}</code></p>
+<p><strong>S01 429 with Retry-After</strong> — <span class='v partial'>partial</span> rescued; advisory: retried, retry_after_honoured</p><ul>
+<li><code>retried</code> FAIL (advisory): 1 primary attempt(s)</li>
+<li><code>retry_after_honoured</code> FAIL (advisory): no second attempt</li>
+<li><code>no_hammer</code> pass: 1 attempt(s) in first 1.5s</li>
+<li>wall log: 1.57s fb-s01-429-retry-after #1 -&gt; 429 retry-after=2; 1.59s fb-ok #1 -&gt; 200 stream</li>
+</ul>
+<p><strong>S02 429 without Retry-After, persistent</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>no_hammer</code> pass: 1 attempt(s) in first 3s</li>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
+<li><code>no_hang</code> pass: ended in 1.9s (success)</li>
+<li>wall log: 0.92s fb-s02-429-persistent #1 -&gt; 429; 0.94s fb-ok #1 -&gt; 200 stream</li>
+</ul>
+<p><strong>S03 500 once, then healthy</strong> — <span class='v partial'>partial</span> rescued; advisory: same_provider_retry</p><ul>
+<li><code>no_hang</code> pass: ended in 1.9s (success)</li>
+<li><code>same_provider_retry</code> FAIL (advisory): 1 primary attempt(s)</li>
+<li>wall log: 0.91s fb-s03-500-then-200 #1 -&gt; 500; 0.93s fb-ok #1 -&gt; 200 stream</li>
+</ul>
+<p><strong>S04 503 persistent</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
+<li><code>no_hang</code> pass: ended in 2.0s (success)</li>
+<li>wall log: 0.97s fb-s04-503-persistent #1 -&gt; 503; 1.00s fb-ok #1 -&gt; 200 stream</li>
+</ul>
+<p><strong>S05 TCP reset before headers</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>no_hang</code> pass: ended in 1.9s (success)</li>
+<li>wall log: 0.90s fb-s05-reset #1 -&gt; tcp-reset; 0.92s fb-ok #1 -&gt; 200 stream</li>
+</ul>
+<p><strong>S06 No response at all</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>within_budget</code> pass: 31.9s</li>
+<li><code>no_hang</code> pass: ended in 31.9s (success)</li>
+<li><code>silent_route_not_retried</code> pass: 1 primary attempt(s)</li>
+<li>wall log: 0.90s fb-s06-no-response #1 -&gt; no-response 120s; 30.89s fb-ok #1 -&gt; 200 stream</li>
+</ul>
+<p><strong>S07 Slow first token</strong> — <span class='v partial'>partial</span> rescued; advisory: ttft_limit</p><ul>
+<li><code>no_hang</code> pass: ended in 22.0s (success)</li>
+<li><code>ttft_limit</code> FAIL (advisory): 22.0s</li>
+<li>wall log: 1.00s fb-s07-slow-ttft #1 -&gt; 200 stream, first token after 20s</li>
+</ul>
+<p><strong>S08 Stream cut mid-answer</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>no_truncated_success</code> pass: complete answer</li>
+<li><code>no_hang</code> pass: ended in 2.6s (success)</li>
+<li>wall log: 0.99s fb-s08-stream-cut #1 -&gt; 200 stream cut after 40 tokens (no terminating chunk); 1.66s fb-ok #1 -&gt; 200 stream</li>
+</ul>
+<p><strong>S09 Stream stalls</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>bounded</code> pass: 32.3s</li>
+<li><code>no_truncated_success</code> pass: complete answer</li>
+<li><code>alive_after</code> pass: healthy call succeeded afterwards</li>
+<li><code>no_hang</code> pass: ended in 32.3s (success)</li>
+<li>wall log: 0.95s fb-s09-stream-stall #1 -&gt; 200 stream stalled after 20 tokens for 30s then close; 31.28s fb-ok #1 -&gt; 200 stream</li>
+</ul>
+<p><strong>S10 Malformed chunk in the stream</strong> — <span class='v safe'>safe</span> not rescued — clean error: dsh finish_reason=&#x27;error&#x27;, final_response=empty</p><ul>
+<li><code>alive_after</code> pass: healthy call succeeded afterwards</li>
+<li><code>no_garbage</code> pass: no success claimed (error)</li>
+<li><code>no_hang</code> pass: ended in 1.2s (error)</li>
+<li><code>recovered_in_place</code> FAIL (advisory): error</li>
+<li>wall log: 0.99s fb-s10-malformed-chunk #1 -&gt; 200 stream with malformed chunk at token 10</li>
+</ul>
+<p><strong>S11 Stream ends without [DONE]</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>prompt_finalise</code> pass: 1.9s</li>
+<li><code>usage_reported</code> pass: usage = {&#x27;prompt_tokens&#x27;: 810, &#x27;completion_tokens&#x27;: 60, &#x27;total_tokens&#x27;: 870}</li>
+<li>wall log: 0.92s fb-s11-no-done #1 -&gt; 200 stream complete, [DONE] omitted</li>
+</ul>
+<p><strong>S12 Context length exceeded</strong> — <span class='v fail'>fail</span> failed: no_same_model_retry</p><ul>
+<li><code>no_same_model_retry</code> FAIL: 2 primary attempt(s)</li>
+<li><code>no_hang</code> pass: ended in 0.9s (error)</li>
+<li>wall log: 0.92s fb-s12-context-length #1 -&gt; 400 context_length_exceeded; 0.93s fb-s12-context-length #2 -&gt; 400 context_length_exceeded</li>
+</ul>
+<p><strong>S13 Content-filter rejection</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>no_same_model_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>no_hang</code> pass: ended in 1.0s (error)</li>
+<li><code>fallback_attempted</code> info: 0 fallback attempt(s)</li>
+<li>wall log: 0.95s fb-s13-content-filter #1 -&gt; 400 content_policy_violation</li>
+</ul>
+<p><strong>S14 Fallback target rejects prefill</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>no_prefill_masking</code> pass: 0 prefill rejection(s) at the fallback; final outcome success</li>
+<li><code>no_truncated_success</code> pass: complete answer</li>
+<li>wall log: 1.08s fb-s14-stream-cut #1 -&gt; 200 stream cut after 40 tokens (no terminating chunk); 1.74s fb-ok-noprefill #1 -&gt; 200 stream</li>
+</ul>
+<p><strong>S15 Primary flaps: down, then healthy</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>no_hang</code> pass: 0 hung request(s) of 20</li>
+<li><code>served_during_outage</code> pass: 15/15 requests answered while primary was down</li>
+<li><code>recovered</code> pass: primary answered again +0.1s after recovery</li>
+<li><code>probe_discipline</code> pass: 15 primary attempt(s) for 15 request(s) during the outage</li>
+<li>wall log: 0.97s fb-s15-flap #1 -&gt; 503 (down window); 0.99s fb-ok #1 -&gt; 200 stream; 4.06s fb-s15-flap #2 -&gt; 503 (down window); 4.07s fb-ok #2 -&gt; 200 stream; 8.05s fb-s15-flap #3 -&gt; 503 (down window); 8.06s fb-ok #3 -&gt; 200 stream; 12.05s fb-s15-flap #4 -&gt; 503 (down window); 12.07s fb-ok #4 -&gt; 200 stream; 16.06s fb-s15-flap #5 -&gt; 503 (down window); 16.07s fb-ok #5 -&gt; 200 stream; 20.05s fb-s15-flap #6 -&gt; 503 (down window); 20.07s fb-ok #6 -&gt; 200 stream … (+23 more)</li>
+</ul>
+<p><strong>S16 Fail-over accounting</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>reports_fallback_model</code> pass: response.model = &#x27;fake/fb-ok&#x27;</li>
+<li><code>usage_present</code> pass: usage = {&#x27;prompt_tokens&#x27;: 810, &#x27;completion_tokens&#x27;: 60, &#x27;total_tokens&#x27;: 870}</li>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
+<li>wall log: 1.01s fb-s16-503-persistent #1 -&gt; 503; 1.03s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 </details>
 <details><summary>LangChain ChatOpenAI + with_fallbacks — adapter <code>langchain</code>, fallback=yes, streaming=yes</summary>
@@ -493,10 +591,11 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li><code>no_hang</code> pass: ended in 1.3s (success)</li>
 <li>wall log: 0.00s fb-s05-reset #1 -&gt; tcp-reset; 0.38s fb-s05-reset #2 -&gt; 200 stream</li>
 </ul>
-<p><strong>S06 No response at all</strong> — <span class='v fail'>fail</span> failed: bounded</p><ul>
-<li><code>bounded</code> FAIL: 92.3s</li>
+<p><strong>S06 No response at all</strong> — <span class='v partial'>partial</span> rescued; advisory: silent_route_not_retried</p><ul>
+<li><code>within_budget</code> pass: 92.3s</li>
 <li><code>no_hang</code> pass: ended in 92.3s (success)</li>
-<li>wall log: 0.00s fb-s06-no-response #1 -&gt; no-response 120s; 30.46s fb-s06-no-response #2 -&gt; no-response 120s; 61.37s fb-s06-no-response #3 -&gt; no-response 120s; 91.38s fb-ok #1 -&gt; 200 stream</li>
+<li><code>silent_route_not_retried</code> FAIL (advisory): 3 primary attempt(s)</li>
+<li>wall log: 0.37s fb-s06-no-response #1 -&gt; no-response 120s; 30.76s fb-s06-no-response #2 -&gt; no-response 120s; 61.67s fb-s06-no-response #3 -&gt; no-response 120s; 91.68s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 <p><strong>S07 Slow first token</strong> — <span class='v partial'>partial</span> rescued; advisory: ttft_limit</p><ul>
 <li><code>no_hang</code> pass: ended in 21.0s (success)</li>
@@ -586,10 +685,11 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li><code>no_hang</code> pass: ended in 1.6s (success)</li>
 <li>wall log: 0.01s fb-s05-reset #1 -&gt; tcp-reset; 0.58s fb-s05-reset #2 -&gt; 200 stream</li>
 </ul>
-<p><strong>S06 No response at all</strong> — <span class='v fail'>fail</span> failed: bounded</p><ul>
-<li><code>bounded</code> FAIL: 95.9s</li>
-<li><code>no_hang</code> pass: ended in 95.9s (success)</li>
-<li>wall log: 0.01s fb-s06-no-response #1 -&gt; no-response 120s; 31.04s fb-s06-no-response #2 -&gt; no-response 120s; 62.66s fb-s06-no-response #3 -&gt; no-response 120s; 94.94s fb-ok #1 -&gt; 200 stream</li>
+<p><strong>S06 No response at all</strong> — <span class='v partial'>partial</span> rescued; advisory: silent_route_not_retried</p><ul>
+<li><code>within_budget</code> pass: 95.5s</li>
+<li><code>no_hang</code> pass: ended in 95.5s (success)</li>
+<li><code>silent_route_not_retried</code> FAIL (advisory): 3 primary attempt(s)</li>
+<li>wall log: 0.07s fb-s06-no-response #1 -&gt; no-response 120s; 30.84s fb-s06-no-response #2 -&gt; no-response 120s; 62.28s fb-s06-no-response #3 -&gt; no-response 120s; 94.47s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 <p><strong>S07 Slow first token</strong> — <span class='v partial'>partial</span> rescued; advisory: ttft_limit</p><ul>
 <li><code>no_hang</code> pass: ended in 21.0s (success)</li>
@@ -679,10 +779,11 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li><code>no_hang</code> pass: ended in 2.2s (success)</li>
 <li>wall log: 0.01s fb-s05-reset #1 -&gt; tcp-reset; 1.24s fb-s05-reset #2 -&gt; 200 stream</li>
 </ul>
-<p><strong>S06 No response at all</strong> — <span class='v fail'>fail</span> failed: bounded</p><ul>
-<li><code>bounded</code> FAIL: 95.2s</li>
-<li><code>no_hang</code> pass: ended in 95.2s (success)</li>
-<li>wall log: 0.01s fb-s06-no-response #1 -&gt; no-response 120s; 30.94s fb-s06-no-response #2 -&gt; no-response 120s; 62.15s fb-s06-no-response #3 -&gt; no-response 120s; 94.23s fb-ok #1 -&gt; 200 stream</li>
+<p><strong>S06 No response at all</strong> — <span class='v partial'>partial</span> rescued; advisory: silent_route_not_retried</p><ul>
+<li><code>within_budget</code> pass: 96.8s</li>
+<li><code>no_hang</code> pass: ended in 96.8s (success)</li>
+<li><code>silent_route_not_retried</code> FAIL (advisory): 3 primary attempt(s)</li>
+<li>wall log: 0.29s fb-s06-no-response #1 -&gt; no-response 120s; 31.48s fb-s06-no-response #2 -&gt; no-response 120s; 63.17s fb-s06-no-response #3 -&gt; no-response 120s; 95.83s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 <p><strong>S07 Slow first token</strong> — <span class='v partial'>partial</span> rescued; advisory: ttft_limit</p><ul>
 <li><code>no_hang</code> pass: ended in 21.0s (success)</li>
@@ -772,10 +873,11 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li><code>no_hang</code> pass: ended in 1.8s (success)</li>
 <li>wall log: 0.01s fb-s05-reset #1 -&gt; tcp-reset; 0.79s fb-s05-reset #2 -&gt; 200 stream</li>
 </ul>
-<p><strong>S06 No response at all</strong> — <span class='v fail'>fail</span> failed: bounded</p><ul>
-<li><code>bounded</code> FAIL: 96.3s</li>
-<li><code>no_hang</code> pass: ended in 96.3s (success)</li>
-<li>wall log: 0.01s fb-s06-no-response #1 -&gt; no-response 120s; 30.91s fb-s06-no-response #2 -&gt; no-response 120s; 62.68s fb-s06-no-response #3 -&gt; no-response 120s; 95.31s fb-ok #1 -&gt; 200 stream</li>
+<p><strong>S06 No response at all</strong> — <span class='v partial'>partial</span> rescued; advisory: silent_route_not_retried</p><ul>
+<li><code>within_budget</code> pass: 96.2s</li>
+<li><code>no_hang</code> pass: ended in 96.2s (success)</li>
+<li><code>silent_route_not_retried</code> FAIL (advisory): 3 primary attempt(s)</li>
+<li>wall log: 0.29s fb-s06-no-response #1 -&gt; no-response 120s; 31.12s fb-s06-no-response #2 -&gt; no-response 120s; 62.57s fb-s06-no-response #3 -&gt; no-response 120s; 95.23s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 <p><strong>S07 Slow first token</strong> — <span class='v partial'>partial</span> rescued; advisory: ttft_limit</p><ul>
 <li><code>no_hang</code> pass: ended in 21.0s (success)</li>
@@ -865,10 +967,11 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li><code>no_hang</code> pass: ended in 1.4s (success)</li>
 <li>wall log: 0.00s fb-s05-reset #1 -&gt; tcp-reset; 0.40s fb-s05-reset #2 -&gt; 200 stream</li>
 </ul>
-<p><strong>S06 No response at all</strong> — <span class='v fail'>fail</span> failed: bounded</p><ul>
-<li><code>bounded</code> FAIL: 91.4s</li>
-<li><code>no_hang</code> pass: ended in 91.4s (error)</li>
-<li>wall log: 0.00s fb-s06-no-response #1 -&gt; no-response 120s; 30.45s fb-s06-no-response #2 -&gt; no-response 120s; 61.41s fb-s06-no-response #3 -&gt; no-response 120s</li>
+<p><strong>S06 No response at all</strong> — <span class='v safe'>safe</span> not rescued — clean error: APITimeoutError: Request timed out.</p><ul>
+<li><code>within_budget</code> pass: 91.6s</li>
+<li><code>no_hang</code> pass: ended in 91.6s (error)</li>
+<li><code>silent_route_not_retried</code> FAIL (advisory): 3 primary attempt(s)</li>
+<li>wall log: 0.30s fb-s06-no-response #1 -&gt; no-response 120s; 30.79s fb-s06-no-response #2 -&gt; no-response 120s; 61.59s fb-s06-no-response #3 -&gt; no-response 120s</li>
 </ul>
 <p><strong>S07 Slow first token</strong> — <span class='v pass'>pass</span> rescued</p><ul>
 <li><code>no_hang</code> pass: ended in 21.0s (success)</li>
@@ -959,9 +1062,10 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.01s fb-s05-reset #1 -&gt; tcp-reset; 1.02s fb-s05-reset #2 -&gt; 200 stream</li>
 </ul>
 <p><strong>S06 No response at all</strong> — <span class='v pass'>pass</span> rescued</p><ul>
-<li><code>bounded</code> pass: 31.0s</li>
+<li><code>within_budget</code> pass: 31.0s</li>
 <li><code>no_hang</code> pass: ended in 31.0s (success)</li>
-<li>wall log: 0.01s fb-s06-no-response #1 -&gt; no-response 120s; 30.02s fb-ok #1 -&gt; 200 stream</li>
+<li><code>silent_route_not_retried</code> pass: 1 primary attempt(s)</li>
+<li>wall log: 0.04s fb-s06-no-response #1 -&gt; no-response 120s; 30.05s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 <p><strong>S07 Slow first token</strong> — <span class='v partial'>partial</span> rescued; advisory: ttft_limit</p><ul>
 <li><code>no_hang</code> pass: ended in 21.0s (success)</li>
@@ -1052,8 +1156,9 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.00s fb-s05-reset #1 -&gt; tcp-reset; 0.54s fb-s05-reset #2 -&gt; 200 stream</li>
 </ul>
 <p><strong>S06 No response at all</strong> — <span class='v pass'>pass</span> rescued</p><ul>
-<li><code>bounded</code> pass: 11.0s</li>
+<li><code>within_budget</code> pass: 11.0s</li>
 <li><code>no_hang</code> pass: ended in 11.0s (success)</li>
+<li><code>silent_route_not_retried</code> pass: 1 primary attempt(s)</li>
 <li>wall log: 0.00s fb-s06-no-response #1 -&gt; no-response 120s; 10.01s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 <p><strong>S07 Slow first token</strong> — <span class='v pass'>pass</span> rescued</p><ul>
@@ -1115,5 +1220,5 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.00s fb-s16-503-persistent #1 -&gt; 503; 0.60s fb-s16-503-persistent #2 -&gt; 503; 1.75s fb-s16-503-persistent #3 -&gt; 503; 1.75s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 </details>
-<footer>Results CC BY 4.0 · harness MIT · generated 2026-09-08 20:48 UTC from results/full · <a href='https://github.com/failoverbench/failoverbench/blob/main/METHODOLOGY.md'>methodology</a> · <a href='https://github.com/failoverbench/failoverbench/tree/main/results/full'>raw results</a></footer>
+<footer>Results CC BY 4.0 · harness MIT · generated 2026-09-08 21:25 UTC from results/full · <a href='https://github.com/failoverbench/failoverbench/blob/main/METHODOLOGY.md'>methodology</a> · <a href='https://github.com/failoverbench/failoverbench/tree/main/results/full'>raw results</a></footer>
 </div></body></html>

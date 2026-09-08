@@ -410,12 +410,12 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-08T20:35:31+00:00",
+      "started_at": "2026-09-08T21:19:27+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
         {
-          "id": "bounded",
+          "id": "within_budget",
           "kind": "wall_max_s",
           "status": "pass",
           "detail": "31.0s",
@@ -429,6 +429,14 @@
           "detail": "ended in 31.0s (success)",
           "severity": "required",
           "informational": false
+        },
+        {
+          "id": "silent_route_not_retried",
+          "kind": "attempts_primary_max",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
+          "severity": "advisory",
+          "informational": false
         }
       ],
       "metrics": {
@@ -436,8 +444,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 31.0,
-        "ttft_s": 30.054,
+        "elapsed_s": 31.028,
+        "ttft_s": 30.089,
         "reported_model": "fb-ok",
         "usage": {
           "prompt_tokens": 21,
@@ -448,16 +456,16 @@
         "attempts_primary": 1,
         "attempts_fallback": 1,
         "primary_times": [
-          0.0092
+          0.0404
         ],
         "fallback_times": [
-          30.0241
+          30.053
         ],
         "first_gap_s": null,
         "prefill_rejections": 0,
         "wall_actions": [
-          "0.01s fb-s06-no-response #1 -> no-response 120s",
-          "30.02s fb-ok #1 -> 200 stream"
+          "0.04s fb-s06-no-response #1 -> no-response 120s",
+          "30.05s fb-ok #1 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null
@@ -1438,5 +1446,8 @@
       },
       "content_ok": true
     }
+  ],
+  "notes": [
+    "S06 re-run 2026-09-08T21:19:58+00:00 under catalogue methodology 0.1 (timing 120s silence); merged from results-s06."
   ]
 }

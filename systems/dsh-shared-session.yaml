@@ -1,0 +1,12 @@
+name: dsh-shared-session
+label: DSH, shared session
+adapter: dsh
+notes: 'Contrast row for S15 only: identical to the DSH row except session_per_request: false, so all twenty requests share one harness session. Shows whether the primary is never probed again (plugin)
+  or the replaced model sticks to the session (harness).'
+params:
+  dsh_home: gateways/dsh/home-default
+  dsh_home_noprefill: gateways/dsh/home-noprefill
+  workspace: gateways/dsh/workspace
+  provider: fake
+  request_timeout_s: 60
+  session_per_request: false

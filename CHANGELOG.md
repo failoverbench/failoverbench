@@ -9,6 +9,8 @@ Next scorecard: **Monday 5 October 2026** (methodology v0.1, profile `full`).
 - New systems: Bifrost v2.1.0 (Docker, per-request fallbacks), Portkey Gateway OSS (Docker, per-request x-portkey-config), LangChain ChatOpenAI + with_fallbacks, a tuned LiteLLM Router row (allowed_fails + cooldown_time), and an experimental DeepSeek Harness + dsh-llm-fallbacks row through the Python SDK.
 - Endpoint adapter: `model_format`, `extra_body` and `headers_json` with `{primary}` / `{fallback}` placeholders; fallback-bearing entries are dropped for calls without a fallback.
 - Methodology: the baseline configuration (2 retries, 30 s timeout, one fallback) is now stated explicitly.
+- S06 made consistent with that baseline: the required check is now "ends within the configured budget" (100 s = two 30 s retries plus slack) and "did not retry the silent route" is advisory. Under the old 45 s bound every system that obeyed its own configured retries failed; now a system that retries a silent route scores partial (rescued) or safe (not rescued), and only a system whose timeout never fires (a hang past 130 s) fails.
+- DSH adapter: a fresh session per request by default, so a session that keeps a replaced model cannot be mistaken for a circuit that never probes.
 
 ## 2026-09-07 — 0.1.0
 - The wall: fake OpenAI-compatible provider, sixteen faults selected by model name, request log with millisecond timings, TCP reset / cut / stall / malformed / no-[DONE] stream faults, prefill continuation.

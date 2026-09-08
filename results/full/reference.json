@@ -376,12 +376,12 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:14:29+00:00",
+      "started_at": "2026-09-08T21:04:33+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
         {
-          "id": "bounded",
+          "id": "within_budget",
           "kind": "wall_max_s",
           "status": "pass",
           "detail": "11.0s",
@@ -395,6 +395,14 @@
           "detail": "ended in 11.0s (success)",
           "severity": "required",
           "informational": false
+        },
+        {
+          "id": "silent_route_not_retried",
+          "kind": "attempts_primary_max",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
+          "severity": "advisory",
+          "informational": false
         }
       ],
       "metrics": {
@@ -402,8 +410,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 10.973,
-        "ttft_s": 0.003,
+        "elapsed_s": 10.978,
+        "ttft_s": 0.006,
         "reported_model": "fb-ok",
         "usage": {
           "prompt_tokens": 21,
@@ -414,10 +422,10 @@
         "attempts_primary": 1,
         "attempts_fallback": 1,
         "primary_times": [
-          0.0009
+          0.0012
         ],
         "fallback_times": [
-          10.0053
+          10.0109
         ],
         "first_gap_s": null,
         "prefill_rejections": 0,
@@ -1428,5 +1436,8 @@
       },
       "content_ok": true
     }
+  ],
+  "notes": [
+    "S06 re-run 2026-09-08T21:04:44+00:00 under catalogue methodology 0.1 (timing 120s silence); merged from results-s06."
   ]
 }

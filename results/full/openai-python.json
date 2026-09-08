@@ -37,8 +37,8 @@
   "summary": {
     "pass": 6,
     "partial": 0,
-    "safe": 9,
-    "fail": 1,
+    "safe": 10,
+    "fail": 0,
     "na": 0
   },
   "scenarios": [
@@ -365,15 +365,15 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:16:43+00:00",
-      "verdict": "fail",
-      "reason": "failed: bounded",
+      "started_at": "2026-09-08T21:04:45+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: APITimeoutError: Request timed out.",
       "checks": [
         {
-          "id": "bounded",
+          "id": "within_budget",
           "kind": "wall_max_s",
-          "status": "fail",
-          "detail": "91.4s",
+          "status": "pass",
+          "detail": "91.6s",
           "severity": "required",
           "informational": false
         },
@@ -381,8 +381,16 @@
           "id": "no_hang",
           "kind": "no_hang",
           "status": "pass",
-          "detail": "ended in 91.4s (error)",
+          "detail": "ended in 91.6s (error)",
           "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "silent_route_not_retried",
+          "kind": "attempts_primary_max",
+          "status": "fail",
+          "detail": "3 primary attempt(s)",
+          "severity": "advisory",
           "informational": false
         }
       ],
@@ -391,7 +399,7 @@
         "complete": false,
         "error": "APITimeoutError: Request timed out.",
         "status": null,
-        "elapsed_s": 91.414,
+        "elapsed_s": 91.589,
         "ttft_s": null,
         "reported_model": null,
         "usage": null,
@@ -399,17 +407,17 @@
         "attempts_primary": 3,
         "attempts_fallback": 0,
         "primary_times": [
-          0.0016,
-          30.4521,
-          61.4121
+          0.3044,
+          30.7857,
+          61.5876
         ],
         "fallback_times": [],
-        "first_gap_s": 30.451,
+        "first_gap_s": 30.481,
         "prefill_rejections": 0,
         "wall_actions": [
-          "0.00s fb-s06-no-response #1 -> no-response 120s",
-          "30.45s fb-s06-no-response #2 -> no-response 120s",
-          "61.41s fb-s06-no-response #3 -> no-response 120s"
+          "0.30s fb-s06-no-response #1 -> no-response 120s",
+          "30.79s fb-s06-no-response #2 -> no-response 120s",
+          "61.59s fb-s06-no-response #3 -> no-response 120s"
         ],
         "alive_after": true,
         "alive_error": null
@@ -1339,5 +1347,8 @@
       },
       "content_ok": false
     }
+  ],
+  "notes": [
+    "S06 re-run 2026-09-08T21:06:16+00:00 under catalogue methodology 0.1 (timing 120s silence); merged from results-s06."
   ]
 }

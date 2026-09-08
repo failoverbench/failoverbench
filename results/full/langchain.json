@@ -36,9 +36,9 @@
   "run_seconds": 238.2,
   "summary": {
     "pass": 9,
-    "partial": 2,
+    "partial": 3,
     "safe": 4,
-    "fail": 1,
+    "fail": 0,
     "na": 0
   },
   "scenarios": [
@@ -373,14 +373,14 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-08T20:26:53+00:00",
-      "verdict": "fail",
-      "reason": "failed: bounded",
+      "started_at": "2026-09-08T21:11:12+00:00",
+      "verdict": "partial",
+      "reason": "rescued; advisory: silent_route_not_retried",
       "checks": [
         {
-          "id": "bounded",
+          "id": "within_budget",
           "kind": "wall_max_s",
-          "status": "fail",
+          "status": "pass",
           "detail": "92.3s",
           "severity": "required",
           "informational": false
@@ -392,6 +392,14 @@
           "detail": "ended in 92.3s (success)",
           "severity": "required",
           "informational": false
+        },
+        {
+          "id": "silent_route_not_retried",
+          "kind": "attempts_primary_max",
+          "status": "fail",
+          "detail": "3 primary attempt(s)",
+          "severity": "advisory",
+          "informational": false
         }
       ],
       "metrics": {
@@ -399,8 +407,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 92.337,
-        "ttft_s": 91.377,
+        "elapsed_s": 92.311,
+        "ttft_s": 91.359,
         "reported_model": "fb-ok",
         "usage": {
           "prompt_tokens": 21,
@@ -411,20 +419,20 @@
         "attempts_primary": 3,
         "attempts_fallback": 1,
         "primary_times": [
-          0.0033,
-          30.4642,
-          61.3688
+          0.3675,
+          30.7644,
+          61.6668
         ],
         "fallback_times": [
-          91.3766
+          91.6777
         ],
-        "first_gap_s": 30.461,
+        "first_gap_s": 30.397,
         "prefill_rejections": 0,
         "wall_actions": [
-          "0.00s fb-s06-no-response #1 -> no-response 120s",
-          "30.46s fb-s06-no-response #2 -> no-response 120s",
-          "61.37s fb-s06-no-response #3 -> no-response 120s",
-          "91.38s fb-ok #1 -> 200 stream"
+          "0.37s fb-s06-no-response #1 -> no-response 120s",
+          "30.76s fb-s06-no-response #2 -> no-response 120s",
+          "61.67s fb-s06-no-response #3 -> no-response 120s",
+          "91.68s fb-ok #1 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null
@@ -1400,5 +1408,8 @@
       },
       "content_ok": true
     }
+  ],
+  "notes": [
+    "S06 re-run 2026-09-08T21:12:44+00:00 under catalogue methodology 0.1 (timing 120s silence); merged from results-s06."
   ]
 }

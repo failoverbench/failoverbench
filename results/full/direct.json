@@ -332,12 +332,12 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:11:36+00:00",
+      "started_at": "2026-09-08T21:04:03+00:00",
       "verdict": "safe",
       "reason": "not rescued \u2014 clean error: ReadTimeout: ",
       "checks": [
         {
-          "id": "bounded",
+          "id": "within_budget",
           "kind": "wall_max_s",
           "status": "pass",
           "detail": "30.0s",
@@ -351,6 +351,14 @@
           "detail": "ended in 30.0s (error)",
           "severity": "required",
           "informational": false
+        },
+        {
+          "id": "silent_route_not_retried",
+          "kind": "attempts_primary_max",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
+          "severity": "advisory",
+          "informational": false
         }
       ],
       "metrics": {
@@ -358,7 +366,7 @@
         "complete": false,
         "error": "ReadTimeout: ",
         "status": null,
-        "elapsed_s": 30.002,
+        "elapsed_s": 30.003,
         "ttft_s": null,
         "reported_model": null,
         "usage": null,
@@ -366,7 +374,7 @@
         "attempts_primary": 1,
         "attempts_fallback": 0,
         "primary_times": [
-          0.0008
+          0.0013
         ],
         "fallback_times": [],
         "first_gap_s": null,
@@ -1236,5 +1244,8 @@
       },
       "content_ok": false
     }
+  ],
+  "notes": [
+    "S06 re-run 2026-09-08T21:04:33+00:00 under catalogue methodology 0.1 (timing 120s silence); merged from results-s06."
   ]
 }

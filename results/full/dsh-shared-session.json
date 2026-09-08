@@ -1,0 +1,355 @@
+{
+  "failoverbench": "0.1.0",
+  "methodology": "0.1",
+  "profile": "full",
+  "timing": {
+    "retry_after_s": 2.0,
+    "slow_ttft_s": 20.0,
+    "stall_s": 30.0,
+    "no_response_s": 120.0,
+    "flap_down_s": 60.0,
+    "token_interval_ms": 15,
+    "cut_after_tokens": 40,
+    "stall_after_tokens": 20,
+    "malformed_at_token": 10
+  },
+  "wall": {
+    "ok": true,
+    "wall": "0.1.0",
+    "t": 20.0656
+  },
+  "system": {
+    "name": "dsh-shared-session",
+    "label": "DSH, shared session",
+    "adapter": "dsh",
+    "capabilities": {
+      "fallback": true,
+      "streaming": true
+    },
+    "params": {
+      "dsh_home": "gateways/dsh/home-default",
+      "dsh_home_noprefill": "gateways/dsh/home-noprefill",
+      "workspace": "gateways/dsh/workspace",
+      "provider": "fake",
+      "request_timeout_s": 60,
+      "session_per_request": false
+    },
+    "notes": "Contrast row for S15 only: identical to the DSH row except session_per_request: false, so all twenty requests share one harness session. Shows whether the primary is never probed again (plugin) or the replaced model sticks to the session (harness)."
+  },
+  "run_started_at": "2026-09-08T21:25:23+00:00",
+  "run_seconds": 79.1,
+  "summary": {
+    "pass": 0,
+    "partial": 0,
+    "safe": 0,
+    "fail": 1,
+    "na": 0
+  },
+  "scenarios": [
+    {
+      "id": "S15",
+      "title": "Primary flaps: down, then healthy",
+      "model": "fb-s15-flap",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "sequence",
+      "started_at": "2026-09-08T21:24:04+00:00",
+      "verdict": "fail",
+      "reason": "failed: recovered",
+      "checks": [
+        {
+          "id": "no_hang",
+          "kind": "seq_no_hang",
+          "status": "pass",
+          "detail": "0 hung request(s) of 20",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "served_during_outage",
+          "kind": "seq_served_during_outage",
+          "status": "pass",
+          "detail": "15/15 requests answered while primary was down",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "recovered",
+          "kind": "seq_recovered_within_s",
+          "status": "fail",
+          "detail": "primary never used again after recovery",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "probe_discipline",
+          "kind": "seq_probe_discipline",
+          "status": "pass",
+          "detail": "1 primary attempt(s) for 15 request(s) during the outage",
+          "severity": "advisory",
+          "informational": true
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 77.009,
+        "ttft_s": 0.004,
+        "reported_model": "fake/fb-ok",
+        "usage": {
+          "prompt_tokens": 2425,
+          "completion_tokens": 60,
+          "total_tokens": 2485
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 20,
+        "primary_times": [
+          0.9045
+        ],
+        "fallback_times": [
+          0.9244,
+          4.0344,
+          8.032,
+          12.0362,
+          16.0305,
+          20.0279,
+          24.0247,
+          28.0244,
+          32.0354,
+          36.0321,
+          40.0321,
+          44.0261,
+          48.029,
+          52.0328,
+          56.0266,
+          60.0321,
+          64.0285,
+          68.0312,
+          72.0304,
+          76.0306
+        ],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.90s fb-s15-flap #1 -> 503 (down window)",
+          "0.92s fb-ok #1 -> 200 stream",
+          "4.03s fb-ok #2 -> 200 stream",
+          "8.03s fb-ok #3 -> 200 stream",
+          "12.04s fb-ok #4 -> 200 stream",
+          "16.03s fb-ok #5 -> 200 stream",
+          "20.03s fb-ok #6 -> 200 stream",
+          "24.02s fb-ok #7 -> 200 stream",
+          "28.02s fb-ok #8 -> 200 stream",
+          "32.04s fb-ok #9 -> 200 stream",
+          "36.03s fb-ok #10 -> 200 stream",
+          "40.03s fb-ok #11 -> 200 stream",
+          "44.03s fb-ok #12 -> 200 stream",
+          "48.03s fb-ok #13 -> 200 stream",
+          "52.03s fb-ok #14 -> 200 stream",
+          "56.03s fb-ok #15 -> 200 stream",
+          "60.03s fb-ok #16 -> 200 stream",
+          "64.03s fb-ok #17 -> 200 stream",
+          "68.03s fb-ok #18 -> 200 stream",
+          "72.03s fb-ok #19 -> 200 stream",
+          "76.03s fb-ok #20 -> 200 stream"
+        ],
+        "seq_items": [
+          {
+            "i": 0,
+            "t_sent": 0.0,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 1.897,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 1,
+            "t_sent": 4.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 1.0,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 2,
+            "t_sent": 8.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 1.001,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 3,
+            "t_sent": 12.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 1.007,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 4,
+            "t_sent": 16.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 1.0,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 5,
+            "t_sent": 20.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.995,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 6,
+            "t_sent": 24.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.993,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 7,
+            "t_sent": 28.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.991,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 8,
+            "t_sent": 32.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 1.002,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 9,
+            "t_sent": 36.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.998,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 10,
+            "t_sent": 40.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 1.002,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 11,
+            "t_sent": 44.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.989,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 12,
+            "t_sent": 48.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.998,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 13,
+            "t_sent": 52.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 1.003,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 14,
+            "t_sent": 56.0,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.991,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 15,
+            "t_sent": 60.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.996,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 16,
+            "t_sent": 64.0,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.999,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 17,
+            "t_sent": 68.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.997,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 18,
+            "t_sent": 72.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 1.001,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          },
+          {
+            "i": 19,
+            "t_sent": 76.001,
+            "outcome": "success",
+            "complete": true,
+            "elapsed_s": 0.999,
+            "reported_model": "fake/fb-ok",
+            "error": null
+          }
+        ],
+        "seq_hangs": 0,
+        "seq_requests_during_down": 15,
+        "seq_served_during_down": 15,
+        "seq_primary_attempts_during_down": 1,
+        "seq_recovered_after_s": null,
+        "seq_success_after_down": 5,
+        "flap_down_s": 60.0,
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    }
+  ]
+}

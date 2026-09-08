@@ -36,9 +36,9 @@
   "run_seconds": 252.3,
   "summary": {
     "pass": 9,
-    "partial": 2,
+    "partial": 3,
     "safe": 4,
-    "fail": 1,
+    "fail": 0,
     "na": 0
   },
   "scenarios": [
@@ -388,15 +388,15 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-06T22:40:21+00:00",
-      "verdict": "fail",
-      "reason": "failed: bounded",
+      "started_at": "2026-09-08T21:09:35+00:00",
+      "verdict": "partial",
+      "reason": "rescued; advisory: silent_route_not_retried",
       "checks": [
         {
-          "id": "bounded",
+          "id": "within_budget",
           "kind": "wall_max_s",
-          "status": "fail",
-          "detail": "95.9s",
+          "status": "pass",
+          "detail": "95.5s",
           "severity": "required",
           "informational": false
         },
@@ -404,8 +404,16 @@
           "id": "no_hang",
           "kind": "no_hang",
           "status": "pass",
-          "detail": "ended in 95.9s (success)",
+          "detail": "ended in 95.5s (success)",
           "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "silent_route_not_retried",
+          "kind": "attempts_primary_max",
+          "status": "fail",
+          "detail": "3 primary attempt(s)",
+          "severity": "advisory",
           "informational": false
         }
       ],
@@ -414,8 +422,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 95.918,
-        "ttft_s": 94.949,
+        "elapsed_s": 95.455,
+        "ttft_s": 94.534,
         "reported_model": "fb-ok",
         "usage": {
           "completion_tokens": 60,
@@ -429,20 +437,20 @@
         "attempts_primary": 3,
         "attempts_fallback": 1,
         "primary_times": [
-          0.007,
-          31.0427,
-          62.6641
+          0.0702,
+          30.8423,
+          62.2761
         ],
         "fallback_times": [
-          94.9392
+          94.47
         ],
-        "first_gap_s": 31.036,
+        "first_gap_s": 30.772,
         "prefill_rejections": 0,
         "wall_actions": [
-          "0.01s fb-s06-no-response #1 -> no-response 120s",
-          "31.04s fb-s06-no-response #2 -> no-response 120s",
-          "62.66s fb-s06-no-response #3 -> no-response 120s",
-          "94.94s fb-ok #1 -> 200 stream"
+          "0.07s fb-s06-no-response #1 -> no-response 120s",
+          "30.84s fb-s06-no-response #2 -> no-response 120s",
+          "62.28s fb-s06-no-response #3 -> no-response 120s",
+          "94.47s fb-ok #1 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null
@@ -1412,5 +1420,8 @@
       },
       "content_ok": true
     }
+  ],
+  "notes": [
+    "S06 re-run 2026-09-08T21:11:10+00:00 under catalogue methodology 0.1 (timing 120s silence); merged from results-s06."
   ]
 }

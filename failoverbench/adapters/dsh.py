@@ -13,8 +13,13 @@ with a plain prompt; the answer text, the provider/model that produced the
 last assistant message, its usage, and the finish reason. DSH always sends its
 own system prompt and tool roster; the wall ignores both.
 
-Sequence scenarios (S15) reuse one harness process and one session id per
-(primary, fallback) pair so the plugin's circuit state persists.
+Sequence scenarios (S15) reuse one harness *process* per (primary, fallback)
+pair so the plugin's circuit state persists, but by default every request gets
+a fresh session id: on the first run (8 Sep 2026) a shared session showed
+one primary attempt and then nineteen answers from the fallback, including
+five after the primary had recovered, which could be the harness keeping the
+replaced model on the session rather than the plugin never probing. Set
+`session_per_request: false` to reproduce the shared-session behaviour.
 
 params:
   dsh_home:            gateways/dsh/home-default
@@ -22,6 +27,7 @@ params:
   workspace:           gateways/dsh/workspace
   provider:            fake
   request_timeout_s:   60
+  session_per_request: true
 """
 
 from __future__ import annotations
@@ -79,6 +85,8 @@ class DSHAdapter(Adapter):
 
         def run_sync():
             h, session_id = self._harness(primary, fallback)
+            if self.params.get("session_per_request", True):
+                session_id = f"fb-{uuid.uuid4().hex[:8]}"
             return h.run(prompt, session_id=session_id, on_notification=on_notification)
 
         try:

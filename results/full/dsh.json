@@ -16,7 +16,7 @@
   "wall": {
     "ok": true,
     "wall": "0.1.0",
-    "t": 467.2819
+    "t": 56.2795
   },
   "system": {
     "name": "dsh",
@@ -31,16 +31,17 @@
       "dsh_home_noprefill": "gateways/dsh/home-noprefill",
       "workspace": "gateways/dsh/workspace",
       "provider": "fake",
-      "request_timeout_s": 60
+      "request_timeout_s": 60,
+      "session_per_request": true
     },
     "notes": "EXPERIMENTAL. DeepSeek Harness 0.1.2-rc.1 driven through the official Python SDK, with dsh-llm-fallbacks 0.4.2 (chain primary \u2192 fb-ok, cooldown 30 s, half-open recovery). Baseline: llm-retry maxRetries 2, stream idle timeout 30 s. The harness sends its own system prompt and tool roster on every call; the wall ignores both. Run gateways/dsh/setup.sh first."
   },
-  "run_started_at": "2026-09-08T20:47:39+00:00",
-  "run_seconds": 95.8,
+  "run_started_at": "2026-09-08T21:23:48+00:00",
+  "run_seconds": 204.4,
   "summary": {
-    "pass": 2,
-    "partial": 1,
-    "safe": 0,
+    "pass": 11,
+    "partial": 3,
+    "safe": 1,
     "fail": 1,
     "na": 0
   },
@@ -53,7 +54,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-08T20:46:03+00:00",
+      "started_at": "2026-09-08T21:20:23+00:00",
       "verdict": "partial",
       "reason": "rescued; advisory: retried, retry_after_honoured",
       "checks": [
@@ -87,8 +88,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 8.762,
-        "ttft_s": 7.626,
+        "elapsed_s": 2.564,
+        "ttft_s": 1.445,
         "reported_model": "fake/fb-ok",
         "usage": {
           "prompt_tokens": 810,
@@ -99,16 +100,16 @@
         "attempts_primary": 1,
         "attempts_fallback": 1,
         "primary_times": [
-          7.7535
+          1.572
         ],
         "fallback_times": [
-          7.7733
+          1.5933
         ],
         "first_gap_s": null,
         "prefill_rejections": 0,
         "wall_actions": [
-          "7.75s fb-s01-429-retry-after #1 -> 429 retry-after=2",
-          "7.77s fb-ok #1 -> 200 stream"
+          "1.57s fb-s01-429-retry-after #1 -> 429 retry-after=2",
+          "1.59s fb-ok #1 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null
@@ -116,17 +117,25 @@
       "content_ok": true
     },
     {
-      "id": "S04",
-      "title": "503 persistent",
-      "model": "fb-s04-503-persistent",
+      "id": "S02",
+      "title": "429 without Retry-After, persistent",
+      "model": "fb-s02-429-persistent",
       "fallback_model": "fb-ok",
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-08T20:46:14+00:00",
+      "started_at": "2026-09-08T21:20:28+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
+        {
+          "id": "no_hammer",
+          "kind": "max_attempts_within",
+          "status": "pass",
+          "detail": "1 attempt(s) in first 3s",
+          "severity": "required",
+          "informational": false
+        },
         {
           "id": "bounded_attempts",
           "kind": "attempts_primary_max",
@@ -149,8 +158,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 1.935,
-        "ttft_s": 0.826,
+        "elapsed_s": 1.914,
+        "ttft_s": 0.827,
         "reported_model": "fake/fb-ok",
         "usage": {
           "prompt_tokens": 810,
@@ -161,16 +170,323 @@
         "attempts_primary": 1,
         "attempts_fallback": 1,
         "primary_times": [
-          0.9262
+          0.9233
         ],
         "fallback_times": [
-          0.947
+          0.9438
         ],
         "first_gap_s": null,
         "prefill_rejections": 0,
         "wall_actions": [
-          "0.93s fb-s04-503-persistent #1 -> 503",
-          "0.95s fb-ok #1 -> 200 stream"
+          "0.92s fb-s02-429-persistent #1 -> 429",
+          "0.94s fb-ok #1 -> 200 stream"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S03",
+      "title": "500 once, then healthy",
+      "model": "fb-s03-500-then-200",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-08T21:20:31+00:00",
+      "verdict": "partial",
+      "reason": "rescued; advisory: same_provider_retry",
+      "checks": [
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 1.9s (success)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "same_provider_retry",
+          "kind": "attempts_primary_min",
+          "status": "fail",
+          "detail": "1 primary attempt(s)",
+          "severity": "advisory",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 1.9,
+        "ttft_s": 0.816,
+        "reported_model": "fake/fb-ok",
+        "usage": {
+          "prompt_tokens": 810,
+          "completion_tokens": 60,
+          "total_tokens": 870
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 1,
+        "primary_times": [
+          0.9125
+        ],
+        "fallback_times": [
+          0.934
+        ],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.91s fb-s03-500-then-200 #1 -> 500",
+          "0.93s fb-ok #1 -> 200 stream"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S04",
+      "title": "503 persistent",
+      "model": "fb-s04-503-persistent",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-08T21:20:34+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "bounded_attempts",
+          "kind": "attempts_primary_max",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 2.0s (success)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 1.969,
+        "ttft_s": 0.877,
+        "reported_model": "fake/fb-ok",
+        "usage": {
+          "prompt_tokens": 810,
+          "completion_tokens": 60,
+          "total_tokens": 870
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 1,
+        "primary_times": [
+          0.9747
+        ],
+        "fallback_times": [
+          0.9991
+        ],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.97s fb-s04-503-persistent #1 -> 503",
+          "1.00s fb-ok #1 -> 200 stream"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S05",
+      "title": "TCP reset before headers",
+      "model": "fb-s05-reset",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-08T21:20:37+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 1.9s (success)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 1.891,
+        "ttft_s": 0.799,
+        "reported_model": "fake/fb-ok",
+        "usage": {
+          "prompt_tokens": 810,
+          "completion_tokens": 60,
+          "total_tokens": 870
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 1,
+        "primary_times": [
+          0.9021
+        ],
+        "fallback_times": [
+          0.9227
+        ],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.90s fb-s05-reset #1 -> tcp-reset",
+          "0.92s fb-ok #1 -> 200 stream"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S06",
+      "title": "No response at all",
+      "model": "fb-s06-no-response",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-08T21:20:40+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "within_budget",
+          "kind": "wall_max_s",
+          "status": "pass",
+          "detail": "31.9s",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 31.9s (success)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "silent_route_not_retried",
+          "kind": "attempts_primary_max",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
+          "severity": "advisory",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 31.865,
+        "ttft_s": 0.811,
+        "reported_model": "fake/fb-ok",
+        "usage": {
+          "prompt_tokens": 810,
+          "completion_tokens": 60,
+          "total_tokens": 870
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 1,
+        "primary_times": [
+          0.9041
+        ],
+        "fallback_times": [
+          30.8894
+        ],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.90s fb-s06-no-response #1 -> no-response 120s",
+          "30.89s fb-ok #1 -> 200 stream"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S07",
+      "title": "Slow first token",
+      "model": "fb-s07-slow-ttft",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-08T21:21:13+00:00",
+      "verdict": "partial",
+      "reason": "rescued; advisory: ttft_limit",
+      "checks": [
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 22.0s (success)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "ttft_limit",
+          "kind": "wall_max_s",
+          "status": "fail",
+          "detail": "22.0s",
+          "severity": "advisory",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 21.967,
+        "ttft_s": 0.9,
+        "reported_model": "fake/fb-s07-slow-ttft",
+        "usage": {
+          "prompt_tokens": 810,
+          "completion_tokens": 60,
+          "total_tokens": 870
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.9958
+        ],
+        "fallback_times": [],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "1.00s fb-s07-slow-ttft #1 -> 200 stream, first token after 20s"
         ],
         "alive_after": true,
         "alive_error": null
@@ -185,7 +501,7 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-08T20:46:17+00:00",
+      "started_at": "2026-09-08T21:21:36+00:00",
       "verdict": "pass",
       "reason": "rescued",
       "checks": [
@@ -211,8 +527,8 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 2.604,
-        "ttft_s": 0.832,
+        "elapsed_s": 2.635,
+        "ttft_s": 0.9,
         "reported_model": "fake/fb-ok",
         "usage": {
           "prompt_tokens": 810,
@@ -223,16 +539,406 @@
         "attempts_primary": 1,
         "attempts_fallback": 1,
         "primary_times": [
-          0.93
+          0.9937
         ],
         "fallback_times": [
-          1.6194
+          1.6613
         ],
         "first_gap_s": null,
         "prefill_rejections": 0,
         "wall_actions": [
-          "0.93s fb-s08-stream-cut #1 -> 200 stream cut after 40 tokens (no terminating chunk)",
-          "1.62s fb-ok #1 -> 200 stream"
+          "0.99s fb-s08-stream-cut #1 -> 200 stream cut after 40 tokens (no terminating chunk)",
+          "1.66s fb-ok #1 -> 200 stream"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S09",
+      "title": "Stream stalls",
+      "model": "fb-s09-stream-stall",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-08T21:21:39+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "bounded",
+          "kind": "wall_max_s",
+          "status": "pass",
+          "detail": "32.3s",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_truncated_success",
+          "kind": "no_truncated_success",
+          "status": "pass",
+          "detail": "complete answer",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "alive_after",
+          "kind": "alive_after",
+          "status": "pass",
+          "detail": "healthy call succeeded afterwards",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 32.3s (success)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 32.254,
+        "ttft_s": 0.854,
+        "reported_model": "fake/fb-ok",
+        "usage": {
+          "prompt_tokens": 810,
+          "completion_tokens": 60,
+          "total_tokens": 870
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 1,
+        "primary_times": [
+          0.948
+        ],
+        "fallback_times": [
+          31.2791
+        ],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.95s fb-s09-stream-stall #1 -> 200 stream stalled after 20 tokens for 30s then close",
+          "31.28s fb-ok #1 -> 200 stream"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S10",
+      "title": "Malformed chunk in the stream",
+      "model": "fb-s10-malformed-chunk",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-08T21:22:13+00:00",
+      "verdict": "safe",
+      "reason": "not rescued \u2014 clean error: dsh finish_reason='error', final_response=empty",
+      "checks": [
+        {
+          "id": "alive_after",
+          "kind": "alive_after",
+          "status": "pass",
+          "detail": "healthy call succeeded afterwards",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_garbage",
+          "kind": "no_truncated_success",
+          "status": "pass",
+          "detail": "no success claimed (error)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 1.2s (error)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "recovered_in_place",
+          "kind": "complete",
+          "status": "fail",
+          "detail": "error",
+          "severity": "advisory",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "dsh finish_reason='error', final_response=empty",
+        "status": null,
+        "elapsed_s": 1.158,
+        "ttft_s": 0.894,
+        "reported_model": null,
+        "usage": null,
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.9903
+        ],
+        "fallback_times": [],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.99s fb-s10-malformed-chunk #1 -> 200 stream with malformed chunk at token 10"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S11",
+      "title": "Stream ends without [DONE]",
+      "model": "fb-s11-no-done",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-08T21:22:15+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "prompt_finalise",
+          "kind": "wall_max_s",
+          "status": "pass",
+          "detail": "1.9s",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "usage_reported",
+          "kind": "usage_present",
+          "status": "pass",
+          "detail": "usage = {'prompt_tokens': 810, 'completion_tokens': 60, 'total_tokens': 870}",
+          "severity": "advisory",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 1.893,
+        "ttft_s": 0.823,
+        "reported_model": "fake/fb-s11-no-done",
+        "usage": {
+          "prompt_tokens": 810,
+          "completion_tokens": 60,
+          "total_tokens": 870
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.9205
+        ],
+        "fallback_times": [],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.92s fb-s11-no-done #1 -> 200 stream complete, [DONE] omitted"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S12",
+      "title": "Context length exceeded",
+      "model": "fb-s12-context-length",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-08T21:22:18+00:00",
+      "verdict": "fail",
+      "reason": "failed: no_same_model_retry",
+      "checks": [
+        {
+          "id": "no_same_model_retry",
+          "kind": "attempts_primary_eq",
+          "status": "fail",
+          "detail": "2 primary attempt(s)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 0.9s (error)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "dsh finish_reason='error', final_response=empty",
+        "status": null,
+        "elapsed_s": 0.936,
+        "ttft_s": 0.818,
+        "reported_model": null,
+        "usage": null,
+        "fallback_model": "fb-ok",
+        "attempts_primary": 2,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.9156,
+          0.9337
+        ],
+        "fallback_times": [],
+        "first_gap_s": 0.018,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.92s fb-s12-context-length #1 -> 400 context_length_exceeded",
+          "0.93s fb-s12-context-length #2 -> 400 context_length_exceeded"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S13",
+      "title": "Content-filter rejection",
+      "model": "fb-s13-content-filter",
+      "fallback_model": "fb-ok",
+      "ideal": "error",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-08T21:22:20+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "no_same_model_retry",
+          "kind": "attempts_primary_eq",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_hang",
+          "kind": "no_hang",
+          "status": "pass",
+          "detail": "ended in 1.0s (error)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "fallback_attempted",
+          "kind": "fallback_used",
+          "status": "info",
+          "detail": "0 fallback attempt(s)",
+          "severity": "advisory",
+          "informational": true
+        }
+      ],
+      "metrics": {
+        "outcome": "error",
+        "complete": false,
+        "error": "dsh finish_reason='error', final_response=empty",
+        "status": null,
+        "elapsed_s": 0.955,
+        "ttft_s": 0.851,
+        "reported_model": null,
+        "usage": null,
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 0,
+        "primary_times": [
+          0.9471
+        ],
+        "fallback_times": [],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "0.95s fb-s13-content-filter #1 -> 400 content_policy_violation"
+        ],
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": false
+    },
+    {
+      "id": "S14",
+      "title": "Fallback target rejects prefill",
+      "model": "fb-s14-stream-cut",
+      "fallback_model": "fb-ok-noprefill",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-08T21:22:22+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "no_prefill_masking",
+          "kind": "no_prefill_masking",
+          "status": "pass",
+          "detail": "0 prefill rejection(s) at the fallback; final outcome success",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "no_truncated_success",
+          "kind": "no_truncated_success",
+          "status": "pass",
+          "detail": "complete answer",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 2.718,
+        "ttft_s": 0.981,
+        "reported_model": "fake/fb-ok-noprefill",
+        "usage": {
+          "prompt_tokens": 810,
+          "completion_tokens": 60,
+          "total_tokens": 870
+        },
+        "fallback_model": "fb-ok-noprefill",
+        "attempts_primary": 1,
+        "attempts_fallback": 1,
+        "primary_times": [
+          1.0791
+        ],
+        "fallback_times": [
+          1.7441
+        ],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "1.08s fb-s14-stream-cut #1 -> 200 stream cut after 40 tokens (no terminating chunk)",
+          "1.74s fb-ok-noprefill #1 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null
@@ -247,9 +953,9 @@
       "ideal": "success",
       "stream": true,
       "mode": "sequence",
-      "started_at": "2026-09-08T20:46:20+00:00",
-      "verdict": "fail",
-      "reason": "failed: recovered",
+      "started_at": "2026-09-08T21:22:25+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
       "checks": [
         {
           "id": "no_hang",
@@ -270,8 +976,8 @@
         {
           "id": "recovered",
           "kind": "seq_recovered_within_s",
-          "status": "fail",
-          "detail": "primary never used again after recovery",
+          "status": "pass",
+          "detail": "primary answered again +0.1s after recovery",
           "severity": "required",
           "informational": false
         },
@@ -279,7 +985,7 @@
           "id": "probe_discipline",
           "kind": "seq_probe_discipline",
           "status": "pass",
-          "detail": "1 primary attempt(s) for 15 request(s) during the outage",
+          "detail": "15 primary attempt(s) for 15 request(s) during the outage",
           "severity": "advisory",
           "informational": true
         }
@@ -289,67 +995,94 @@
         "complete": true,
         "error": null,
         "status": null,
-        "elapsed_s": 77.029,
-        "ttft_s": 0.006,
-        "reported_model": "fake/fb-ok",
+        "elapsed_s": 77.026,
+        "ttft_s": 0.007,
+        "reported_model": "fake/fb-s15-flap",
         "usage": {
-          "prompt_tokens": 2425,
+          "prompt_tokens": 810,
           "completion_tokens": 60,
-          "total_tokens": 2485
+          "total_tokens": 870
         },
         "fallback_model": "fb-ok",
-        "attempts_primary": 1,
-        "attempts_fallback": 20,
+        "attempts_primary": 20,
+        "attempts_fallback": 15,
         "primary_times": [
-          0.9112
+          0.9745,
+          4.0558,
+          8.0506,
+          12.0536,
+          16.0556,
+          20.0507,
+          24.0471,
+          28.0538,
+          32.0558,
+          36.0584,
+          40.056,
+          44.0493,
+          48.0492,
+          52.0555,
+          56.0548,
+          60.0532,
+          64.0506,
+          68.0502,
+          72.0471,
+          76.0527
         ],
         "fallback_times": [
-          0.9313,
-          4.0412,
-          8.0384,
-          12.0443,
-          16.041,
-          20.0368,
-          24.0412,
-          28.037,
-          32.0413,
-          36.0431,
-          40.0343,
-          44.0361,
-          48.0389,
-          52.0376,
-          56.05,
-          60.0392,
-          64.043,
-          68.038,
-          72.0404,
-          76.0404
+          0.9946,
+          4.0692,
+          8.0628,
+          12.0655,
+          16.0676,
+          20.065,
+          24.0596,
+          28.0647,
+          32.068,
+          36.0694,
+          40.0672,
+          44.0607,
+          48.0605,
+          52.0698,
+          56.0658
         ],
-        "first_gap_s": null,
+        "first_gap_s": 3.081,
         "prefill_rejections": 0,
         "wall_actions": [
-          "0.91s fb-s15-flap #1 -> 503 (down window)",
-          "0.93s fb-ok #1 -> 200 stream",
-          "4.04s fb-ok #2 -> 200 stream",
-          "8.04s fb-ok #3 -> 200 stream",
-          "12.04s fb-ok #4 -> 200 stream",
-          "16.04s fb-ok #5 -> 200 stream",
-          "20.04s fb-ok #6 -> 200 stream",
-          "24.04s fb-ok #7 -> 200 stream",
-          "28.04s fb-ok #8 -> 200 stream",
-          "30.52s fb-s06-no-response #1 -> no-response 120s",
-          "32.04s fb-ok #9 -> 200 stream",
-          "36.04s fb-ok #10 -> 200 stream",
-          "40.03s fb-ok #11 -> 200 stream",
-          "44.04s fb-ok #12 -> 200 stream",
-          "48.04s fb-ok #13 -> 200 stream",
-          "52.04s fb-ok #14 -> 200 stream",
-          "56.05s fb-ok #15 -> 200 stream",
-          "60.04s fb-ok #16 -> 200 stream",
-          "64.04s fb-ok #17 -> 200 stream",
-          "68.04s fb-ok #18 -> 200 stream",
-          "72.04s fb-ok #19 -> 200 stream",
-          "76.04s fb-ok #20 -> 200 stream"
+          "0.97s fb-s15-flap #1 -> 503 (down window)",
+          "0.99s fb-ok #1 -> 200 stream",
+          "4.06s fb-s15-flap #2 -> 503 (down window)",
+          "4.07s fb-ok #2 -> 200 stream",
+          "8.05s fb-s15-flap #3 -> 503 (down window)",
+          "8.06s fb-ok #3 -> 200 stream",
+          "12.05s fb-s15-flap #4 -> 503 (down window)",
+          "12.07s fb-ok #4 -> 200 stream",
+          "16.06s fb-s15-flap #5 -> 503 (down window)",
+          "16.07s fb-ok #5 -> 200 stream",
+          "20.05s fb-s15-flap #6 -> 503 (down window)",
+          "20.07s fb-ok #6 -> 200 stream",
+          "24.05s fb-s15-flap #7 -> 503 (down window)",
+          "24.06s fb-ok #7 -> 200 stream",
+          "28.05s fb-s15-flap #8 -> 503 (down window)",
+          "28.06s fb-ok #8 -> 200 stream",
+          "32.06s fb-s15-flap #9 -> 503 (down window)",
+          "32.07s fb-ok #9 -> 200 stream",
+          "36.06s fb-s15-flap #10 -> 503 (down window)",
+          "36.07s fb-ok #10 -> 200 stream",
+          "40.06s fb-s15-flap #11 -> 503 (down window)",
+          "40.07s fb-ok #11 -> 200 stream",
+          "44.05s fb-s15-flap #12 -> 503 (down window)",
+          "44.06s fb-ok #12 -> 200 stream",
+          "48.05s fb-s15-flap #13 -> 503 (down window)",
+          "48.06s fb-ok #13 -> 200 stream",
+          "52.06s fb-s15-flap #14 -> 503 (down window)",
+          "52.07s fb-ok #14 -> 200 stream",
+          "56.05s fb-s15-flap #15 -> 503 (down window)",
+          "56.07s fb-ok #15 -> 200 stream",
+          "60.05s fb-s15-flap #16 -> 200 (recovered)",
+          "64.05s fb-s15-flap #17 -> 200 (recovered)",
+          "68.05s fb-s15-flap #18 -> 200 (recovered)",
+          "72.05s fb-s15-flap #19 -> 200 (recovered)",
+          "76.05s fb-s15-flap #20 -> 200 (recovered)"
         ],
         "seq_items": [
           {
@@ -357,16 +1090,16 @@
             "t_sent": 0.0,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.912,
+            "elapsed_s": 1.97,
             "reported_model": "fake/fb-ok",
             "error": null
           },
           {
             "i": 1,
-            "t_sent": 4.001,
+            "t_sent": 4.0,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.023,
+            "elapsed_s": 1.037,
             "reported_model": "fake/fb-ok",
             "error": null
           },
@@ -375,16 +1108,16 @@
             "t_sent": 8.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.021,
+            "elapsed_s": 1.033,
             "reported_model": "fake/fb-ok",
             "error": null
           },
           {
             "i": 3,
-            "t_sent": 12.001,
+            "t_sent": 12.0,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.025,
+            "elapsed_s": 1.034,
             "reported_model": "fake/fb-ok",
             "error": null
           },
@@ -393,7 +1126,7 @@
             "t_sent": 16.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.014,
+            "elapsed_s": 1.035,
             "reported_model": "fake/fb-ok",
             "error": null
           },
@@ -402,7 +1135,7 @@
             "t_sent": 20.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.014,
+            "elapsed_s": 1.033,
             "reported_model": "fake/fb-ok",
             "error": null
           },
@@ -411,7 +1144,7 @@
             "t_sent": 24.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.02,
+            "elapsed_s": 1.028,
             "reported_model": "fake/fb-ok",
             "error": null
           },
@@ -420,7 +1153,7 @@
             "t_sent": 28.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.021,
+            "elapsed_s": 1.034,
             "reported_model": "fake/fb-ok",
             "error": null
           },
@@ -429,7 +1162,7 @@
             "t_sent": 32.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.018,
+            "elapsed_s": 1.035,
             "reported_model": "fake/fb-ok",
             "error": null
           },
@@ -438,7 +1171,7 @@
             "t_sent": 36.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.022,
+            "elapsed_s": 1.041,
             "reported_model": "fake/fb-ok",
             "error": null
           },
@@ -447,7 +1180,7 @@
             "t_sent": 40.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.009,
+            "elapsed_s": 1.037,
             "reported_model": "fake/fb-ok",
             "error": null
           },
@@ -456,7 +1189,7 @@
             "t_sent": 44.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.013,
+            "elapsed_s": 1.026,
             "reported_model": "fake/fb-ok",
             "error": null
           },
@@ -465,7 +1198,7 @@
             "t_sent": 48.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.084,
+            "elapsed_s": 1.029,
             "reported_model": "fake/fb-ok",
             "error": null
           },
@@ -474,7 +1207,7 @@
             "t_sent": 52.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.045,
+            "elapsed_s": 1.038,
             "reported_model": "fake/fb-ok",
             "error": null
           },
@@ -483,17 +1216,17 @@
             "t_sent": 56.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.028,
+            "elapsed_s": 1.034,
             "reported_model": "fake/fb-ok",
             "error": null
           },
           {
             "i": 15,
-            "t_sent": 60.002,
+            "t_sent": 60.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.018,
-            "reported_model": "fake/fb-ok",
+            "elapsed_s": 1.023,
+            "reported_model": "fake/fb-s15-flap",
             "error": null
           },
           {
@@ -501,8 +1234,8 @@
             "t_sent": 64.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.023,
-            "reported_model": "fake/fb-ok",
+            "elapsed_s": 1.016,
+            "reported_model": "fake/fb-s15-flap",
             "error": null
           },
           {
@@ -510,8 +1243,8 @@
             "t_sent": 68.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.018,
-            "reported_model": "fake/fb-ok",
+            "elapsed_s": 1.02,
+            "reported_model": "fake/fb-s15-flap",
             "error": null
           },
           {
@@ -519,8 +1252,8 @@
             "t_sent": 72.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.015,
-            "reported_model": "fake/fb-ok",
+            "elapsed_s": 1.02,
+            "reported_model": "fake/fb-s15-flap",
             "error": null
           },
           {
@@ -528,18 +1261,88 @@
             "t_sent": 76.001,
             "outcome": "success",
             "complete": true,
-            "elapsed_s": 1.018,
-            "reported_model": "fake/fb-ok",
+            "elapsed_s": 1.02,
+            "reported_model": "fake/fb-s15-flap",
             "error": null
           }
         ],
         "seq_hangs": 0,
         "seq_requests_during_down": 15,
         "seq_served_during_down": 15,
-        "seq_primary_attempts_during_down": 1,
-        "seq_recovered_after_s": null,
+        "seq_primary_attempts_during_down": 15,
+        "seq_recovered_after_s": 0.053,
         "seq_success_after_down": 5,
         "flap_down_s": 60.0,
+        "alive_after": true,
+        "alive_error": null
+      },
+      "content_ok": true
+    },
+    {
+      "id": "S16",
+      "title": "Fail-over accounting",
+      "model": "fb-s16-503-persistent",
+      "fallback_model": "fb-ok",
+      "ideal": "success",
+      "stream": true,
+      "mode": "single",
+      "started_at": "2026-09-08T21:23:43+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
+      "checks": [
+        {
+          "id": "reports_fallback_model",
+          "kind": "reported_model_is_fallback",
+          "status": "pass",
+          "detail": "response.model = 'fake/fb-ok'",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "usage_present",
+          "kind": "usage_present",
+          "status": "pass",
+          "detail": "usage = {'prompt_tokens': 810, 'completion_tokens': 60, 'total_tokens': 870}",
+          "severity": "advisory",
+          "informational": false
+        },
+        {
+          "id": "bounded_attempts",
+          "kind": "attempts_primary_max",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
+          "severity": "required",
+          "informational": false
+        }
+      ],
+      "metrics": {
+        "outcome": "success",
+        "complete": true,
+        "error": null,
+        "status": null,
+        "elapsed_s": 2.002,
+        "ttft_s": 0.915,
+        "reported_model": "fake/fb-ok",
+        "usage": {
+          "prompt_tokens": 810,
+          "completion_tokens": 60,
+          "total_tokens": 870
+        },
+        "fallback_model": "fb-ok",
+        "attempts_primary": 1,
+        "attempts_fallback": 1,
+        "primary_times": [
+          1.0125
+        ],
+        "fallback_times": [
+          1.0332
+        ],
+        "first_gap_s": null,
+        "prefill_rejections": 0,
+        "wall_actions": [
+          "1.01s fb-s16-503-persistent #1 -> 503",
+          "1.03s fb-ok #1 -> 200 stream"
+        ],
         "alive_after": true,
         "alive_error": null
       },

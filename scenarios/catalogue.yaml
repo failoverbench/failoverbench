@@ -102,13 +102,14 @@ scenarios:
     title: "No response at all"
     model: fb-s06-no-response
     fault: "The provider accepts the request and never answers (up to 120 s)."
-    correct: "Give up well inside the provider's silence and fail over or fail cleanly. Retrying a silent provider on the same route only multiplies the wait: the bound is 45 s, 1.5x the 30 s timeout every system is configured with."
-    seen: "Stuck upstream connections. SDKs that retry a timeout three times spend 90 s saying nothing."
+    correct: "Honour the configured timeout and end the call inside the configured budget: two retries of 30 s each plus slack, 100 s. Retrying a silent provider on the same route only multiplies the wait; failing over after the first timeout is the mature behaviour and is recorded as an advisory check."
+    seen: "Stuck upstream connections. In the Sep 2026 run every SDK and gateway retried the silent route (91-96 s); one gateway's timeouts never fired at all and the call had to be cut at 130 s."
     stream: true
     max_wall_s: 130
     checks:
-      - {id: bounded, kind: wall_max_s, value: 45}
+      - {id: within_budget, kind: wall_max_s, value: 100}
       - {id: no_hang, kind: no_hang}
+      - {id: silent_route_not_retried, kind: attempts_primary_max, value: 1, severity: advisory}
 
   - id: S07
     title: "Slow first token"

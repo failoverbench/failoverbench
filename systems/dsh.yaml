@@ -8,3 +8,4 @@ params:
   workspace: gateways/dsh/workspace
   provider: fake
   request_timeout_s: 60
+  session_per_request: true
