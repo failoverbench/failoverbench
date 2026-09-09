@@ -39,10 +39,10 @@
   "run_started_at": "2026-09-08T21:23:48+00:00",
   "run_seconds": 204.4,
   "summary": {
-    "pass": 11,
+    "pass": 12,
     "partial": 3,
     "safe": 1,
-    "fail": 1,
+    "fail": 0,
     "na": 0
   },
   "scenarios": [
@@ -771,15 +771,23 @@
       "ideal": "success",
       "stream": true,
       "mode": "single",
-      "started_at": "2026-09-08T21:22:18+00:00",
-      "verdict": "fail",
-      "reason": "failed: no_same_model_retry",
+      "started_at": "2026-09-09T09:39:06+00:00",
+      "verdict": "pass",
+      "reason": "rescued",
       "checks": [
         {
-          "id": "no_same_model_retry",
-          "kind": "attempts_primary_eq",
-          "status": "fail",
-          "detail": "2 primary attempt(s)",
+          "id": "no_blind_retry",
+          "kind": "context_retry_discipline",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "bounded_attempts",
+          "kind": "attempts_primary_max",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
           "severity": "required",
           "informational": false
         },
@@ -787,38 +795,47 @@
           "id": "no_hang",
           "kind": "no_hang",
           "status": "pass",
-          "detail": "ended in 0.9s (error)",
+          "detail": "ended in 1.9s (success)",
           "severity": "required",
           "informational": false
         }
       ],
       "metrics": {
-        "outcome": "error",
-        "complete": false,
-        "error": "dsh finish_reason='error', final_response=empty",
+        "outcome": "success",
+        "complete": true,
+        "content_words": 60,
+        "error": null,
         "status": null,
-        "elapsed_s": 0.936,
-        "ttft_s": 0.818,
-        "reported_model": null,
-        "usage": null,
+        "elapsed_s": 1.95,
+        "ttft_s": 0.851,
+        "reported_model": "fake/fb-ok",
+        "usage": {
+          "prompt_tokens": 810,
+          "completion_tokens": 60,
+          "total_tokens": 870
+        },
         "fallback_model": "fb-ok",
-        "attempts_primary": 2,
-        "attempts_fallback": 0,
+        "attempts_primary": 1,
+        "attempts_fallback": 1,
         "primary_times": [
-          0.9156,
-          0.9337
+          0.9531
         ],
-        "fallback_times": [],
-        "first_gap_s": 0.018,
+        "primary_prompt_tokens": [
+          810
+        ],
+        "fallback_times": [
+          0.9722
+        ],
+        "first_gap_s": null,
         "prefill_rejections": 0,
         "wall_actions": [
-          "0.92s fb-s12-context-length #1 -> 400 context_length_exceeded",
-          "0.93s fb-s12-context-length #2 -> 400 context_length_exceeded"
+          "0.95s fb-s12-context-length #1 -> 400 context_length_exceeded",
+          "0.97s fb-ok #1 -> 200 stream"
         ],
         "alive_after": true,
         "alive_error": null
       },
-      "content_ok": false
+      "content_ok": true
     },
     {
       "id": "S13",
@@ -1348,5 +1365,29 @@
       },
       "content_ok": true
     }
-  ]
+  ],
+  "reruns": [
+    {
+      "ids": [
+        "S12"
+      ],
+      "run_started_at": "2026-09-09T09:38:26+00:00",
+      "run_seconds": 4.7
+    },
+    {
+      "ids": [
+        "S12"
+      ],
+      "run_started_at": "2026-09-09T09:39:06+00:00",
+      "run_seconds": 4.6
+    },
+    {
+      "ids": [
+        "S12"
+      ],
+      "run_started_at": "2026-09-09T09:39:10+00:00",
+      "run_seconds": 4.1
+    }
+  ],
+  "rescored_at": "2026-09-09T09:40:10+00:00"
 }

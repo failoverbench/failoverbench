@@ -17,7 +17,7 @@ Every cell is one scenario run through one system against the same misbehaving p
 | **S09** Stream stalls | ○ safe<br><sub>1p/0f · 30.3s</sub> | ○ safe<br><sub>1p/0f · 30.3s</sub> | ✅ pass<br><sub>1p/1f · 32.3s</sub> | ○ safe<br><sub>1p/0f · 30.3s</sub> | ○ safe<br><sub>1p/0f · 30.3s</sub> | ○ safe<br><sub>1p/0f · 30.3s</sub> | ○ safe<br><sub>1p/0f · 30.3s</sub> | ○ safe<br><sub>1p/0f · 30.3s</sub> | ❌ fail<br><sub>1p/0f · 30.3s · TRUNCATED</sub> | ✅ pass<br><sub>1p/1f · 11.3s</sub> |
 | **S10** Malformed chunk in the stream | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ○ safe<br><sub>1p/0f · 1.2s</sub> | ○ safe<br><sub>1p/0f · 0.2s</sub> | ○ safe<br><sub>1p/0f · 0.2s</sub> | ○ safe<br><sub>1p/0f · 0.2s</sub> | ○ safe<br><sub>1p/0f · 0.2s</sub> | ○ safe<br><sub>1p/0f · 0.2s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> |
 | **S11** Stream ends without [DONE] | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.9s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> |
-| **S12** Context length exceeded | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ○ safe<br><sub>1p/0f · 0.0s</sub> | ❌ fail<br><sub>2p/0f · gap 0.0s · 0.9s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> |
+| **S12** Context length exceeded | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>1p/1f · 1.9s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ○ safe<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/1f · 1.0s</sub> |
 | **S13** Content-filter rejection | ◐ partial<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 0.0s</sub> | ✅ pass<br><sub>1p/0f · 1.0s</sub> | ◐ partial<br><sub>1p/1f · 1.0s</sub> | ◐ partial<br><sub>1p/1f · 1.0s</sub> | ◐ partial<br><sub>1p/1f · 1.0s</sub> | ◐ partial<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 0.0s</sub> | ◐ partial<br><sub>1p/1f · 1.0s</sub> | ✅ pass<br><sub>1p/0f · 0.0s</sub> |
 | **S14** Fallback target rejects prefill | ○ safe<br><sub>1p/0f · 0.6s</sub> | ○ safe<br><sub>1p/0f · 0.6s</sub> | ✅ pass<br><sub>1p/1f · 2.7s</sub> | ○ safe<br><sub>1p/0f · 0.6s</sub> | ○ safe<br><sub>1p/0f · 0.7s</sub> | ○ safe<br><sub>1p/0f · 0.7s</sub> | ○ safe<br><sub>1p/0f · 0.7s</sub> | ○ safe<br><sub>1p/0f · 0.6s</sub> | ❌ fail<br><sub>1p/0f · 0.7s · TRUNCATED</sub> | ✅ pass<br><sub>3p/1f · gap 1.2s · 4.6s</sub> |
 | **S15** Primary flaps: down, then healthy | ✅ pass<br><sub>15/15 served in outage · back on primary +0s</sub> | ○ safe<br><sub>0/15 served in outage · back on primary +0s</sub> | ✅ pass<br><sub>15/15 served in outage · back on primary +0s</sub> | ✅ pass<br><sub>15/15 served in outage · back on primary +0s</sub> | ✅ pass<br><sub>11/11 served in outage · back on primary +0s</sub> | ✅ pass<br><sub>15/15 served in outage · back on primary +4s</sub> | ✅ pass<br><sub>11/11 served in outage · back on primary +2s</sub> | ○ safe<br><sub>0/15 served in outage · back on primary +0s</sub> | ✅ pass<br><sub>15/15 served in outage · back on primary +0s</sub> | ✅ pass<br><sub>15/15 served in outage · back on primary +0s</sub> |
@@ -31,7 +31,7 @@ Contrast rows (a subset of scenarios re-run under a different setting):
 |---|---:|---:|---:|---:|---:|
 | Bifrost v2.1.0 (Docker) | 9 | 3 | 3 | 1 | 275s |
 | No gateway (direct, no retries) | 4 | 0 | 12 | 0 | 162s |
-| DeepSeek Harness + dsh-llm-fallbacks (SDK) | 11 | 3 | 1 | 1 | 204s |
+| DeepSeek Harness + dsh-llm-fallbacks (SDK) | 12 | 3 | 1 | 0 | 204s |
 | LangChain ChatOpenAI + with_fallbacks | 9 | 3 | 4 | 0 | 238s |
 | LiteLLM proxy (Docker) | 9 | 3 | 4 | 0 | 252s |
 | LiteLLM Router, tuned (allowed_fails + cooldown) | 9 | 3 | 4 | 0 | 243s |
@@ -110,7 +110,8 @@ Bifrost with a custom provider `fake` (base_provider_type openai, base_url = the
 - wall log: 0.00s fb-s11-no-done #1 -> 200 stream complete, [DONE] omitted
 
 **S12 Context length exceeded** — ✅ pass — rescued
-- `no_same_model_retry` pass: 1 primary attempt(s)
+- `no_blind_retry` pass: 1 primary attempt(s)
+- `bounded_attempts` pass: 1 primary attempt(s)
 - `no_hang` pass: ended in 1.0s (success)
 - wall log: 0.00s fb-s12-context-length #1 -> 400 context_length_exceeded; 0.00s fb-ok #1 -> 200 stream
 
@@ -205,7 +206,8 @@ Control row: one request straight at the provider with no retries, no fallback, 
 - wall log: 0.00s fb-s11-no-done #1 -> 200 stream complete, [DONE] omitted
 
 **S12 Context length exceeded** — ○ safe — not rescued — clean error: HTTP 400: This model's maximum context length is 8192 tokens. However, your mess
-- `no_same_model_retry` pass: 1 primary attempt(s)
+- `no_blind_retry` pass: 1 primary attempt(s)
+- `bounded_attempts` pass: 1 primary attempt(s)
 - `no_hang` pass: ended in 0.0s (error)
 - wall log: 0.00s fb-s12-context-length #1 -> 400 context_length_exceeded
 
@@ -299,10 +301,11 @@ EXPERIMENTAL. DeepSeek Harness 0.1.2-rc.1 driven through the official Python SDK
 - `usage_reported` pass: usage = {'prompt_tokens': 810, 'completion_tokens': 60, 'total_tokens': 870}
 - wall log: 0.92s fb-s11-no-done #1 -> 200 stream complete, [DONE] omitted
 
-**S12 Context length exceeded** — ❌ fail — failed: no_same_model_retry
-- `no_same_model_retry` FAIL: 2 primary attempt(s)
-- `no_hang` pass: ended in 0.9s (error)
-- wall log: 0.92s fb-s12-context-length #1 -> 400 context_length_exceeded; 0.93s fb-s12-context-length #2 -> 400 context_length_exceeded
+**S12 Context length exceeded** — ✅ pass — rescued
+- `no_blind_retry` pass: 1 primary attempt(s)
+- `bounded_attempts` pass: 1 primary attempt(s)
+- `no_hang` pass: ended in 1.9s (success)
+- wall log: 0.95s fb-s12-context-length #1 -> 400 context_length_exceeded; 0.97s fb-ok #1 -> 200 stream
 
 **S13 Content-filter rejection** — ✅ pass — rescued
 - `no_same_model_retry` pass: 1 primary attempt(s)
@@ -395,7 +398,8 @@ langchain-openai ChatOpenAI(max_retries=2, timeout=30) with .with_fallbacks([Cha
 - wall log: 0.00s fb-s11-no-done #1 -> 200 stream complete, [DONE] omitted
 
 **S12 Context length exceeded** — ✅ pass — rescued
-- `no_same_model_retry` pass: 1 primary attempt(s)
+- `no_blind_retry` pass: 1 primary attempt(s)
+- `bounded_attempts` pass: 1 primary attempt(s)
 - `no_hang` pass: ended in 1.0s (success)
 - wall log: 0.00s fb-s12-context-length #1 -> 400 context_length_exceeded; 0.01s fb-ok #1 -> 200 stream
 
@@ -490,7 +494,8 @@ LiteLLM proxy container configured by `python -m failoverbench litellm-config` (
 - wall log: 0.01s fb-s11-no-done #1 -> 200 stream complete, [DONE] omitted
 
 **S12 Context length exceeded** — ✅ pass — rescued
-- `no_same_model_retry` pass: 1 primary attempt(s)
+- `no_blind_retry` pass: 1 primary attempt(s)
+- `bounded_attempts` pass: 1 primary attempt(s)
 - `no_hang` pass: ended in 1.0s (success)
 - wall log: 0.01s fb-s12-context-length #1 -> 400 context_length_exceeded; 0.02s fb-ok #1 -> 200 stream
 
@@ -585,7 +590,8 @@ Same as the LiteLLM Router row plus allowed_fails=1 and cooldown_time=30, the se
 - wall log: 0.01s fb-s11-no-done #1 -> 200 stream complete, [DONE] omitted
 
 **S12 Context length exceeded** — ✅ pass — rescued
-- `no_same_model_retry` pass: 1 primary attempt(s)
+- `no_blind_retry` pass: 1 primary attempt(s)
+- `bounded_attempts` pass: 1 primary attempt(s)
 - `no_hang` pass: ended in 1.0s (success)
 - wall log: 0.01s fb-s12-context-length #1 -> 400 context_length_exceeded; 0.02s fb-ok #1 -> 200 stream
 
@@ -680,7 +686,8 @@ litellm.Router with one primary and one fallback deployment per scenario, num_re
 - wall log: 0.01s fb-s11-no-done #1 -> 200 stream complete, [DONE] omitted
 
 **S12 Context length exceeded** — ✅ pass — rescued
-- `no_same_model_retry` pass: 1 primary attempt(s)
+- `no_blind_retry` pass: 1 primary attempt(s)
+- `bounded_attempts` pass: 1 primary attempt(s)
 - `no_hang` pass: ended in 1.0s (success)
 - wall log: 0.01s fb-s12-context-length #1 -> 400 context_length_exceeded; 0.02s fb-ok #1 -> 200 stream
 
@@ -775,7 +782,8 @@ The official SDK with its defaults except timeout (600 s → 30 s so a run stays
 - wall log: 0.00s fb-s11-no-done #1 -> 200 stream complete, [DONE] omitted
 
 **S12 Context length exceeded** — ○ safe — not rescued — clean error: BadRequestError: Error code: 400 - {'error': {'message': "This model's maximum c
-- `no_same_model_retry` pass: 1 primary attempt(s)
+- `no_blind_retry` pass: 1 primary attempt(s)
+- `bounded_attempts` pass: 1 primary attempt(s)
 - `no_hang` pass: ended in 0.0s (error)
 - wall log: 0.00s fb-s12-context-length #1 -> 400 context_length_exceeded
 
@@ -846,13 +854,13 @@ Open-source Portkey AI Gateway. Everything is per request in x-portkey-config: a
 - wall log: 0.01s fb-s07-slow-ttft #1 -> 200 stream, first token after 20s
 
 **S08 Stream cut mid-answer** — ❌ fail — truncated answer presented as success
-- `no_truncated_success` FAIL: success with 40/60 words
+- `no_truncated_success` FAIL: success with 0/60 words
 - `no_hang` pass: ended in 0.7s (success)
 - wall log: 0.01s fb-s08-stream-cut #1 -> 200 stream cut after 40 tokens (no terminating chunk)
 
 **S09 Stream stalls** — ❌ fail — truncated answer presented as success
 - `bounded` pass: 30.3s
-- `no_truncated_success` FAIL: success with 20/60 words
+- `no_truncated_success` FAIL: success with 0/60 words
 - `alive_after` pass: healthy call succeeded afterwards
 - `no_hang` pass: ended in 30.3s (success)
 - wall log: 0.01s fb-s09-stream-stall #1 -> 200 stream stalled after 20 tokens for 30s then close; 25.70s fb-s06-no-response #1 -> no-response 120s
@@ -870,7 +878,8 @@ Open-source Portkey AI Gateway. Everything is per request in x-portkey-config: a
 - wall log: 0.01s fb-s11-no-done #1 -> 200 stream complete, [DONE] omitted
 
 **S12 Context length exceeded** — ✅ pass — rescued
-- `no_same_model_retry` pass: 1 primary attempt(s)
+- `no_blind_retry` pass: 1 primary attempt(s)
+- `bounded_attempts` pass: 1 primary attempt(s)
 - `no_hang` pass: ended in 1.0s (success)
 - wall log: 0.00s fb-s12-context-length #1 -> 400 context_length_exceeded; 0.01s fb-ok #1 -> 200 stream
 
@@ -882,7 +891,7 @@ Open-source Portkey AI Gateway. Everything is per request in x-portkey-config: a
 
 **S14 Fallback target rejects prefill** — ❌ fail — truncated answer presented as success
 - `no_prefill_masking` pass: 0 prefill rejection(s) at the fallback; final outcome success
-- `no_truncated_success` FAIL: success with 40/60 words
+- `no_truncated_success` FAIL: success with 0/60 words
 - wall log: 0.01s fb-s14-stream-cut #1 -> 200 stream cut after 40 tokens (no terminating chunk)
 
 **S15 Primary flaps: down, then healthy** — ✅ pass — rescued
@@ -965,7 +974,8 @@ A small client written to pass: honours Retry-After, backs off with jitter, retr
 - wall log: 0.00s fb-s11-no-done #1 -> 200 stream complete, [DONE] omitted
 
 **S12 Context length exceeded** — ✅ pass — rescued
-- `no_same_model_retry` pass: 1 primary attempt(s)
+- `no_blind_retry` pass: 1 primary attempt(s)
+- `bounded_attempts` pass: 1 primary attempt(s)
 - `no_hang` pass: ended in 1.0s (success)
 - wall log: 0.00s fb-s12-context-length #1 -> 400 context_length_exceeded; 0.00s fb-ok #1 -> 200 stream
 

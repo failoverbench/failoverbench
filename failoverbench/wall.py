@@ -330,6 +330,7 @@ class Wall:
                 continuation = True
 
         prompt_tokens = sum(len(str(m.get("content") or "").split()) + 4 for m in messages)
+        entry["prompt_tokens"] = prompt_tokens  # lets the runner tell a compacted retry from a blind one
 
         # ---- the faults -----------------------------------------------------
         if behaviour in ("ok", "ok_noprefill"):

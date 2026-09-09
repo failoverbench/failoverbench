@@ -30,6 +30,8 @@ python -m failoverbench report --profile fast && open results/fast/SCORECARD.md
 
 Testing a gateway that runs in Docker? Start the wall with `--host 0.0.0.0` so the container can reach it at `host.docker.internal:8401`.
 
+Re-running one scenario after a fix? `run --only S12 --merge` splices the new result into the system's existing results file (the file records which ids were re-run and when). Changed a check in the catalogue? `python -m failoverbench rescore` re-evaluates every stored result against the current rules without touching the measurements.
+
 ## Systems under test
 
 | System | Config | Status |

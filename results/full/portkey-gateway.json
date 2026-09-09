@@ -547,7 +547,7 @@
           "id": "no_truncated_success",
           "kind": "no_truncated_success",
           "status": "fail",
-          "detail": "success with 40/60 words",
+          "detail": "success with 0/60 words",
           "severity": "required",
           "informational": false
         },
@@ -610,7 +610,7 @@
           "id": "no_truncated_success",
           "kind": "no_truncated_success",
           "status": "fail",
-          "detail": "success with 20/60 words",
+          "detail": "success with 0/60 words",
           "severity": "required",
           "informational": false
         },
@@ -805,8 +805,16 @@
       "reason": "rescued",
       "checks": [
         {
-          "id": "no_same_model_retry",
-          "kind": "attempts_primary_eq",
+          "id": "no_blind_retry",
+          "kind": "context_retry_discipline",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "bounded_attempts",
+          "kind": "attempts_primary_max",
           "status": "pass",
           "detail": "1 primary attempt(s)",
           "severity": "required",
@@ -948,7 +956,7 @@
           "id": "no_truncated_success",
           "kind": "no_truncated_success",
           "status": "fail",
-          "detail": "success with 40/60 words",
+          "detail": "success with 0/60 words",
           "severity": "required",
           "informational": false
         }
@@ -1449,5 +1457,6 @@
   ],
   "notes": [
     "S06 re-run 2026-09-08T21:19:58+00:00 under catalogue methodology 0.1 (timing 120s silence); merged from results-s06."
-  ]
+  ],
+  "rescored_at": "2026-09-09T09:40:10+00:00"
 }

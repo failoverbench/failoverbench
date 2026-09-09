@@ -767,8 +767,16 @@
       "reason": "rescued",
       "checks": [
         {
-          "id": "no_same_model_retry",
-          "kind": "attempts_primary_eq",
+          "id": "no_blind_retry",
+          "kind": "context_retry_discipline",
+          "status": "pass",
+          "detail": "1 primary attempt(s)",
+          "severity": "required",
+          "informational": false
+        },
+        {
+          "id": "bounded_attempts",
+          "kind": "attempts_primary_max",
           "status": "pass",
           "detail": "1 primary attempt(s)",
           "severity": "required",
@@ -1411,5 +1419,6 @@
   ],
   "notes": [
     "S06 re-run 2026-09-08T21:12:44+00:00 under catalogue methodology 0.1 (timing 120s silence); merged from results-s06."
-  ]
+  ],
+  "rescored_at": "2026-09-09T09:40:10+00:00"
 }

@@ -11,6 +11,9 @@ Next scorecard: **Monday 5 October 2026** (methodology v0.1, profile `full`).
 - Methodology: the baseline configuration (2 retries, 30 s timeout, one fallback) is now stated explicitly.
 - S06 made consistent with that baseline: the required check is now "ends within the configured budget" (100 s = two 30 s retries plus slack) and "did not retry the silent route" is advisory. Under the old 45 s bound every system that obeyed its own configured retries failed; now a system that retries a silent route scores partial (rescued) or safe (not rescued), and only a system whose timeout never fires (a hang past 130 s) fails.
 - DSH adapter: a fresh session per request by default, so a session that keeps a replaced model cannot be mistaken for a circuit that never probes.
+- S12 no longer fails a compacting retry: the wall logs the prompt size of every attempt, and the check (`context_retry_discipline`) accepts a retry that is strictly smaller than the one before it while still failing a same-size resend. Runs made before the size was logged keep their old verdict rather than gaining from the gap.
+- `run --only … --merge` splices a partial re-run into the existing results file (recorded under `reruns`); `rescore` re-evaluates stored results against the current catalogue without touching measurements. New tests in `tests/test_scoring.py`.
+- DSH homes now list `CONTEXT_WINDOW_EXCEEDED` in the plugin's `triggerCodes`; without it the plugin never sees a context-length rejection (see the S12 row).
 
 ## 2026-09-07 — 0.1.0
 - The wall: fake OpenAI-compatible provider, sixteen faults selected by model name, request log with millisecond timings, TCP reset / cut / stall / malformed / no-[DONE] stream faults, prefill continuation.

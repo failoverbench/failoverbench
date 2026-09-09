@@ -17,6 +17,7 @@
 #   complete                 success AND content equals the canonical answer
 #   no_truncated_success     fails only if the system returned "success" with a truncated answer
 #   attempts_primary_min/max/eq   attempts the wall saw on the primary model
+#   context_retry_discipline  one primary attempt, or every retry smaller than the last (compaction); a same-size resend fails
 #   attempts_fallback_min/max     attempts the wall saw on the fallback model
 #   first_gap_min_s          seconds between primary attempt 1 and 2 (missing attempt 2 = fail)
 #   max_attempts_within      primary attempts inside the first `window_s` seconds <= value
@@ -179,12 +180,13 @@ scenarios:
     title: "Context length exceeded"
     model: fb-s12-context-length
     fault: "HTTP 400 with code `context_length_exceeded` on every attempt."
-    correct: "Do not retry the same model. Route to a larger-context model if one is configured; otherwise fail cleanly."
-    seen: "Every long-prompt pipeline."
+    correct: "Never resend the request unchanged: route to a larger-context model if one is configured, or fail cleanly. A retry is acceptable only if it is smaller than the one before (an agent harness compacting its context)."
+    seen: "Every long-prompt pipeline. Agent harnesses compact and retry once (DeepSeek Harness); gateways must route or refuse."
     stream: true
     max_wall_s: 20
     checks:
-      - {id: no_same_model_retry, kind: attempts_primary_eq, value: 1}
+      - {id: no_blind_retry, kind: context_retry_discipline}
+      - {id: bounded_attempts, kind: attempts_primary_max, value: 2}
       - {id: no_hang, kind: no_hang}
 
   - id: S13

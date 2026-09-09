@@ -98,7 +98,8 @@ def evaluate_check(check: dict, m: dict, caps: dict, profile: str) -> dict:
         return out(ok, "complete answer" if ok else ("truncated/altered answer" if oc == "success" else oc))
     if kind == "no_truncated_success":
         bad = oc == "success" and not m["complete"]
-        return out(not bad, f"success with {len(norm(m.get('content')).split())}/60 words" if bad else
+        words = m.get("content_words", len(norm(m.get("content")).split()))
+        return out(not bad, f"success with {words}/60 words" if bad else
                    ("complete answer" if oc == "success" else f"no success claimed ({oc})"))
     if kind == "attempts_primary_min":
         return out(m["attempts_primary"] >= value, f"{m['attempts_primary']} primary attempt(s)")
@@ -106,6 +107,22 @@ def evaluate_check(check: dict, m: dict, caps: dict, profile: str) -> dict:
         return out(m["attempts_primary"] <= value, f"{m['attempts_primary']} primary attempt(s)")
     if kind == "attempts_primary_eq":
         return out(m["attempts_primary"] == value, f"{m['attempts_primary']} primary attempt(s)")
+    if kind == "context_retry_discipline":
+        # A request the model cannot fit must not be resent unchanged. One
+        # attempt is ideal; a retry is acceptable only if it is smaller than the
+        # one before it (an agent harness compacting its context), never the
+        # same size or larger (a gateway blindly retrying a 400).
+        n = m["attempts_primary"]
+        sizes = m.get("primary_prompt_tokens") or []
+        if n <= 1:
+            return out(True, f"{n} primary attempt(s)")
+        if len(sizes) < n or any(s is None for s in sizes):
+            # A run made before the wall logged prompt sizes: without the sizes a
+            # retry cannot be told from a resend, so it scores as the old rule did.
+            return out(False, f"{n} primary attempts, prompt sizes not recorded — counted as a resend (re-run to measure)")
+        shrinking = all(b < a for a, b in zip(sizes, sizes[1:]))
+        return out(shrinking, f"{n} primary attempts, prompt sizes {sizes} — " +
+                   ("each retry smaller (compacted)" if shrinking else "resent at the same or larger size"))
     if kind == "attempts_fallback_min":
         return out(m["attempts_fallback"] >= value, f"{m['attempts_fallback']} fallback attempt(s)")
     if kind == "attempts_fallback_max":
@@ -204,6 +221,7 @@ def base_metrics(sc: dict, fallback_model: str, r: CallResult, log_entries: list
         "outcome": "hang" if r.hang else ("success" if r.ok else "error"),
         "complete": norm(r.content) == CANON,
         "content": r.content,
+        "content_words": len(norm(r.content).split()),
         "error": r.error,
         "status": r.status,
         "elapsed_s": r.elapsed_s,
@@ -214,6 +232,7 @@ def base_metrics(sc: dict, fallback_model: str, r: CallResult, log_entries: list
         "attempts_primary": len(prim),
         "attempts_fallback": len(fb),
         "primary_times": [e["t"] for e in prim],
+        "primary_prompt_tokens": [e.get("prompt_tokens") for e in prim],
         "fallback_times": [e["t"] for e in fb],
         "first_gap_s": round(prim[1]["t"] - prim[0]["t"], 3) if len(prim) >= 2 else None,
         "prefill_rejections": sum(1 for e in log_entries if str(e.get("action", "")).startswith("400 prefill")),
@@ -290,8 +309,82 @@ async def run_scenario(adapter, caps, wall: WallControl, sc: dict, cat: dict, pr
             "content_ok": m["complete"]}
 
 
+def summarise(results: list[dict]) -> dict:
+    return {v: sum(1 for r in results if r["verdict"] == v) for v in ("pass", "partial", "safe", "fail", "na")}
+
+
+def merge_partial(existing: dict, fresh: dict, cat: dict) -> dict:
+    """Splice a partial re-run (`--only`) into an earlier full result document.
+
+    Scenarios re-run now replace their earlier entries; everything else is kept
+    as it was, in catalogue order. The document records which ids were re-run
+    and when, so a reader can tell a spliced row from a single sitting.
+    """
+    fresh_by = {r["id"]: r for r in fresh["scenarios"]}
+    kept = {r["id"]: r for r in existing["scenarios"]}
+    kept.update(fresh_by)
+    order = [s["id"] for s in cat["scenarios"]]
+    merged = dict(existing)
+    merged["scenarios"] = [kept[i] for i in order if i in kept] + [r for i, r in kept.items() if i not in order]
+    merged["summary"] = summarise(merged["scenarios"])
+    merged["failoverbench"] = fresh["failoverbench"]
+    merged["methodology"] = fresh["methodology"]
+    merged["timing"] = fresh["timing"]
+    merged["system"] = fresh["system"]
+    merged.setdefault("reruns", []).append({"ids": sorted(fresh_by), "run_started_at": fresh["run_started_at"],
+                                            "run_seconds": fresh["run_seconds"]})
+    return merged
+
+
+def rescore_doc(doc: dict, cat: dict) -> tuple[dict, list[str]]:
+    """Re-evaluate every stored scenario against the current catalogue.
+
+    Metrics are what happened and are never touched; only checks, verdicts and
+    reasons are recomputed. Used when a check changes after a run (methodology
+    edits before a scorecard is frozen) so a row need not be re-run to be scored
+    the same way as its neighbours. Returns the new document and a list of
+    verdict changes as "S12: fail -> pass".
+    """
+    scen = {s["id"]: s for s in cat["scenarios"]}
+    caps = doc["system"].get("capabilities") or {}
+    profile = doc.get("profile", "full")
+    changes = []
+    for r in doc["scenarios"]:
+        sc = scen.get(r["id"])
+        if not sc:
+            continue
+        m = r["metrics"]
+        checks = [evaluate_check(c, m, caps, profile) for c in (sc.get("checks") or [])]
+        verdict, reason = verdict_for(sc, checks, m)
+        if verdict != r["verdict"]:
+            changes.append(f"{r['id']}: {r['verdict']} -> {verdict}")
+        r.update({"title": sc["title"], "ideal": sc.get("ideal", "success"), "verdict": verdict, "reason": reason,
+                  "checks": checks})
+    doc["summary"] = summarise(doc["scenarios"])
+    doc["methodology"] = cat.get("version")
+    doc["rescored_at"] = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
+    return doc, changes
+
+
+def rescore(results_dir: str, profile: str, catalogue_path: str) -> None:
+    cat = load_yaml(catalogue_path)
+    folder = os.path.join(results_dir, profile)
+    for name in sorted(os.listdir(folder)):
+        if not name.endswith(".json"):
+            continue
+        path = os.path.join(folder, name)
+        with open(path, encoding="utf-8") as fh:
+            doc = json.load(fh)
+        doc, changes = rescore_doc(doc, cat)
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(doc, fh, indent=2)
+        s = doc["summary"]
+        print(f"{doc['system']['name']:<24} pass {s['pass']:>2}  partial {s['partial']:>2}  safe {s['safe']:>2}  fail {s['fail']:>2}"
+              + (f"   changed: {', '.join(changes)}" if changes else ""), flush=True)
+
+
 async def run_system(system_path: str, catalogue_path: str, wall_base: str, profile: str, only: set[str] | None,
-                     out_dir: str, quiet: bool = False) -> str:
+                     out_dir: str, quiet: bool = False, merge: bool = False) -> str:
     system = load_yaml(system_path)
     cat = load_yaml(catalogue_path)
     wall = WallControl(wall_base)
@@ -329,11 +422,14 @@ async def run_system(system_path: str, catalogue_path: str, wall_base: str, prof
                    "capabilities": caps, "notes": system.get("notes")},
         "run_started_at": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
         "run_seconds": round(time.monotonic() - t_run, 1),
-        "summary": {v: sum(1 for r in results if r["verdict"] == v) for v in ("pass", "partial", "safe", "fail", "na")},
+        "summary": summarise(results),
         "scenarios": results,
     }
     os.makedirs(os.path.join(out_dir, profile), exist_ok=True)
     out_path = os.path.join(out_dir, profile, f"{system['name']}.json")
+    if merge and only and os.path.exists(out_path):
+        with open(out_path, encoding="utf-8") as fh:
+            doc = merge_partial(json.load(fh), doc, cat)
     with open(out_path, "w", encoding="utf-8") as fh:
         json.dump(doc, fh, indent=2)
     return out_path
@@ -348,12 +444,27 @@ def main(argv=None):
     ap.add_argument("--wall", default="http://127.0.0.1:8401", help="the wall's base URL (control endpoints live here)")
     ap.add_argument("--profile", choices=("fast", "full"), default="full")
     ap.add_argument("--only", default="", help="comma-separated scenario ids, e.g. S01,S08")
+    ap.add_argument("--merge", action="store_true",
+                    help="with --only: splice the re-run scenarios into the existing results/<profile>/<system>.json instead of replacing it")
     ap.add_argument("--out", default="results")
     ap.add_argument("--quiet", action="store_true")
     args = ap.parse_args(argv)
     only = {s.strip().upper() for s in args.only.split(",") if s.strip()} or None
-    path = asyncio.run(run_system(args.system, args.catalogue, args.wall, args.profile, only, args.out, args.quiet))
+    path = asyncio.run(run_system(args.system, args.catalogue, args.wall, args.profile, only, args.out, args.quiet,
+                                  merge=args.merge))
     print(f"wrote {path}", file=sys.stderr)
+
+
+def rescore_main(argv=None):
+    import argparse
+
+    ap = argparse.ArgumentParser(prog="failoverbench rescore",
+                                 description="Re-evaluate stored results against the current catalogue (metrics untouched).")
+    ap.add_argument("--results", default="results")
+    ap.add_argument("--profile", choices=("fast", "full"), default="full")
+    ap.add_argument("--catalogue", default="scenarios/catalogue.yaml")
+    args = ap.parse_args(argv)
+    rescore(args.results, args.profile, args.catalogue)
 
 
 if __name__ == "__main__":

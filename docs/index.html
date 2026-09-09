@@ -180,7 +180,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td class='sc'>S12 Context length exceeded<small>HTTP 400 with code `context_length_exceeded` on every attempt.</small></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
-<td class='cell'><span class='v fail'>fail</span><sub>2p/0f · gap 0.0s · 0.9s</sub></td>
+<td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.9s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.0s</sub></td>
@@ -244,7 +244,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td>Bifrost v2.1.0 (Docker)</td><td>9</td><td>3</td><td>3</td><td>1</td><td>275s</td></tr>
 <tr><td>No gateway (direct, no retries)</td><td>4</td><td>0</td><td>12</td><td>0</td><td>162s</td></tr>
 <tr><td>DSH, shared session</td><td>0</td><td>0</td><td>0</td><td>1</td><td>79s</td></tr>
-<tr><td>DeepSeek Harness + dsh-llm-fallbacks (SDK)</td><td>11</td><td>3</td><td>1</td><td>1</td><td>204s</td></tr>
+<tr><td>DeepSeek Harness + dsh-llm-fallbacks (SDK)</td><td>12</td><td>3</td><td>1</td><td>0</td><td>204s</td></tr>
 <tr><td>LangChain ChatOpenAI + with_fallbacks</td><td>9</td><td>3</td><td>4</td><td>0</td><td>238s</td></tr>
 <tr><td>LiteLLM proxy (Docker)</td><td>9</td><td>3</td><td>4</td><td>0</td><td>252s</td></tr>
 <tr><td>LiteLLM Router, tuned (allowed_fails + cooldown)</td><td>9</td><td>3</td><td>4</td><td>0</td><td>243s</td></tr>
@@ -319,7 +319,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.00s fb-s11-no-done #1 -&gt; 200 stream complete, [DONE] omitted</li>
 </ul>
 <p><strong>S12 Context length exceeded</strong> — <span class='v pass'>pass</span> rescued</p><ul>
-<li><code>no_same_model_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>no_blind_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
 <li><code>no_hang</code> pass: ended in 1.0s (success)</li>
 <li>wall log: 0.00s fb-s12-context-length #1 -&gt; 400 context_length_exceeded; 0.00s fb-ok #1 -&gt; 200 stream</li>
 </ul>
@@ -413,7 +414,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.00s fb-s11-no-done #1 -&gt; 200 stream complete, [DONE] omitted</li>
 </ul>
 <p><strong>S12 Context length exceeded</strong> — <span class='v safe'>safe</span> not rescued — clean error: HTTP 400: This model&#x27;s maximum context length is 8192 tokens. However, your mess</p><ul>
-<li><code>no_same_model_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>no_blind_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
 <li><code>no_hang</code> pass: ended in 0.0s (error)</li>
 <li>wall log: 0.00s fb-s12-context-length #1 -&gt; 400 context_length_exceeded</li>
 </ul>
@@ -517,10 +519,11 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li><code>usage_reported</code> pass: usage = {&#x27;prompt_tokens&#x27;: 810, &#x27;completion_tokens&#x27;: 60, &#x27;total_tokens&#x27;: 870}</li>
 <li>wall log: 0.92s fb-s11-no-done #1 -&gt; 200 stream complete, [DONE] omitted</li>
 </ul>
-<p><strong>S12 Context length exceeded</strong> — <span class='v fail'>fail</span> failed: no_same_model_retry</p><ul>
-<li><code>no_same_model_retry</code> FAIL: 2 primary attempt(s)</li>
-<li><code>no_hang</code> pass: ended in 0.9s (error)</li>
-<li>wall log: 0.92s fb-s12-context-length #1 -&gt; 400 context_length_exceeded; 0.93s fb-s12-context-length #2 -&gt; 400 context_length_exceeded</li>
+<p><strong>S12 Context length exceeded</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>no_blind_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
+<li><code>no_hang</code> pass: ended in 1.9s (success)</li>
+<li>wall log: 0.95s fb-s12-context-length #1 -&gt; 400 context_length_exceeded; 0.97s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 <p><strong>S13 Content-filter rejection</strong> — <span class='v pass'>pass</span> rescued</p><ul>
 <li><code>no_same_model_retry</code> pass: 1 primary attempt(s)</li>
@@ -612,7 +615,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.00s fb-s11-no-done #1 -&gt; 200 stream complete, [DONE] omitted</li>
 </ul>
 <p><strong>S12 Context length exceeded</strong> — <span class='v pass'>pass</span> rescued</p><ul>
-<li><code>no_same_model_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>no_blind_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
 <li><code>no_hang</code> pass: ended in 1.0s (success)</li>
 <li>wall log: 0.00s fb-s12-context-length #1 -&gt; 400 context_length_exceeded; 0.01s fb-ok #1 -&gt; 200 stream</li>
 </ul>
@@ -706,7 +710,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.01s fb-s11-no-done #1 -&gt; 200 stream complete, [DONE] omitted</li>
 </ul>
 <p><strong>S12 Context length exceeded</strong> — <span class='v pass'>pass</span> rescued</p><ul>
-<li><code>no_same_model_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>no_blind_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
 <li><code>no_hang</code> pass: ended in 1.0s (success)</li>
 <li>wall log: 0.01s fb-s12-context-length #1 -&gt; 400 context_length_exceeded; 0.02s fb-ok #1 -&gt; 200 stream</li>
 </ul>
@@ -800,7 +805,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.01s fb-s11-no-done #1 -&gt; 200 stream complete, [DONE] omitted</li>
 </ul>
 <p><strong>S12 Context length exceeded</strong> — <span class='v pass'>pass</span> rescued</p><ul>
-<li><code>no_same_model_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>no_blind_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
 <li><code>no_hang</code> pass: ended in 1.0s (success)</li>
 <li>wall log: 0.01s fb-s12-context-length #1 -&gt; 400 context_length_exceeded; 0.02s fb-ok #1 -&gt; 200 stream</li>
 </ul>
@@ -894,7 +900,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.01s fb-s11-no-done #1 -&gt; 200 stream complete, [DONE] omitted</li>
 </ul>
 <p><strong>S12 Context length exceeded</strong> — <span class='v pass'>pass</span> rescued</p><ul>
-<li><code>no_same_model_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>no_blind_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
 <li><code>no_hang</code> pass: ended in 1.0s (success)</li>
 <li>wall log: 0.01s fb-s12-context-length #1 -&gt; 400 context_length_exceeded; 0.02s fb-ok #1 -&gt; 200 stream</li>
 </ul>
@@ -988,7 +995,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.00s fb-s11-no-done #1 -&gt; 200 stream complete, [DONE] omitted</li>
 </ul>
 <p><strong>S12 Context length exceeded</strong> — <span class='v safe'>safe</span> not rescued — clean error: BadRequestError: Error code: 400 - {&#x27;error&#x27;: {&#x27;message&#x27;: &quot;This model&#x27;s maximum c</p><ul>
-<li><code>no_same_model_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>no_blind_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
 <li><code>no_hang</code> pass: ended in 0.0s (error)</li>
 <li>wall log: 0.00s fb-s12-context-length #1 -&gt; 400 context_length_exceeded</li>
 </ul>
@@ -1058,13 +1066,13 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.01s fb-s07-slow-ttft #1 -&gt; 200 stream, first token after 20s</li>
 </ul>
 <p><strong>S08 Stream cut mid-answer</strong> — <span class='v fail'>fail</span> truncated answer presented as success</p><ul>
-<li><code>no_truncated_success</code> FAIL: success with 40/60 words</li>
+<li><code>no_truncated_success</code> FAIL: success with 0/60 words</li>
 <li><code>no_hang</code> pass: ended in 0.7s (success)</li>
 <li>wall log: 0.01s fb-s08-stream-cut #1 -&gt; 200 stream cut after 40 tokens (no terminating chunk)</li>
 </ul>
 <p><strong>S09 Stream stalls</strong> — <span class='v fail'>fail</span> truncated answer presented as success</p><ul>
 <li><code>bounded</code> pass: 30.3s</li>
-<li><code>no_truncated_success</code> FAIL: success with 20/60 words</li>
+<li><code>no_truncated_success</code> FAIL: success with 0/60 words</li>
 <li><code>alive_after</code> pass: healthy call succeeded afterwards</li>
 <li><code>no_hang</code> pass: ended in 30.3s (success)</li>
 <li>wall log: 0.01s fb-s09-stream-stall #1 -&gt; 200 stream stalled after 20 tokens for 30s then close; 25.70s fb-s06-no-response #1 -&gt; no-response 120s</li>
@@ -1082,7 +1090,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.01s fb-s11-no-done #1 -&gt; 200 stream complete, [DONE] omitted</li>
 </ul>
 <p><strong>S12 Context length exceeded</strong> — <span class='v pass'>pass</span> rescued</p><ul>
-<li><code>no_same_model_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>no_blind_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
 <li><code>no_hang</code> pass: ended in 1.0s (success)</li>
 <li>wall log: 0.00s fb-s12-context-length #1 -&gt; 400 context_length_exceeded; 0.01s fb-ok #1 -&gt; 200 stream</li>
 </ul>
@@ -1094,7 +1103,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 </ul>
 <p><strong>S14 Fallback target rejects prefill</strong> — <span class='v fail'>fail</span> truncated answer presented as success</p><ul>
 <li><code>no_prefill_masking</code> pass: 0 prefill rejection(s) at the fallback; final outcome success</li>
-<li><code>no_truncated_success</code> FAIL: success with 40/60 words</li>
+<li><code>no_truncated_success</code> FAIL: success with 0/60 words</li>
 <li>wall log: 0.01s fb-s14-stream-cut #1 -&gt; 200 stream cut after 40 tokens (no terminating chunk)</li>
 </ul>
 <p><strong>S15 Primary flaps: down, then healthy</strong> — <span class='v pass'>pass</span> rescued</p><ul>
@@ -1176,7 +1185,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.00s fb-s11-no-done #1 -&gt; 200 stream complete, [DONE] omitted</li>
 </ul>
 <p><strong>S12 Context length exceeded</strong> — <span class='v pass'>pass</span> rescued</p><ul>
-<li><code>no_same_model_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>no_blind_retry</code> pass: 1 primary attempt(s)</li>
+<li><code>bounded_attempts</code> pass: 1 primary attempt(s)</li>
 <li><code>no_hang</code> pass: ended in 1.0s (success)</li>
 <li>wall log: 0.00s fb-s12-context-length #1 -&gt; 400 context_length_exceeded; 0.00s fb-ok #1 -&gt; 200 stream</li>
 </ul>
@@ -1205,5 +1215,5 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.00s fb-s16-503-persistent #1 -&gt; 503; 0.60s fb-s16-503-persistent #2 -&gt; 503; 1.75s fb-s16-503-persistent #3 -&gt; 503; 1.75s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 </details>
-<footer>Results CC BY 4.0 · harness MIT · generated 2026-09-08 21:33 UTC from results/full · <a href='https://github.com/failoverbench/failoverbench/blob/main/METHODOLOGY.md'>methodology</a> · <a href='https://github.com/failoverbench/failoverbench/tree/main/results/full'>raw results</a></footer>
+<footer>Results CC BY 4.0 · harness MIT · generated 2026-09-09 09:40 UTC from results/full · <a href='https://github.com/failoverbench/failoverbench/blob/main/METHODOLOGY.md'>methodology</a> · <a href='https://github.com/failoverbench/failoverbench/tree/main/results/full'>raw results</a></footer>
 </div></body></html>

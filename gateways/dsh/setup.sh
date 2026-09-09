@@ -40,7 +40,7 @@ llm-pi-ai:
 $models
 fallbacks:
   enabled: true
-  triggerCodes: [AUTH, QUOTA, RATE_LIMIT, SERVER, TIMEOUT, TRANSPORT, EMPTY_RESPONSE]
+  triggerCodes: [AUTH, QUOTA, RATE_LIMIT, SERVER, TIMEOUT, TRANSPORT, EMPTY_RESPONSE, CONTEXT_WINDOW_EXCEEDED]
   rootChain: [fake/$chain_tail]
   cooldownMs: 30000
   recovery: half-open

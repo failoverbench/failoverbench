@@ -32,6 +32,10 @@ Each system's capabilities and parameters are declared in `systems/<name>.yaml` 
 
 **Baseline configuration.** Every system is given the same budget so rows are comparable: up to two retries, a 30 s request (or stream-idle) timeout, and one fallback model. Everything else is the vendor's default, and every departure from a default is stated in the system's notes. Where a vendor's default differs from the baseline (Bifrost ships with zero retries; LiteLLM never cools down a single deployment), a second "tuned" or "defaults" row may be added so the difference is visible rather than hidden.
 
+## Context-length rejections (S12)
+
+A request the model cannot fit must never be resent unchanged. One attempt is ideal; an agent harness that compacts its context and retries once is doing the right thing, so a retry is accepted when it is strictly smaller than the attempt before it (the wall records the prompt size of every attempt). A same-size resend, or more than two attempts, fails.
+
 ## Sequence scenarios
 
 S15 sends twenty requests four seconds apart across a sixty-second outage. Scored: no request hung; requests during the outage were answered (via the fallback); the primary was used again within thirty seconds of recovering; and, informationally, how many primary attempts were made per request during the outage (a circuit breaker makes this number small).
@@ -43,6 +47,8 @@ After every scenario the runner sends one healthy `fb-ok` request through the sa
 ## Publication
 
 A scorecard is published on the first Monday of every month from a `full` run of every listed system on the same machine and the same wall build. Raw JSON results, the wall log excerpt for each cell, and the exact configuration ship with it. Vendors receive each failing scenario as an issue with a one-command reproduction at least seven days before publication. Methodology changes bump this document's version; verdicts from different versions are never compared in one table.
+
+Between scorecards a row may be partly re-run (`run --only … --merge`, after a configuration fix on our side) or re-scored (`rescore`, after a check changes); the results file records both, with timestamps. A re-score never alters a measurement, only how it is judged, and a rule that needs data an older run did not record scores that run as the older rule did rather than in its favour.
 
 ## Known limits
 
