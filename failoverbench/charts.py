@@ -90,7 +90,7 @@ SHORT = [  # (regex on system name, two-line column header)
     (r"^reference$", "Reference\nclient"),
     (r"^direct$", "No\ngateway\n(control)"),
     (r"^bifrost$", "Bifrost"),
-    (r"^dsh$", "DeepSeek\nHarness +\nplugin"),
+    (r"^dsh$", "DeepSeek\nHarness\n+ plugin"),
     (r"^langchain$", "LangChain\nfallbacks"),
     (r"^litellm-proxy$", "LiteLLM\nproxy"),
     (r"^litellm-router$", "LiteLLM\nRouter"),
@@ -141,9 +141,18 @@ def scorecard_png(results_dir: str, profile: str, catalogue_path: str, out: str,
         sent = _sentence_with(d["system"].get("notes") or "", "not scored here")
         if sent:
             notes.append(f"{_short(d['system']['name'], d['system']['label']).replace(chr(10), ' ')}: {sent}")
-    W = 1200
+    W = 1400
     probe = plt.figure(figsize=(W / 100, 1), dpi=100)
     note_lines = [_wrap(probe, n, 11.5, W - 120) for n in notes[:3]]
+    # Geometry is measured, never assumed: the label column fits the longest scenario title
+    # with a full margin, and the header font steps down until every line clears its column.
+    row_fs, head_fs, margin, pad = 12.0, 11.0, 60.0, 10.0
+    label_w = max(_measure(probe, f"{sc['id']}  {sc['title']}", row_fs) for sc in cat["scenarios"])
+    left = margin + label_w + 16
+    cw = (W - left - margin) / len(full)
+    heads = [_short(d["system"]["name"], d["system"]["label"]) for d in full]
+    while head_fs > 8.5 and max(_measure(probe, ln, head_fs) for h in heads for ln in h.split("\n")) > cw - pad:
+        head_fs -= 0.5
     plt.close(probe)
     n_lines = sum(len(x) for x in note_lines)
     notes_start = 268 + len(ids) * 54 + 18 + 70 + 34 + 4 * 30 + 24   # header + grid + totals + legend
@@ -155,24 +164,23 @@ def scorecard_png(results_dir: str, profile: str, catalogue_path: str, out: str,
     T = lambda x, y, s, **k: ax.text(x, y, s, **{**FONT, **k})  # noqa: E731
 
     # header
-    T(60, 78, "Failover Bench scorecard" + (f" — {edition}" if edition else ""), fontsize=30, fontweight="semibold", color=INK["primary"], va="center")
+    T(60, 78, "Failover Bench scorecard" + (f" — {edition}" if edition else ""), fontsize=30, fontweight="bold", color=INK["primary"], va="center")
     T(60, 122, f"{len(ids)} ways a provider can break × {len(full)} gateways and SDKs — one fake provider, one baseline setup",
       fontsize=14, color=INK["secondary"], va="center")
     T(60, 148, f"2 retries · 30 s timeout · one fallback · methodology v{cat.get('version')} · results as of {date_text} · "
       f"one-command repro and raw log for every cell", fontsize=12.5, color=INK["muted"], va="center")
 
     # grid geometry
-    left, top = 356, 268
-    ncol, nrow = len(names), len(ids)
-    cw, ch, gap = (W - left - 60) / ncol, 54, 2
+    top, nrow = 268, len(ids)
+    ch, gap = 54, 2
     # column headers (up to three short lines, bottom-aligned to the grid)
     for j, n in enumerate(names):
         cx = left + j * cw + cw / 2
-        T(cx, top - 14, _short(n, full[j]["system"]["label"]), fontsize=11, color=INK["primary"], ha="center", va="bottom", linespacing=1.15)
+        T(cx, top - 14, heads[j], fontsize=head_fs, color=INK["primary"], ha="center", va="bottom", linespacing=1.15)
     # rows
     for i, sid in enumerate(ids):
         y = top + i * ch
-        T(left - 16, y + ch / 2, f"{sid}  {titles[sid]}", fontsize=12, color=INK["primary"], ha="right", va="center")
+        T(left - 16, y + ch / 2, f"{sid}  {titles[sid]}", fontsize=row_fs, color=INK["primary"], ha="right", va="center")
         for j, n in enumerate(names):
             r = by[n].get(sid)
             v = r["verdict"] if r else "na"
@@ -183,8 +191,8 @@ def scorecard_png(results_dir: str, profile: str, catalogue_path: str, out: str,
                 T(x + cw / 2, y + ch / 2 + 1, glyph, fontsize=17, color=INK["primary"], ha="center", va="center", fontweight="bold")
     # totals row
     ty = top + nrow * ch + 18
-    ax.plot([left, W - 60], [ty - 8, ty - 8], color=INK["axis"], linewidth=1)
-    T(left - 16, ty + 16, "pass · partial · safe · fail", fontsize=11, color=INK["muted"], ha="right", va="center")
+    ax.plot([left, W - margin], [ty - 8, ty - 8], color=INK["axis"], linewidth=1)
+    T(left - 16, ty + 16, "pass · partial · safe · fail", fontsize=10.5, color=INK["muted"], ha="right", va="center")
     for j, n in enumerate(names):
         sm = full[j]["summary"]
         T(left + j * cw + cw / 2, ty + 16, f"{sm['pass']}·{sm['partial']}·{sm['safe']}·{sm['fail']}", fontsize=11,
@@ -192,13 +200,13 @@ def scorecard_png(results_dir: str, profile: str, catalogue_path: str, out: str,
 
     # legend
     ly = ty + 70
-    T(60, ly, "How to read a cell", fontsize=13, fontweight="semibold", color=INK["primary"], va="center")
+    T(60, ly, "How to read a cell", fontsize=13, fontweight="bold", color=INK["primary"], va="center")
     for k, v in enumerate(["pass", "partial", "safe", "fail"]):
         glyph, tint, chip, word, meaning = VERDICT[v]
         yy = ly + 34 + k * 30
         ax.add_patch(Rectangle((60, yy - 11), 34, 22, facecolor=tint, edgecolor="none"))
         T(77, yy + 1, glyph, fontsize=13, color=INK["primary"], ha="center", va="center", fontweight="bold")
-        T(108, yy, word, fontsize=13, fontweight="semibold", color=INK["primary"], va="center")
+        T(108, yy, word, fontsize=13, fontweight="bold", color=INK["primary"], va="center")
         T(190, yy, meaning, fontsize=13, color=INK["secondary"], va="center")
 
     # footnotes
@@ -261,7 +269,7 @@ def timeline_png(scenario_id: str, docs: list[dict], catalogue_path: str, out: s
     ax = fig.add_axes([0, 0, 1, 1]); ax.set_xlim(0, W); ax.set_ylim(H, 0); ax.axis("off")
     T = lambda x, y, s, **k: ax.text(x, y, s, **{**FONT, **k})  # noqa: E731
 
-    T(60, 62, headline or f"{scenario_id}: {sc['title']}", fontsize=24, fontweight="semibold", color=INK["primary"], va="center")
+    T(60, 62, headline or f"{scenario_id}: {sc['title']}", fontsize=24, fontweight="bold", color=INK["primary"], va="center")
     T(60, 100, f"{scenario_id} · {sc['fault']}", fontsize=13.5, color=INK["secondary"], va="center")
 
     px0, px1 = 330, W - 60
@@ -288,7 +296,7 @@ def timeline_png(scenario_id: str, docs: list[dict], catalogue_path: str, out: s
         m = r["metrics"]; v = r["verdict"]
         first, _, rest = label.partition("\n")
         two = bool(rest)
-        T(px0 - 18, y - (26 if two else 12), first, fontsize=13.5, fontweight="semibold", color=INK["primary"], ha="right", va="center")
+        T(px0 - 18, y - (26 if two else 12), first, fontsize=13.5, fontweight="bold", color=INK["primary"], ha="right", va="center")
         if two:
             T(px0 - 18, y - 6, rest, fontsize=12, color=INK["secondary"], ha="right", va="center")
         outcome = {"pass": "complete answer", "partial": "answered, with a caveat", "safe": "clean error, no answer",
@@ -303,15 +311,15 @@ def timeline_png(scenario_id: str, docs: list[dict], catalogue_path: str, out: s
             if s_["kind"] == "wait":  # label above the bar, anchored at its start
                 T(x0 + 2, y - 24, s_["label"], fontsize=11.5, color=INK["secondary"], ha="left", va="center")
             else:  # the outcome: to the right of the bar end, in primary ink
-                T(x1 + 8, y + 1, s_["label"], fontsize=12, color=INK["primary"], ha="left", va="center", fontweight="semibold")
+                T(x1 + 8, y + 1, s_["label"], fontsize=12, color=INK["primary"], ha="left", va="center", fontweight="bold")
         if m["outcome"] != "success":
             xe = xs(float(m["elapsed_s"]))
             ax.plot([xe, xe], [y - 18, y + 18], color=STATUS["critical"], linewidth=2.5, zorder=3)
             txt = f"client gave up · {float(m['elapsed_s']):.0f} s"
-            if xe + 9 + _measure(fig, txt, 12, "semibold") <= px1 + 30:
-                T(xe + 9, y + 1, txt, fontsize=12, color=INK["primary"], ha="left", va="center", fontweight="semibold")
+            if xe + 9 + _measure(fig, txt, 12, "bold") <= px1 + 30:
+                T(xe + 9, y + 1, txt, fontsize=12, color=INK["primary"], ha="left", va="center", fontweight="bold")
             else:
-                T(xe - 8, y + 26, txt, fontsize=12, color=INK["primary"], ha="right", va="center", fontweight="semibold")
+                T(xe - 8, y + 26, txt, fontsize=12, color=INK["primary"], ha="right", va="center", fontweight="bold")
 
     # legend (measured widths, no overlap)
     ly = base_y + 76
@@ -340,7 +348,7 @@ def explainer_png(out: str, n_faults: int = 16) -> str:
     fig.patch.set_facecolor(SURFACE)
     ax = fig.add_axes([0, 0, 1, 1]); ax.set_xlim(0, W); ax.set_ylim(H, 0); ax.axis("off")
     T = lambda x, y, s, **k: ax.text(x, y, s, **{**FONT, **k})  # noqa: E731
-    T(60, 60, "How Failover Bench measures a gateway or SDK", fontsize=24, fontweight="semibold", color=INK["primary"], va="center")
+    T(60, 60, "How Failover Bench measures a gateway or SDK", fontsize=24, fontweight="bold", color=INK["primary"], va="center")
     T(60, 98, "The same request, sixteen times — each time the provider behind the gateway misbehaves in a different, documented way.",
       fontsize=13.5, color=INK["secondary"], va="center")
 
@@ -352,7 +360,7 @@ def explainer_png(out: str, n_faults: int = 16) -> str:
     bw, bh, by = 360, 178, 150
     for x, title, body, fill in boxes:
         ax.add_patch(Rectangle((x, by), bw, bh, facecolor=fill, edgecolor="none"))
-        T(x + 18, by + 30, title, fontsize=14, fontweight="semibold", color=INK["primary"], va="center")
+        T(x + 18, by + 30, title, fontsize=14, fontweight="bold", color=INK["primary"], va="center")
         T(x + 18, by + 60, body, fontsize=12, color=INK["secondary"], va="top", linespacing=1.4)
     # arrows (request goes right, what came back goes left)
     for x0, x1 in ((420, 520), (880, 980)):
@@ -364,24 +372,36 @@ def explainer_png(out: str, n_faults: int = 16) -> str:
 
     # scoring strip
     sy = by + bh + 52
-    T(60, sy, "4 · The score", fontsize=14, fontweight="semibold", color=INK["primary"], va="center")
+    T(60, sy, "4 · The score", fontsize=14, fontweight="bold", color=INK["primary"], va="center")
     T(60, sy + 30, "The runner compares what the caller got with what the wall saw (every attempt, with timings) and applies the scenario's checks:",
       fontsize=12.5, color=INK["secondary"], va="center")
-    x = 60
-    fs = 12.5
-    total = sum(44 + _measure(fig, VERDICT[v][3], fs, "semibold") + 8 + _measure(fig, {"pass": "complete answer", "partial": "answered, with a caveat",
-                "safe": "clean error, no answer", "fail": "a hang, or half an answer shown as success"}[v], fs) + 30 for v in ("pass", "partial", "safe", "fail"))
-    if total > W - 120:
-        fs = 11.5
-    for v in ("pass", "partial", "safe", "fail"):
-        glyph, tint, chip, word, meaning = VERDICT[v]
-        ax.add_patch(Rectangle((x, sy + 52), 34, 22, facecolor=tint, edgecolor="none"))
-        T(x + 17, sy + 64, glyph, fontsize=13, color=INK["primary"], ha="center", va="center", fontweight="bold")
-        T(x + 44, sy + 63, word, fontsize=fs, fontweight="semibold", color=INK["primary"], va="center")
-        short = {"pass": "complete answer", "partial": "answered, with a caveat", "safe": "clean error, no answer",
-                 "fail": "a hang, or half an answer shown as success"}[v]
-        T(x + 44 + _measure(fig, word, fs, "semibold") + 8, sy + 63, short, fontsize=fs, color=INK["secondary"], va="center")
-        x += 44 + _measure(fig, word, fs, "semibold") + 8 + _measure(fig, short, fs) + 30
+    fs, gap_x = 12.5, 30
+    SHORTS = {"pass": "complete answer", "partial": "answered, with a caveat", "safe": "clean error, no answer",
+              "fail": "a hang, or half an answer shown as success"}
+    widths = {v: 44 + _measure(fig, VERDICT[v][3], fs, "bold") + 8 + _measure(fig, SHORTS[v], fs) for v in SHORTS}
+    order = ("pass", "partial", "safe", "fail")
+    fits = lambda row: sum(widths[v] for v in row) + gap_x * (len(row) - 1) <= W - 120  # noqa: E731
+    if fits(order):
+        rows = [list(order)]
+    elif fits(order[:2]) and fits(order[2:]):
+        rows = [list(order[:2]), list(order[2:])]   # two balanced rows read better than 3 + 1
+    else:
+        rows, cur = [], []
+        for v in order:
+            if cur and not fits(cur + [v]):
+                rows.append(cur); cur = []
+            cur.append(v)
+        rows.append(cur)
+    for ri, row in enumerate(rows):
+        x, y = 60, sy + 52 + ri * 30
+        for v in row:
+            glyph, tint, chip, word, meaning = VERDICT[v]
+            ax.add_patch(Rectangle((x, y), 34, 22, facecolor=tint, edgecolor="none"))
+            T(x + 17, y + 12, glyph, fontsize=13, color=INK["primary"], ha="center", va="center", fontweight="bold")
+            T(x + 44, y + 11, word, fontsize=fs, fontweight="bold", color=INK["primary"], va="center")
+            T(x + 44 + _measure(fig, word, fs, "bold") + 8, y + 11, SHORTS[v], fontsize=fs, color=INK["secondary"], va="center")
+            x += widths[v] + gap_x
+
     T(60, H - 40, "Every healthy answer is the same sixty-word text, so a truncated answer can never pass as a complete one · "
       "failoverbench.github.io/failoverbench", fontsize=11.5, color=INK["muted"], va="center")
     fig.savefig(out, dpi=100, facecolor=SURFACE)

@@ -3,7 +3,7 @@
 Next scorecard: **Monday 5 October 2026** (methodology v0.1, profile `full`).
 
 ## 2026-09-08 — 0.2.0 (unreleased)
-- Shareable images: `chart scorecard` (the grid as a PNG, glyph + colour per cell), `chart timeline` (one scenario, one or more runs, as bars on a seconds axis from the wall's log), `chart explainer` (how a measurement works). `site` writes the first two into docs/ when matplotlib is installed (`.[charts]`) and sets `og:image` so link previews show the grid.
+- Shareable images: `chart scorecard` (the grid as a PNG, glyph + colour per cell), `chart timeline` (one scenario, one or more runs, as bars on a seconds axis from the wall's log), `chart explainer` (how a measurement works). `site` writes the scorecard and the explainer into docs/ when matplotlib is installed (`.[charts]`) and points `og:image` at the explainer, which keeps its shape in a link preview where the tall grid would be cropped.
 - Public scorecard page: `python -m failoverbench site` → docs/index.html, published with GitHub Pages at https://failoverbench.github.io/failoverbench/.
 - The shared client treats an in-band SSE error event (a gateway that already sent 200 and partial content) as the error it is, never as a truncated success; regression test added. The LiteLLM proxy row was re-run: its four stream cells moved from fail to safe, matching the in-process Router.
 - S06 scored as *unbounded* rather than *hang* when a system retries a silent provider (max_wall_s 60 → 130); catalogue reworded.

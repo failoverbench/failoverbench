@@ -77,7 +77,7 @@ def render_site(results_dir: str, profile: str, catalogue_path: str, repo_url: s
            f"<title>Failover Bench — scorecard {esc(run_date)}</title>",
            f"<meta property='og:title' content='Failover Bench — scorecard {esc(run_date)}'>",
            "<meta property='og:description' content='How LLM gateways and SDKs behave when the provider behind them misbehaves: sixteen documented faults, one fake provider, every result reproducible with one command.'>",
-           f"<meta property='og:image' content='{esc(site_url.rstrip('/'))}/scorecard.png'>",
+           f"<meta property='og:image' content='{esc(site_url.rstrip('/'))}/how-it-works.png'>",  # 1400x600 survives a link-preview crop; the grid is tall and would not
            "<meta name='twitter:card' content='summary_large_image'>",
            "<link rel='preconnect' href='https://fonts.googleapis.com'>",
            "<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono&display=swap'>",
