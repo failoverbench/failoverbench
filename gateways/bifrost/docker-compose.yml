@@ -5,7 +5,17 @@
 # The image runs as uid 1000: on Linux, `chown -R 1000:1000 gateways/bifrost/data` first.
 services:
   bifrost:
-    image: maximhq/bifrost:v2.1.0
+    # Built from maximhq/bifrost dev @3a6d7936bdde29af422b19f395005e2bb4bf6a79 (2026-09-12),
+    # which contains PR #7104 (streaming header-wait timeout + socket close on context cancel).
+    # No published image carries #7104 yet: the newest Docker Hub tag is v2.1.1 (2026-09-09) and
+    # there is no dev/main tag. Rebuild with:
+    #   git clone https://github.com/maximhq/bifrost && git checkout 3a6d793
+    #   docker build -f transports/Dockerfile.local --build-arg VERSION=dev-3a6d793-pr7104 \
+    #     -t bifrost-fb:dev-3a6d793 .
+    # (Dockerfile.local, not Dockerfile: the released transports/go.mod pins core v1.8.6, which
+    #  predates the fix; Dockerfile.local builds core/ from the working tree via a go workspace.)
+    image: bifrost-fb:dev-3a6d793
+    pull_policy: never
     ports: ["18080:8080"]   # host 8080 is commonly taken (phpmyadmin etc.); the container still listens on 8080
     volumes: ["./data:/app/data"]
     environment:

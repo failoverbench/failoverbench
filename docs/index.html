@@ -1,5 +1,5 @@
 <!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>
-<title>Failover Bench — scorecard 2026-09-09</title>
+<title>Failover Bench — scorecard 2026-09-12</title>
 <link rel='preconnect' href='https://fonts.googleapis.com'>
 <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono&display=swap'>
 <style>
@@ -28,13 +28,13 @@ details{border:1px solid var(--line);background:var(--surface);padding:10px 14px
 details ul{margin:6px 0 10px;padding-left:18px;font-size:14px}details li{margin:2px 0}code{font-family:"IBM Plex Mono",Menlo,Consolas,monospace;font-size:.9em}
 a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--ink3)}
 </style></head><body><div class='hazard'></div><div class='page'>
-<div class='eyebrow'>Scorecard · 2026-09-09 · profile full · methodology v0.1 · failoverbench 0.1.0</div>
+<div class='eyebrow'>Scorecard · 2026-09-12 · profile full · methodology v0.1 · failoverbench 0.1.0</div>
 <h1>Failover Bench</h1>
 <p class='lede'>A crash-test lab for LLM gateways and SDKs. One fake provider breaks on purpose in sixteen documented ways; every system below is pushed through the same sixteen faults; each cell is what the caller actually got.</p>
 <p class='muted'>Next scorecard: <strong>Monday 5 October 2026</strong>. Harness, methodology and raw logs: <a href='https://github.com/failoverbench/failoverbench'>github.com/failoverbench/failoverbench</a>.</p>
 <div class='legend'><span class='v pass'>pass</span><span>caller got the complete answer, conduct clean</span><span class='v partial'>partial</span><span>rescued, advisory check failed</span><span class='v safe'>safe</span><span>not rescued, but a bounded clean error</span><span class='v fail'>fail</span><span>hang, truncated answer as success, or a conduct check failed</span></div>
 <div class='wrap'><table><thead><tr><th>Scenario</th>
-<th>Bifrost v2.1.0 (Docker)</th>
+<th>Bifrost dev @3a6d793 (Docker, source build)</th>
 <th>No gateway (direct, no retries)</th>
 <th>DeepSeek Harness + dsh-llm-fallbacks (SDK)</th>
 <th>LangChain ChatOpenAI + with_fallbacks</th>
@@ -46,7 +46,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <th>Reference client (httpx)</th>
 </tr></thead><tbody>
 <tr><td class='sc'>S01 429 with Retry-After<small>First attempt gets HTTP 429 with `Retry-After: 2`; every later attempt succeeds.</small></td>
-<td class='cell'><span class='v partial'>partial</span><sub>2p/0f · gap 0.6s · 1.5s</sub></td>
+<td class='cell'><span class='v partial'>partial</span><sub>2p/0f · gap 0.4s · 1.4s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>1p/1f · 2.6s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 2.0s · 3.0s</sub></td>
@@ -58,7 +58,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 2.0s · 3.0s</sub></td>
 </tr>
 <tr><td class='sc'>S02 429 without Retry-After, persistent<small>Every attempt gets HTTP 429 and no Retry-After header.</small></td>
-<td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.4s · 2.3s</sub></td>
+<td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.5s · 2.3s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 1.9s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.4s · 2.3s</sub></td>
@@ -82,7 +82,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.5s · 1.5s</sub></td>
 </tr>
 <tr><td class='sc'>S04 503 persistent<small>Every attempt gets HTTP 503 (overloaded).</small></td>
-<td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.6s · 2.4s</sub></td>
+<td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.4s · 2.4s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 2.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.5s · 2.4s</sub></td>
@@ -106,7 +106,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>2p/0f · gap 0.5s · 1.5s</sub></td>
 </tr>
 <tr><td class='sc'>S06 No response at all<small>The provider accepts the request and never answers (up to 120 s).</small></td>
-<td class='cell'><span class='v fail'>fail</span><sub>2p/0f · gap 120.0s · 130.0s</sub></td>
+<td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 31.0s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 30.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 31.9s</sub></td>
 <td class='cell'><span class='v partial'>partial</span><sub>3p/1f · gap 30.4s · 92.3s</sub></td>
@@ -202,7 +202,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>1p/0f · 0.0s</sub></td>
 </tr>
 <tr><td class='sc'>S14 Fallback target rejects prefill<small>The primary stream dies after 40 tokens. The fallback model rejects any request whose last message is an assistant prefill.</small></td>
-<td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
+<td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.7s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 2.7s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.6s</sub></td>
@@ -226,7 +226,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <td class='cell'><span class='v pass'>pass</span><sub>15/15 served in outage · back on primary +0s</sub></td>
 </tr>
 <tr><td class='sc'>S16 Fail-over accounting<small>Every primary attempt gets HTTP 503; the fallback answers.</small></td>
-<td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.5s · 2.5s</sub></td>
+<td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.6s · 2.4s</sub></td>
 <td class='cell'><span class='v safe'>safe</span><sub>1p/0f · 0.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>1p/1f · 2.0s</sub></td>
 <td class='cell'><span class='v pass'>pass</span><sub>3p/1f · gap 0.5s · 2.3s</sub></td>
@@ -241,7 +241,7 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <h2>Contrast rows</h2><p class='muted'>A subset of scenarios re-run under a different setting, shown next to the row they contrast with.</p>
 <p><strong>DSH, shared session</strong> — S15 <span class='v fail'>fail</span> 15/15 served in outage · back on primary never</p>
 <div class='wrap'><table class='sum'><thead><tr><th>System</th><th>pass</th><th>partial</th><th>safe</th><th>fail</th><th>run</th></tr></thead><tbody>
-<tr><td>Bifrost v2.1.0 (Docker)</td><td>9</td><td>3</td><td>3</td><td>1</td><td>275s</td></tr>
+<tr><td>Bifrost dev @3a6d793 (Docker, source build)</td><td>10</td><td>3</td><td>3</td><td>0</td><td>176s</td></tr>
 <tr><td>No gateway (direct, no retries)</td><td>4</td><td>0</td><td>12</td><td>0</td><td>162s</td></tr>
 <tr><td>DSH, shared session</td><td>0</td><td>0</td><td>0</td><td>1</td><td>79s</td></tr>
 <tr><td>DeepSeek Harness + dsh-llm-fallbacks (SDK)</td><td>12</td><td>3</td><td>1</td><td>0</td><td>204s</td></tr>
@@ -254,50 +254,50 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <tr><td>Reference client (httpx)</td><td>16</td><td>0</td><td>0</td><td>0</td><td>136s</td></tr>
 </tbody></table></div>
 <h2>Check-level detail</h2><p class='muted'>Every check the runner scored, and what the fake provider saw. Advisory checks change a pass to partial; required checks change it to fail.</p>
-<details><summary>Bifrost v2.1.0 (Docker) — adapter <code>endpoint</code>, fallback=yes, streaming=yes</summary>
-<p class='muted'>Bifrost with a custom provider `fake` (base_provider_type openai, base_url = the wall, allow_private_network on). Baseline settings: max_retries 2 (vendor default is 0), request timeout 30 s, stream idle timeout 30 s, one fallback passed per request (`fallbacks: [&quot;fake/fb-ok&quot;]`). Bifrost does not honour Retry-After (backoff 500 ms → 5 s with jitter). Per docs, fallback covers HTTP-level errors and an error in the first SSE event; later stream errors are not retried.</p>
+<details><summary>Bifrost dev @3a6d793 (Docker, source build) — adapter <code>endpoint</code>, fallback=yes, streaming=yes</summary>
+<p class='muted'>Bifrost built from source at maximhq/bifrost dev @3a6d7936bdde29af422b19f395005e2bb4bf6a79 (2026-09-12), the first revision we could measure that contains PR #7104 (merged 2026-09-11, fixes #7034): the streaming client&#x27;s request timeout now bounds the wait for response headers, and cancelling the request context closes the upstream socket. No published image carries #7104 — the newest Docker Hub tag is v2.1.1 (2026-09-09) and maximhq/bifrost has no dev/main tag — so this row is a local build of transports/Dockerfile.local (image id sha256:065aa8f9; the ordinary transports/Dockerfile pins core v1.8.6 from the proxy and would not contain the fix). Previous row was v2.1.0. Custom provider `fake` (base_provider_type openai, base_url = the wall, allow_private_network on). Baseline settings: max_retries 2 (vendor default is 0), request timeout 30 s, stream idle timeout 30 s, one fallback passed per request (`fallbacks: [&quot;fake/fb-ok&quot;]`). Bifrost does not honour Retry-After (backoff 500 ms → 5 s with jitter). Per docs, fallback covers HTTP-level errors and an error in the first SSE event; later stream errors are not retried. Under #7104 S06 goes fail → pass: the silent primary is abandoned at the 30 s request timeout after a single attempt and the fallback serves the answer, where v2.1.0 re-attempted the silent route and ran 130 s past the budget. No other verdict changed, but S08/S14 now surface a raw `Error reading stream: unexpected EOF` where v2.1.0 surfaced Bifrost&#x27;s own `provider closed the stream before sending a completion marker (upstream connection ended mid-stream)` — both still score safe, but the mid-stream error text got less informative.</p>
 <p class='muted'>params: <code>{&quot;base_url&quot;: &quot;http://127.0.0.1:18080/v1&quot;, &quot;api_key&quot;: &quot;failoverbench&quot;, &quot;model_format&quot;: &quot;fake/{model}&quot;, &quot;extra_body&quot;: {&quot;fallbacks&quot;: [&quot;{fallback}&quot;]}}</code></p>
 <p><strong>S01 429 with Retry-After</strong> — <span class='v partial'>partial</span> rescued; advisory: retry_after_honoured</p><ul>
 <li><code>retried</code> pass: 2 primary attempt(s)</li>
-<li><code>retry_after_honoured</code> FAIL (advisory): gap 0.57s</li>
+<li><code>retry_after_honoured</code> FAIL (advisory): gap 0.42s</li>
 <li><code>no_hammer</code> pass: 2 attempt(s) in first 1.5s</li>
-<li>wall log: 0.01s fb-s01-429-retry-after #1 -&gt; 429 retry-after=2; 0.58s fb-s01-429-retry-after #2 -&gt; 200 stream</li>
+<li>wall log: 0.05s fb-s01-429-retry-after #1 -&gt; 429 retry-after=2; 0.46s fb-s01-429-retry-after #2 -&gt; 200 stream</li>
 </ul>
 <p><strong>S02 429 without Retry-After, persistent</strong> — <span class='v pass'>pass</span> rescued</p><ul>
 <li><code>no_hammer</code> pass: 3 attempt(s) in first 3s</li>
 <li><code>bounded_attempts</code> pass: 3 primary attempt(s)</li>
 <li><code>no_hang</code> pass: ended in 2.3s (success)</li>
-<li>wall log: 0.00s fb-s02-429-persistent #1 -&gt; 429; 0.41s fb-s02-429-persistent #2 -&gt; 429; 1.36s fb-s02-429-persistent #3 -&gt; 429; 1.36s fb-ok #1 -&gt; 200 stream</li>
+<li>wall log: 0.00s fb-s02-429-persistent #1 -&gt; 429; 0.53s fb-s02-429-persistent #2 -&gt; 429; 1.35s fb-s02-429-persistent #3 -&gt; 429; 1.35s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 <p><strong>S03 500 once, then healthy</strong> — <span class='v pass'>pass</span> rescued</p><ul>
 <li><code>no_hang</code> pass: ended in 1.4s (success)</li>
 <li><code>same_provider_retry</code> pass: 2 primary attempt(s)</li>
-<li>wall log: 0.01s fb-s03-500-then-200 #1 -&gt; 500; 0.45s fb-s03-500-then-200 #2 -&gt; 200 stream</li>
+<li>wall log: 0.00s fb-s03-500-then-200 #1 -&gt; 500; 0.45s fb-s03-500-then-200 #2 -&gt; 200 stream</li>
 </ul>
 <p><strong>S04 503 persistent</strong> — <span class='v pass'>pass</span> rescued</p><ul>
 <li><code>bounded_attempts</code> pass: 3 primary attempt(s)</li>
 <li><code>no_hang</code> pass: ended in 2.4s (success)</li>
-<li>wall log: 0.00s fb-s04-503-persistent #1 -&gt; 503; 0.57s fb-s04-503-persistent #2 -&gt; 503; 1.38s fb-s04-503-persistent #3 -&gt; 503; 1.39s fb-ok #1 -&gt; 200 stream</li>
+<li>wall log: 0.01s fb-s04-503-persistent #1 -&gt; 503; 0.43s fb-s04-503-persistent #2 -&gt; 503; 1.46s fb-s04-503-persistent #3 -&gt; 503; 1.46s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 <p><strong>S05 TCP reset before headers</strong> — <span class='v pass'>pass</span> rescued</p><ul>
 <li><code>no_hang</code> pass: ended in 1.0s (success)</li>
 <li>wall log: 0.00s fb-s05-reset #1 -&gt; tcp-reset; 0.01s fb-s05-reset #2 -&gt; 200 stream</li>
 </ul>
-<p><strong>S06 No response at all</strong> — <span class='v fail'>fail</span> failed: within_budget</p><ul>
-<li><code>within_budget</code> FAIL: 130.0s</li>
-<li><code>no_hang</code> pass: ended in 130.0s (error)</li>
-<li><code>silent_route_not_retried</code> FAIL (advisory): 2 primary attempt(s)</li>
-<li>wall log: 0.01s fb-s06-no-response #1 -&gt; no-response 120s; 120.02s fb-s06-no-response #2 -&gt; no-response 120s</li>
+<p><strong>S06 No response at all</strong> — <span class='v pass'>pass</span> rescued</p><ul>
+<li><code>within_budget</code> pass: 31.0s</li>
+<li><code>no_hang</code> pass: ended in 31.0s (success)</li>
+<li><code>silent_route_not_retried</code> pass: 1 primary attempt(s)</li>
+<li>wall log: 0.00s fb-s06-no-response #1 -&gt; no-response 120s; 30.01s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 <p><strong>S07 Slow first token</strong> — <span class='v partial'>partial</span> rescued; advisory: ttft_limit</p><ul>
 <li><code>no_hang</code> pass: ended in 21.0s (success)</li>
 <li><code>ttft_limit</code> FAIL (advisory): 21.0s</li>
-<li>wall log: 0.01s fb-s07-slow-ttft #1 -&gt; 200 stream, first token after 20s</li>
+<li>wall log: 0.00s fb-s07-slow-ttft #1 -&gt; 200 stream, first token after 20s</li>
 </ul>
-<p><strong>S08 Stream cut mid-answer</strong> — <span class='v safe'>safe</span> not rescued — clean error: in-band error event after 40 chunk(s): provider closed the stream before sending</p><ul>
+<p><strong>S08 Stream cut mid-answer</strong> — <span class='v safe'>safe</span> not rescued — clean error: in-band error event after 40 chunk(s): Error reading stream: unexpected EOF</p><ul>
 <li><code>no_truncated_success</code> pass: no success claimed (error)</li>
 <li><code>no_hang</code> pass: ended in 0.7s (error)</li>
-<li>wall log: 0.01s fb-s08-stream-cut #1 -&gt; 200 stream cut after 40 tokens (no terminating chunk)</li>
+<li>wall log: 0.00s fb-s08-stream-cut #1 -&gt; 200 stream cut after 40 tokens (no terminating chunk)</li>
 </ul>
 <p><strong>S09 Stream stalls</strong> — <span class='v safe'>safe</span> not rescued — clean error: in-band error event after 20 chunk(s): Error reading stream: stream idle timeout</p><ul>
 <li><code>bounded</code> pass: 30.3s</li>
@@ -328,25 +328,25 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li><code>no_same_model_retry</code> pass: 1 primary attempt(s)</li>
 <li><code>no_hang</code> pass: ended in 1.0s (success)</li>
 <li><code>fallback_attempted</code> pass: 1 fallback attempt(s)</li>
-<li>wall log: 0.01s fb-s13-content-filter #1 -&gt; 400 content_policy_violation; 0.01s fb-ok #1 -&gt; 200 stream</li>
+<li>wall log: 0.00s fb-s13-content-filter #1 -&gt; 400 content_policy_violation; 0.00s fb-ok #1 -&gt; 200 stream</li>
 </ul>
-<p><strong>S14 Fallback target rejects prefill</strong> — <span class='v safe'>safe</span> not rescued — clean error: in-band error event after 40 chunk(s): provider closed the stream before sending</p><ul>
+<p><strong>S14 Fallback target rejects prefill</strong> — <span class='v safe'>safe</span> not rescued — clean error: in-band error event after 40 chunk(s): Error reading stream: unexpected EOF</p><ul>
 <li><code>no_prefill_masking</code> pass: 0 prefill rejection(s) at the fallback; final outcome error</li>
 <li><code>no_truncated_success</code> pass: no success claimed (error)</li>
-<li>wall log: 0.01s fb-s14-stream-cut #1 -&gt; 200 stream cut after 40 tokens (no terminating chunk)</li>
+<li>wall log: 0.00s fb-s14-stream-cut #1 -&gt; 200 stream cut after 40 tokens (no terminating chunk)</li>
 </ul>
 <p><strong>S15 Primary flaps: down, then healthy</strong> — <span class='v pass'>pass</span> rescued</p><ul>
 <li><code>no_hang</code> pass: 0 hung request(s) of 20</li>
 <li><code>served_during_outage</code> pass: 15/15 requests answered while primary was down</li>
 <li><code>recovered</code> pass: primary answered again +0.0s after recovery</li>
 <li><code>probe_discipline</code> info: 45 primary attempt(s) for 15 request(s) during the outage</li>
-<li>wall log: 0.01s fb-s15-flap #1 -&gt; 503 (down window); 0.51s fb-s15-flap #2 -&gt; 503 (down window); 1.65s fb-s15-flap #3 -&gt; 503 (down window); 1.66s fb-ok #1 -&gt; 200 stream; 4.01s fb-s15-flap #4 -&gt; 503 (down window); 4.44s fb-s15-flap #5 -&gt; 503 (down window); 5.58s fb-s15-flap #6 -&gt; 503 (down window); 5.58s fb-ok #2 -&gt; 200 stream; 8.01s fb-s15-flap #7 -&gt; 503 (down window); 8.52s fb-s15-flap #8 -&gt; 503 (down window); 9.58s fb-s15-flap #9 -&gt; 503 (down window); 9.58s fb-ok #3 -&gt; 200 stream … (+54 more)</li>
+<li>wall log: 0.01s fb-s15-flap #1 -&gt; 503 (down window); 0.50s fb-s15-flap #2 -&gt; 503 (down window); 1.59s fb-s15-flap #3 -&gt; 503 (down window); 1.59s fb-ok #1 -&gt; 200 stream; 4.01s fb-s15-flap #4 -&gt; 503 (down window); 4.43s fb-s15-flap #5 -&gt; 503 (down window); 5.32s fb-s15-flap #6 -&gt; 503 (down window); 5.32s fb-ok #2 -&gt; 200 stream; 8.01s fb-s15-flap #7 -&gt; 503 (down window); 8.50s fb-s15-flap #8 -&gt; 503 (down window); 9.51s fb-s15-flap #9 -&gt; 503 (down window); 9.51s fb-ok #3 -&gt; 200 stream … (+53 more)</li>
 </ul>
 <p><strong>S16 Fail-over accounting</strong> — <span class='v pass'>pass</span> rescued</p><ul>
 <li><code>reports_fallback_model</code> pass: response.model = &#x27;fb-ok&#x27;</li>
 <li><code>usage_present</code> pass: usage = {&#x27;prompt_tokens&#x27;: 21, &#x27;completion_tokens&#x27;: 60, &#x27;total_tokens&#x27;: 81}</li>
 <li><code>bounded_attempts</code> pass: 3 primary attempt(s)</li>
-<li>wall log: 0.01s fb-s16-503-persistent #1 -&gt; 503; 0.52s fb-s16-503-persistent #2 -&gt; 503; 1.56s fb-s16-503-persistent #3 -&gt; 503; 1.56s fb-ok #1 -&gt; 200 stream</li>
+<li>wall log: 0.00s fb-s16-503-persistent #1 -&gt; 503; 0.57s fb-s16-503-persistent #2 -&gt; 503; 1.47s fb-s16-503-persistent #3 -&gt; 503; 1.47s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 </details>
 <details><summary>No gateway (direct, no retries) — adapter <code>direct</code>, fallback=no, streaming=yes</summary>
@@ -1215,5 +1215,5 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 <li>wall log: 0.00s fb-s16-503-persistent #1 -&gt; 503; 0.60s fb-s16-503-persistent #2 -&gt; 503; 1.75s fb-s16-503-persistent #3 -&gt; 503; 1.75s fb-ok #1 -&gt; 200 stream</li>
 </ul>
 </details>
-<footer>Results CC BY 4.0 · harness MIT · generated 2026-09-09 09:40 UTC from results/full · <a href='https://github.com/failoverbench/failoverbench/blob/main/METHODOLOGY.md'>methodology</a> · <a href='https://github.com/failoverbench/failoverbench/tree/main/results/full'>raw results</a></footer>
+<footer>Results CC BY 4.0 · harness MIT · generated 2026-09-12 09:34 UTC from results/full · <a href='https://github.com/failoverbench/failoverbench/blob/main/METHODOLOGY.md'>methodology</a> · <a href='https://github.com/failoverbench/failoverbench/tree/main/results/full'>raw results</a></footer>
 </div></body></html>
