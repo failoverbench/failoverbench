@@ -1,4 +1,4 @@
-"""CLI: python -m failoverbench <wall | run | rescore | report | site | litellm-config>"""
+"""CLI: python -m failoverbench <wall | run | rescore | report | site | chart | litellm-config>"""
 
 from __future__ import annotations
 
@@ -10,7 +10,8 @@ USAGE = """failoverbench — a crash-test lab for LLM gateways and SDKs
   python -m failoverbench run   --system systems/reference.yaml [--profile fast|full] [--only S01,S08 [--merge]]
   python -m failoverbench rescore [--profile fast|full]      # re-evaluate stored results against the current catalogue
   python -m failoverbench report [--profile fast|full]
-  python -m failoverbench site   [--profile fast|full] [--out docs/index.html]
+  python -m failoverbench site   [--profile fast|full] [--out docs/index.html]   # also writes docs/scorecard.png + how-it-works.png
+  python -m failoverbench chart  scorecard | explainer | timeline --scenario S06 results/full/<system>.json [more.json]
   python -m failoverbench litellm-config [--wall-url http://host.docker.internal:8401/v1] > gateways/litellm/litellm.yaml
 """
 
@@ -77,6 +78,9 @@ def main(argv=None):
         m(rest)
     elif cmd == "site":
         from .site import main as m
+        m(rest)
+    elif cmd == "chart":
+        from .charts import main as m
         m(rest)
     elif cmd == "litellm-config":
         litellm_config(rest)

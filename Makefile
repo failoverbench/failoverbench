@@ -20,5 +20,6 @@ test:            ## smoke tests (no external packages needed)
 	python tests/test_inband_error.py
 	python tests/test_templating.py
 	python tests/test_scoring.py
+	python tests/test_charts.py
 
 all: run report

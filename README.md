@@ -30,6 +30,8 @@ python -m failoverbench report --profile fast && open results/fast/SCORECARD.md
 
 Testing a gateway that runs in Docker? Start the wall with `--host 0.0.0.0` so the container can reach it at `host.docker.internal:8401`.
 
+Want a picture? `pip install -e ".[charts]"` and `python -m failoverbench site` also writes `docs/scorecard.png` (the grid, with a glyph in every cell so colour never carries the meaning alone) and `docs/how-it-works.png`; `python -m failoverbench chart timeline --scenario S06 results/full/bifrost.json other.json --labels "before" "after"` draws what the client and the fake provider saw, second by second, for one scenario across one or more runs.
+
 Re-running one scenario after a fix? `run --only S12 --merge` splices the new result into the system's existing results file (the file records which ids were re-run and when). Changed a check in the catalogue? `python -m failoverbench rescore` re-evaluates every stored result against the current rules without touching the measurements.
 
 ## Systems under test
@@ -42,7 +44,7 @@ Re-running one scenario after a fix? `run --only S12 --merge` splices the new re
 | LiteLLM Router, in-process | `systems/litellm-router.yaml` | `pip install litellm` |
 | LiteLLM proxy, Docker | `systems/litellm-proxy.yaml` + `gateways/litellm/` | `docker compose up` |
 | LiteLLM Router, tuned (`allowed_fails`, `cooldown_time`) | `systems/litellm-router-tuned.yaml` | `pip install litellm` |
-| Bifrost v2.1.0, Docker | `systems/bifrost.yaml` + `gateways/bifrost/` | `docker compose up` |
+| Bifrost v2.1.1, Docker | `systems/bifrost.yaml` + `gateways/bifrost/` | `docker compose up` |
 | Portkey Gateway (OSS), Docker | `systems/portkey-gateway.yaml` + `gateways/portkey/` | `docker compose up` |
 | LangChain `ChatOpenAI` + `with_fallbacks` | `systems/langchain.yaml` | `pip install -e ".[langchain]"` |
 | DeepSeek Harness + dsh-llm-fallbacks (SDK) — experimental | `systems/dsh.yaml` + `gateways/dsh/setup.sh` | `pip install -e ".[dsh]"` |

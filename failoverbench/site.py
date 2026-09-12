@@ -47,7 +47,8 @@ a{color:var(--accent-ink)}footer{margin-top:40px;padding-top:14px;border-top:1px
 """
 
 
-def render_site(results_dir: str, profile: str, catalogue_path: str, repo_url: str, next_scorecard: str) -> str:
+def render_site(results_dir: str, profile: str, catalogue_path: str, repo_url: str, next_scorecard: str,
+                site_url: str = "https://failoverbench.github.io/failoverbench") -> str:
     docs = []
     for path in sorted(glob.glob(os.path.join(results_dir, profile, "*.json"))):
         with open(path, encoding="utf-8") as fh:
@@ -74,6 +75,10 @@ def render_site(results_dir: str, profile: str, catalogue_path: str, repo_url: s
 
     out = [f"<!doctype html><html lang='en'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'>",
            f"<title>Failover Bench — scorecard {esc(run_date)}</title>",
+           f"<meta property='og:title' content='Failover Bench — scorecard {esc(run_date)}'>",
+           "<meta property='og:description' content='How LLM gateways and SDKs behave when the provider behind them misbehaves: sixteen documented faults, one fake provider, every result reproducible with one command.'>",
+           f"<meta property='og:image' content='{esc(site_url.rstrip('/'))}/scorecard.png'>",
+           "<meta name='twitter:card' content='summary_large_image'>",
            "<link rel='preconnect' href='https://fonts.googleapis.com'>",
            "<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=IBM+Plex+Sans:wght@400;600&family=IBM+Plex+Mono&display=swap'>",
            f"<style>{CSS}</style></head><body><div class='hazard'></div><div class='page'>",
@@ -148,13 +153,25 @@ def main(argv=None):
     ap.add_argument("--catalogue", default="scenarios/catalogue.yaml")
     ap.add_argument("--repo-url", default="https://github.com/failoverbench/failoverbench")
     ap.add_argument("--next", default="Monday 5 October 2026", help="text for the next-scorecard line")
+    ap.add_argument("--site-url", default="https://failoverbench.github.io/failoverbench", help="where docs/ is served (for link previews)")
     ap.add_argument("--out", default="docs/index.html")
+    ap.add_argument("--no-images", action="store_true", help="skip the PNGs (scorecard.png, how-it-works.png)")
     args = ap.parse_args(argv)
-    text = render_site(args.results, args.profile, args.catalogue, args.repo_url, args.next)
-    os.makedirs(os.path.dirname(args.out) or ".", exist_ok=True)
+    text = render_site(args.results, args.profile, args.catalogue, args.repo_url, args.next, args.site_url)
+    out_dir = os.path.dirname(args.out) or "."
+    os.makedirs(out_dir, exist_ok=True)
     with open(args.out, "w", encoding="utf-8") as fh:
         fh.write(text)
     print(f"wrote {args.out}", file=sys.stderr)
+    if not args.no_images:
+        try:
+            from .charts import explainer_png, scorecard_png
+        except ImportError:
+            print("images skipped: pip install -e '.[charts]' for docs/scorecard.png and docs/how-it-works.png", file=sys.stderr)
+            return
+        scorecard_png(args.results, args.profile, args.catalogue, os.path.join(out_dir, "scorecard.png"))
+        explainer_png(os.path.join(out_dir, "how-it-works.png"))
+        print(f"wrote {out_dir}/scorecard.png and {out_dir}/how-it-works.png", file=sys.stderr)
 
 
 if __name__ == "__main__":
