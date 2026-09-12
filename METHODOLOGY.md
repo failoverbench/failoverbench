@@ -44,6 +44,14 @@ S15 sends twenty requests four seconds apart across a sixty-second outage. Score
 
 After every scenario the runner sends one healthy `fb-ok` request through the same system with a ten-second limit. A system that is still spinning, holding a poisoned connection, or crashed fails `alive_after` where the scenario scores it.
 
+## Which version is scored
+
+The scorecard scores the newest version a reader can install at the time of the run: for a containerised system, the newest released image tag on its public registry; for a library, the newest release on its package index. Pre-release channels, `dev`/`main` tags and source builds are not scored, because a row exists to tell a reader what they will get if they install the thing today.
+
+A fix that lands upstream but has not shipped is still worth measuring, and we do measure it — on a source build, pinned to an exact commit. That measurement is reported to the vendor and recorded in one sentence in the affected row's notes, naming the PR, the commit and what changed. It never moves a verdict. The cell keeps the score the released version earns until a release containing the fix exists, at which point the row is re-run and the note is dropped.
+
+The exact image digest is published for every containerised row — in the row's notes, in the `docker-compose.yml` that produced it, and in the results JSON — so a reader can pull the identical bytes rather than a tag that has since moved. Tags are pinned by digest (`image: name:tag@sha256:…`) for the same reason.
+
 ## Publication
 
 A scorecard is published on the first Monday of every month from a `full` run of every listed system on the same machine and the same wall build. Raw JSON results, the wall log excerpt for each cell, and the exact configuration ship with it. Vendors receive each failing scenario as an issue with a one-command reproduction at least seven days before publication. Methodology changes bump this document's version; verdicts from different versions are never compared in one table.
