@@ -9,6 +9,8 @@ params (all optional, passed through to litellm.Router):
   allowed_fails: 1
   cooldown_time: 30
   context_window_fallbacks: true   # also register the fallback for context-length errors
+  enable_mid_stream_fallback_continuation: false
+  prefill_capable_models: [fb-ok]  # see start(): declares the capability the flag above filters on
 """
 
 from __future__ import annotations
@@ -30,6 +32,16 @@ class LiteLLMRouterAdapter(Adapter):
         self._openai = openai
         litellm.suppress_debug_info = True
         litellm.drop_params = True
+        # Mid-stream fallback continuation (LiteLLM PR #41127) chooses its
+        # continuation target with a pre-call filter that asks the *model cost
+        # map* whether the deployment's `litellm_params["model"]` declares
+        # `supports_assistant_prefill`; a deployment's own `model_info` block is
+        # never read. The wall's model names are not in the map, and a missing
+        # declaration reads as "cannot prefill", so a model we want treated as
+        # prefill-capable has to be registered into the map by name.
+        for m in self.params.get("prefill_capable_models") or []:
+            litellm.register_model({f"openai/{m}": {"litellm_provider": "openai", "mode": "chat",
+                                                    "supports_assistant_prefill": True}})
         self._Router = Router
         self._routers: dict[tuple, object] = {}
 
@@ -52,7 +64,8 @@ class LiteLLMRouterAdapter(Adapter):
             kwargs["fallbacks"] = [{"primary": ["fallback"]}]
             if self.params.get("context_window_fallbacks", True):
                 kwargs["context_window_fallbacks"] = [{"primary": ["fallback"]}]
-        for k in ("allowed_fails", "cooldown_time", "retry_after", "routing_strategy"):
+        for k in ("allowed_fails", "cooldown_time", "retry_after", "routing_strategy",
+                  "enable_mid_stream_fallback_continuation"):
             if k in self.params:
                 kwargs[k] = self.params[k]
         self._routers[key] = self._Router(**kwargs)
